@@ -1,0 +1,318 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const serviceCategories = [
+  'General Construction',
+  'Architecture & Design',
+  'Interior Design',
+  'Plumbing',
+  'Electrical Work',
+  'Masonry & Tiling',
+  'Carpentry & Woodwork',
+  'Painting & Finishing',
+  'Roofing',
+  'Landscaping',
+  'Welding & Metalwork',
+  'Waterproofing',
+  'Other',
+];
+
+const districts = [
+  'Colombo', 'Gampaha', 'Kalutara', 'Kandy', 'Matale', 'Nuwara Eliya',
+  'Galle', 'Matara', 'Hambantota', 'Jaffna', 'Kilinochchi', 'Mannar',
+  'Vavuniya', 'Mullaitivu', 'Batticaloa', 'Ampara', 'Trincomalee',
+  'Kurunegala', 'Puttalam', 'Anuradhapura', 'Polonnaruwa', 'Badulla',
+  'Monaragala', 'Ratnapura', 'Kegalle',
+];
+---
+
+<BaseLayout title="Professional Profile" description="Set up your professional profile on වැඩHUB">
+  <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+    <div id="profile-loading" class="py-20 text-center text-gray-400">Loading profile...</div>
+
+    <div id="profile-unauthenticated" class="hidden py-20 text-center">
+      <div class="text-5xl">🔐</div>
+      <h2 class="mt-4 text-2xl font-bold text-gray-900">Professional Account Required</h2>
+      <p class="mt-2 text-gray-500">Register as a professional to set up your business profile.</p>
+      <div class="mt-6 flex items-center justify-center gap-4">
+        <a href="/login" class="btn-primary">Log In</a>
+        <a href="/register" class="btn-secondary">Register as Pro</a>
+      </div>
+    </div>
+
+    <div id="profile-content" class="hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Professional Profile</div>
+          <h1 class="mt-3 text-3xl font-bold text-gray-900">Your Business Profile</h1>
+          <p class="mt-1 text-gray-500">This information is visible to homeowners looking for professionals</p>
+        </div>
+        <a href="/dashboard" class="btn-secondary text-sm">Back to Dashboard</a>
+      </div>
+
+      <!-- Profile Completion Banner -->
+      <div id="setup-banner" class="mt-6 hidden rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <div class="flex items-start gap-3">
+          <div class="text-2xl">👋</div>
+          <div>
+            <h3 class="font-semibold text-amber-800">Complete your profile to get discovered</h3>
+            <p class="mt-1 text-sm text-amber-700">Homeowners are more likely to hire professionals with complete profiles. Fill in your details below to start receiving project requests.</p>
+          </div>
+        </div>
+      </div>
+
+      <form id="profile-form" class="mt-8 space-y-6">
+        <!-- Personal Info -->
+        <div class="card space-y-5">
+          <h2 class="text-lg font-semibold text-gray-900">Personal Information</h2>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="full-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+              <input type="text" id="full-name" name="full_name" required class="input-field mt-1" />
+            </div>
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+              <input type="tel" id="phone" name="phone" placeholder="e.g. 077 123 4567" class="input-field mt-1" />
+            </div>
+          </div>
+
+          <div>
+            <label for="bio" class="block text-sm font-medium text-gray-700">About You</label>
+            <textarea
+              id="bio"
+              name="bio"
+              rows="3"
+              placeholder="Tell homeowners about yourself, your experience, and what makes your work stand out..."
+              class="input-field mt-1 resize-y"
+            ></textarea>
+          </div>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="district" class="block text-sm font-medium text-gray-700">District</label>
+              <select id="district" name="district" class="input-field mt-1">
+                <option value="">Select your district</option>
+                {districts.map((d) => (
+                  <option value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label for="location" class="block text-sm font-medium text-gray-700">City / Area</label>
+              <input type="text" id="location" name="location" placeholder="e.g. Nugegoda, Colombo 5" class="input-field mt-1" />
+            </div>
+          </div>
+
+          <div>
+            <label for="avatar-url" class="block text-sm font-medium text-gray-700">Profile Photo URL</label>
+            <input type="url" id="avatar-url" name="avatar_url" placeholder="https://..." class="input-field mt-1" />
+          </div>
+        </div>
+
+        <!-- Business Info -->
+        <div class="card space-y-5">
+          <h2 class="text-lg font-semibold text-gray-900">Business Information</h2>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="company-name" class="block text-sm font-medium text-gray-700">Company / Business Name</label>
+              <input type="text" id="company-name" name="company_name" placeholder="e.g. DeSilva Construction" class="input-field mt-1" />
+            </div>
+            <div>
+              <label for="service-category" class="block text-sm font-medium text-gray-700">Primary Service</label>
+              <select id="service-category" name="service_category" required class="input-field mt-1">
+                <option value="">Select service</option>
+                {serviceCategories.map((cat) => (
+                  <option value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="specializations" class="block text-sm font-medium text-gray-700">Specializations</label>
+            <input
+              type="text"
+              id="specializations"
+              name="specializations"
+              placeholder="e.g. Luxury homes, Commercial buildings, Eco-friendly (comma separated)"
+              class="input-field mt-1"
+            />
+            <p class="mt-1 text-xs text-gray-400">Comma separated list of your specializations</p>
+          </div>
+
+          <div class="grid gap-5 sm:grid-cols-3">
+            <div>
+              <label for="years-experience" class="block text-sm font-medium text-gray-700">Years of Experience</label>
+              <input type="number" id="years-experience" name="years_experience" min="0" max="60" placeholder="e.g. 10" class="input-field mt-1" />
+            </div>
+            <div>
+              <label for="license-number" class="block text-sm font-medium text-gray-700">License / Registration No.</label>
+              <input type="text" id="license-number" name="license_number" placeholder="Optional" class="input-field mt-1" />
+            </div>
+            <div>
+              <label for="hourly-rate" class="block text-sm font-medium text-gray-700">Hourly Rate (LKR)</label>
+              <input type="number" id="hourly-rate" name="hourly_rate" min="0" placeholder="e.g. 2500" class="input-field mt-1" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Service Areas</label>
+            <p class="mt-1 text-xs text-gray-400">Select districts where you provide services</p>
+            <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4" id="service-areas-grid">
+              {districts.map((d) => (
+                <label class="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm transition-colors hover:border-brand-300 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+                  <input type="checkbox" name="service_areas" value={d} class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+                  {d}
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div id="profile-error" class="hidden rounded-lg bg-red-50 p-3 text-sm text-red-600"></div>
+        <div id="profile-success" class="hidden rounded-lg bg-green-50 p-3 text-sm text-green-600"></div>
+
+        <div class="flex items-center gap-4">
+          <button type="submit" class="btn-primary">Save Profile</button>
+          <a href="/dashboard" class="btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  const loading = document.getElementById('profile-loading')!;
+  const content = document.getElementById('profile-content')!;
+  const unauthenticated = document.getElementById('profile-unauthenticated')!;
+  const setupBanner = document.getElementById('setup-banner')!;
+  const form = document.getElementById('profile-form') as HTMLFormElement;
+  const errorEl = document.getElementById('profile-error') as HTMLDivElement;
+  const successEl = document.getElementById('profile-success') as HTMLDivElement;
+
+  let isNewProfile = false;
+
+  async function init() {
+    const { data: { user } } = await supabase.auth.getUser();
+    loading.classList.add('hidden');
+
+    if (!user || user.user_metadata?.role !== 'professional') {
+      unauthenticated.classList.remove('hidden');
+      return;
+    }
+
+    // Load existing profile data
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    const { data: proProfile } = await supabase
+      .from('professional_profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    // Fill in personal info
+    if (profile) {
+      (document.getElementById('full-name') as HTMLInputElement).value = profile.full_name || '';
+      (document.getElementById('phone') as HTMLInputElement).value = profile.phone || '';
+      (document.getElementById('bio') as HTMLTextAreaElement).value = profile.bio || '';
+      (document.getElementById('district') as HTMLSelectElement).value = profile.district || '';
+      (document.getElementById('location') as HTMLInputElement).value = profile.location || '';
+      (document.getElementById('avatar-url') as HTMLInputElement).value = profile.avatar_url || '';
+    }
+
+    // Fill in professional info
+    if (proProfile) {
+      (document.getElementById('company-name') as HTMLInputElement).value = proProfile.company_name || '';
+      (document.getElementById('service-category') as HTMLSelectElement).value = proProfile.service_category || '';
+      (document.getElementById('specializations') as HTMLInputElement).value = (proProfile.specializations || []).join(', ');
+      (document.getElementById('years-experience') as HTMLInputElement).value = proProfile.years_experience?.toString() || '';
+      (document.getElementById('license-number') as HTMLInputElement).value = proProfile.license_number || '';
+      (document.getElementById('hourly-rate') as HTMLInputElement).value = proProfile.hourly_rate?.toString() || '';
+
+      // Check service areas
+      const areas = proProfile.service_areas || [];
+      document.querySelectorAll('input[name="service_areas"]').forEach((cb) => {
+        if (areas.includes((cb as HTMLInputElement).value)) {
+          (cb as HTMLInputElement).checked = true;
+        }
+      });
+    } else {
+      isNewProfile = true;
+      setupBanner.classList.remove('hidden');
+    }
+
+    content.classList.remove('hidden');
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl.classList.add('hidden');
+    successEl.classList.add('hidden');
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const formData = new FormData(form);
+    const serviceAreas = formData.getAll('service_areas') as string[];
+    const specializations = (formData.get('specializations') as string)
+      ?.split(',').map(s => s.trim()).filter(Boolean) || [];
+
+    // Update profiles table
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({
+        full_name: formData.get('full_name'),
+        phone: formData.get('phone') || null,
+        bio: formData.get('bio') || null,
+        district: formData.get('district') || null,
+        location: formData.get('location') || null,
+        avatar_url: formData.get('avatar_url') || null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', user.id);
+
+    if (profileError) {
+      errorEl.textContent = profileError.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    // Upsert professional_profiles table
+    const proData = {
+      id: user.id,
+      company_name: formData.get('company_name') || null,
+      service_category: formData.get('service_category'),
+      specializations,
+      license_number: formData.get('license_number') || null,
+      years_experience: Number(formData.get('years_experience')) || null,
+      hourly_rate: Number(formData.get('hourly_rate')) || null,
+      service_areas: serviceAreas,
+    };
+
+    const { error: proError } = isNewProfile
+      ? await supabase.from('professional_profiles').insert(proData)
+      : await supabase.from('professional_profiles').update(proData).eq('id', user.id);
+
+    if (proError) {
+      errorEl.textContent = proError.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    isNewProfile = false;
+    setupBanner.classList.add('hidden');
+    successEl.textContent = 'Profile saved successfully! Homeowners can now find you on වැඩHUB.';
+    successEl.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  init();
+</script>

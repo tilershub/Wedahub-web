@@ -32,10 +32,40 @@ const navLinks = [
       ))}
     </div>
 
-    <!-- Auth Buttons -->
-    <div class="hidden items-center gap-3 md:flex">
+    <!-- Auth Buttons (shown when NOT logged in) -->
+    <div id="nav-guest" class="hidden items-center gap-3 md:flex">
       <a href="/login" class="btn-secondary text-sm">Log In</a>
       <a href="/register" class="btn-primary text-sm">Join as Pro</a>
+    </div>
+
+    <!-- User Menu (shown when logged in) -->
+    <div id="nav-user" class="hidden items-center gap-3 md:flex">
+      <!-- Pro dropdown (only for professionals) -->
+      <div id="nav-pro-menu" class="relative hidden">
+        <button id="pro-menu-btn" class="flex items-center gap-1 rounded-lg border border-brand-200 bg-brand-50 px-3 py-1.5 text-sm font-medium text-brand-700 hover:bg-brand-100">
+          Pro Tools
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div id="pro-dropdown" class="absolute right-0 mt-2 hidden w-52 rounded-xl border border-gray-200 bg-white py-2 shadow-lg">
+          <a href="/pro/profile" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            <span class="text-base">⚙️</span> Business Profile
+          </a>
+          <a href="/pro/add-project" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            <span class="text-base">📸</span> Add Project
+          </a>
+          <a href="/pro/projects" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            <span class="text-base">📂</span> My Projects
+          </a>
+          <hr class="my-1 border-gray-100" />
+          <a href="/projects" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+            <span class="text-base">📋</span> Browse Requests
+          </a>
+        </div>
+      </div>
+      <a href="/dashboard" class="btn-secondary text-sm">Dashboard</a>
+      <button id="logout-btn" class="rounded-lg px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">Log Out</button>
     </div>
 
     <!-- Mobile Menu Button -->
@@ -61,21 +91,98 @@ const navLinks = [
           {link.label}
         </a>
       ))}
+
+      <!-- Mobile Pro Links (hidden by default, shown for professionals) -->
+      <div id="mobile-pro-links" class="hidden">
+        <hr class="my-2 border-gray-200" />
+        <div class="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-400">Pro Tools</div>
+        <a href="/pro/profile" class="block rounded-lg px-3 py-2 text-sm font-medium text-brand-600 hover:bg-brand-50">Business Profile</a>
+        <a href="/pro/add-project" class="block rounded-lg px-3 py-2 text-sm font-medium text-brand-600 hover:bg-brand-50">Add Project</a>
+        <a href="/pro/projects" class="block rounded-lg px-3 py-2 text-sm font-medium text-brand-600 hover:bg-brand-50">My Projects</a>
+      </div>
+
       <hr class="my-2 border-gray-200" />
-      <a href="/login" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100">
-        Log In
-      </a>
-      <a href="/register" class="block rounded-lg bg-brand-600 px-3 py-2 text-center text-sm font-medium text-white">
-        Join as Pro
-      </a>
+
+      <!-- Mobile Guest -->
+      <div id="mobile-guest">
+        <a href="/login" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100">
+          Log In
+        </a>
+        <a href="/register" class="block rounded-lg bg-brand-600 px-3 py-2 text-center text-sm font-medium text-white">
+          Join as Pro
+        </a>
+      </div>
+
+      <!-- Mobile User -->
+      <div id="mobile-user" class="hidden">
+        <a href="/dashboard" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100">
+          Dashboard
+        </a>
+        <button id="mobile-logout-btn" class="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-red-500 hover:bg-red-50">
+          Log Out
+        </button>
+      </div>
     </div>
   </div>
 </nav>
 
 <script>
-  const btn = document.getElementById('mobile-menu-btn');
-  const menu = document.getElementById('mobile-menu');
-  btn?.addEventListener('click', () => {
-    menu?.classList.toggle('hidden');
+  import { supabase } from '../lib/supabase';
+
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
   });
+
+  // Pro dropdown toggle
+  const proMenuBtn = document.getElementById('pro-menu-btn');
+  const proDropdown = document.getElementById('pro-dropdown');
+
+  proMenuBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    proDropdown?.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', () => {
+    proDropdown?.classList.add('hidden');
+  });
+
+  // Auth state
+  async function initNav() {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+      const isPro = user.user_metadata?.role === 'professional';
+
+      // Desktop
+      document.getElementById('nav-guest')?.classList.add('hidden');
+      document.getElementById('nav-user')?.classList.remove('hidden');
+      document.getElementById('nav-user')?.classList.add('flex');
+
+      if (isPro) {
+        document.getElementById('nav-pro-menu')?.classList.remove('hidden');
+        document.getElementById('mobile-pro-links')?.classList.remove('hidden');
+      }
+
+      // Mobile
+      document.getElementById('mobile-guest')?.classList.add('hidden');
+      document.getElementById('mobile-user')?.classList.remove('hidden');
+    } else {
+      document.getElementById('nav-guest')?.classList.remove('hidden');
+      document.getElementById('nav-guest')?.classList.add('flex');
+    }
+  }
+
+  // Logout handlers
+  async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = '/';
+  }
+
+  document.getElementById('logout-btn')?.addEventListener('click', logout);
+  document.getElementById('mobile-logout-btn')?.addEventListener('click', logout);
+
+  initNav();
 </script>

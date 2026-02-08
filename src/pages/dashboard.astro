@@ -84,6 +84,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div id="actions-professional" class="mt-8 hidden">
         <h2 class="text-lg font-semibold text-gray-900">Quick Actions</h2>
         <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <a href="/pro/profile" class="card flex items-center gap-4 hover:border-brand-300">
+            <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-100 text-xl">⚙️</div>
+            <div>
+              <div class="font-semibold text-gray-900">My Business Profile</div>
+              <div class="text-sm text-gray-500">Set up company, services & areas</div>
+            </div>
+          </a>
           <a href="/pro/add-project" class="card flex items-center gap-4 hover:border-brand-300">
             <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-brand-100 text-xl">📸</div>
             <div>
@@ -91,8 +98,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <div class="text-sm text-gray-500">Showcase your completed work</div>
             </div>
           </a>
+          <a href="/pro/projects" class="card flex items-center gap-4 hover:border-brand-300">
+            <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-xl">📂</div>
+            <div>
+              <div class="font-semibold text-gray-900">Manage My Projects</div>
+              <div class="text-sm text-gray-500">View, edit & manage portfolio</div>
+            </div>
+          </a>
           <a href="/projects" class="card flex items-center gap-4 hover:border-brand-300">
-            <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-xl">📋</div>
+            <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100 text-xl">📋</div>
             <div>
               <div class="font-semibold text-gray-900">Browse Requests</div>
               <div class="text-sm text-gray-500">Find projects & send quotes</div>
