@@ -1,71 +1,96 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const categories = [
-  'Web Development',
-  'Graphic Design',
-  'Content Writing',
-  'Digital Marketing',
-  'Video & Animation',
-  'Translation',
-  'Data Entry',
-  'Photography',
+const serviceCategories = [
+  'General Construction',
+  'Architecture & Design',
+  'Interior Design',
+  'Plumbing',
+  'Electrical Work',
+  'Masonry & Tiling',
+  'Carpentry & Woodwork',
+  'Painting & Finishing',
+  'Roofing',
+  'Landscaping',
+  'Welding & Metalwork',
+  'Waterproofing',
+  'Demolition',
   'Other',
+];
+
+const projectTypes = [
+  'New Build',
+  'Renovation',
+  'Repair',
+  'Extension',
+  'Consultation',
 ];
 ---
 
-<BaseLayout title="Post a Job" description="Post a new job on වැඩHUB and find skilled freelancers">
+<BaseLayout title="Get Quotes" description="Post your construction project and receive free quotes from verified professionals on වැඩHUB">
   <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Post a Job</h1>
-      <p class="mt-1 text-gray-500">Describe your project and find the right freelancer</p>
+      <h1 class="text-3xl font-bold text-gray-900">Get Free Quotes</h1>
+      <p class="mt-1 text-gray-500">Describe your project and receive quotes from verified professionals</p>
     </div>
 
     <form id="post-form" class="mt-8 space-y-6">
       <div class="card space-y-5">
-        <h2 class="text-lg font-semibold text-gray-900">Job Details</h2>
+        <h2 class="text-lg font-semibold text-gray-900">Project Details</h2>
 
         <div>
-          <label for="title" class="block text-sm font-medium text-gray-700">Job Title</label>
+          <label for="title" class="block text-sm font-medium text-gray-700">Project Title</label>
           <input
             type="text"
             id="title"
             name="title"
             required
-            placeholder="e.g. Full-Stack Web Developer Needed"
+            placeholder="e.g. Two-Story House Construction in Colombo"
             class="input-field mt-1"
           />
         </div>
 
-        <div>
-          <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-          <select id="category" name="category" required class="input-field mt-1">
-            <option value="">Select a category</option>
-            {categories.map((cat) => (
-              <option value={cat}>{cat}</option>
-            ))}
-          </select>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700">Service Needed</label>
+            <select id="category" name="category" required class="input-field mt-1">
+              <option value="">Select a service</option>
+              {serviceCategories.map((cat) => (
+                <option value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label for="project-type" class="block text-sm font-medium text-gray-700">Project Type</label>
+            <select id="project-type" name="project_type" required class="input-field mt-1">
+              <option value="">Select type</option>
+              {projectTypes.map((type) => (
+                <option value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div>
-          <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+          <label for="description" class="block text-sm font-medium text-gray-700">Project Description</label>
           <textarea
             id="description"
             name="description"
             required
             rows="6"
-            placeholder="Describe your project requirements, goals, and expected deliverables..."
+            placeholder="Describe your project in detail: What work needs to be done? What's the current state? Any specific materials or design preferences?"
             class="input-field mt-1 resize-y"
           ></textarea>
         </div>
 
         <div>
-          <label for="skills" class="block text-sm font-medium text-gray-700">Required Skills</label>
+          <label for="location" class="block text-sm font-medium text-gray-700">Project Location</label>
           <input
             type="text"
-            id="skills"
-            name="skills"
-            placeholder="e.g. React, Node.js, PostgreSQL (comma separated)"
+            id="location"
+            name="location"
+            required
+            placeholder="e.g. Colombo 7, Western Province"
             class="input-field mt-1"
           />
         </div>
@@ -76,35 +101,31 @@ const categories = [
 
         <div class="grid gap-5 sm:grid-cols-2">
           <div>
-            <label for="budget" class="block text-sm font-medium text-gray-700">Budget (LKR)</label>
-            <input
-              type="number"
-              id="budget"
-              name="budget"
-              required
-              min="1000"
-              placeholder="e.g. 50000"
-              class="input-field mt-1"
-            />
+            <label for="budget-min" class="block text-sm font-medium text-gray-700">Budget Range (LKR)</label>
+            <div class="mt-1 flex gap-2">
+              <input type="number" id="budget-min" name="budget_min" placeholder="Min" min="10000" class="input-field" />
+              <span class="flex items-center text-gray-400">-</span>
+              <input type="number" id="budget-max" name="budget_max" placeholder="Max" class="input-field" />
+            </div>
           </div>
           <div>
-            <label for="budget-type" class="block text-sm font-medium text-gray-700">Budget Type</label>
-            <select id="budget-type" name="budget_type" class="input-field mt-1">
-              <option value="fixed">Fixed Price</option>
-              <option value="hourly">Hourly Rate</option>
-              <option value="monthly">Monthly</option>
+            <label for="timeline" class="block text-sm font-medium text-gray-700">Expected Timeline</label>
+            <select id="timeline" name="timeline" class="input-field mt-1">
+              <option value="">Select timeline</option>
+              <option value="urgent">Urgent (ASAP)</option>
+              <option value="1-2-weeks">1-2 weeks</option>
+              <option value="1-month">Within 1 month</option>
+              <option value="1-3-months">1-3 months</option>
+              <option value="3-6-months">3-6 months</option>
+              <option value="6-12-months">6-12 months</option>
+              <option value="flexible">Flexible</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label for="deadline" class="block text-sm font-medium text-gray-700">Deadline</label>
-          <input
-            type="date"
-            id="deadline"
-            name="deadline"
-            class="input-field mt-1"
-          />
+          <label for="start-date" class="block text-sm font-medium text-gray-700">Preferred Start Date</label>
+          <input type="date" id="start-date" name="start_date" class="input-field mt-1" />
         </div>
       </div>
 
@@ -112,10 +133,8 @@ const categories = [
       <div id="post-success" class="hidden rounded-lg bg-green-50 p-3 text-sm text-green-600"></div>
 
       <div class="flex gap-4">
-        <button type="submit" class="btn-primary">
-          Post Job
-        </button>
-        <a href="/gigs" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-primary">Submit Project</button>
+        <a href="/" class="btn-secondary">Cancel</a>
       </div>
     </form>
   </section>
@@ -136,21 +155,23 @@ const categories = [
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      errorEl.textContent = 'You must be logged in to post a job.';
+      errorEl.textContent = 'You must be logged in to post a project. Please log in or create an account.';
       errorEl.classList.remove('hidden');
       return;
     }
 
     const formData = new FormData(form);
 
-    const { error } = await supabase.from('gigs').insert({
+    const { error } = await supabase.from('projects').insert({
       title: formData.get('title'),
       category: formData.get('category'),
+      project_type: formData.get('project_type'),
       description: formData.get('description'),
-      skills: (formData.get('skills') as string)?.split(',').map((s) => s.trim()).filter(Boolean),
-      budget: Number(formData.get('budget')),
-      budget_type: formData.get('budget_type'),
-      deadline: formData.get('deadline') || null,
+      location: formData.get('location'),
+      budget_min: Number(formData.get('budget_min')) || null,
+      budget_max: Number(formData.get('budget_max')) || null,
+      timeline: formData.get('timeline') || null,
+      start_date: formData.get('start_date') || null,
       user_id: user.id,
     });
 
@@ -158,7 +179,7 @@ const categories = [
       errorEl.textContent = error.message;
       errorEl.classList.remove('hidden');
     } else {
-      successEl.textContent = 'Job posted successfully!';
+      successEl.textContent = 'Project posted! Verified professionals will start sending you quotes soon.';
       successEl.classList.remove('hidden');
       form.reset();
     }

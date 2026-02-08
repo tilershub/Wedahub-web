@@ -10,5 +10,58 @@ import CTASection from '../components/CTASection.astro';
   <HeroSection />
   <FeaturesSection />
   <CategoriesSection />
+
+  <!-- Featured Projects Preview -->
+  <section class="bg-white py-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-3xl font-bold tracking-tight text-gray-900">Recent Projects</h2>
+          <p class="mt-2 text-gray-500">Get inspired by recently completed work</p>
+        </div>
+        <a href="/projects" class="btn-secondary hidden sm:inline-flex">View All</a>
+      </div>
+
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+          <div class="aspect-video bg-gradient-to-br from-brand-100 to-brand-200 p-6 flex items-center justify-center">
+            <span class="text-5xl">🏠</span>
+          </div>
+          <div class="p-5">
+            <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">New Build</span>
+            <h3 class="mt-2 font-semibold text-gray-900">Modern Two-Story Home</h3>
+            <p class="mt-1 text-sm text-gray-500">Contemporary family home in Colombo 7</p>
+          </div>
+        </div>
+
+        <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+          <div class="aspect-video bg-gradient-to-br from-amber-100 to-amber-200 p-6 flex items-center justify-center">
+            <span class="text-5xl">🍳</span>
+          </div>
+          <div class="p-5">
+            <span class="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">Kitchen</span>
+            <h3 class="mt-2 font-semibold text-gray-900">Kitchen Renovation</h3>
+            <p class="mt-1 text-sm text-gray-500">Complete remodel with granite countertops</p>
+          </div>
+        </div>
+
+        <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+          <div class="aspect-video bg-gradient-to-br from-green-100 to-green-200 p-6 flex items-center justify-center">
+            <span class="text-5xl">🌿</span>
+          </div>
+          <div class="p-5">
+            <span class="rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">Landscaping</span>
+            <h3 class="mt-2 font-semibold text-gray-900">Tropical Garden & Pool</h3>
+            <p class="mt-1 text-sm text-gray-500">Infinity pool with tropical landscape</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 text-center sm:hidden">
+        <a href="/projects" class="btn-secondary">View All Projects</a>
+      </div>
+    </div>
+  </section>
+
   <CTASection />
 </BaseLayout>
