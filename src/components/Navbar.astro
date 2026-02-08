@@ -1,0 +1,80 @@
+---
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/gigs', label: 'Find Work' },
+  { href: '/post', label: 'Post a Job' },
+  { href: '/about', label: 'About' },
+];
+---
+
+<nav class="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-2">
+      <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-lg font-bold text-white">
+        W
+      </div>
+      <span class="text-xl font-bold text-gray-900">
+        වැඩ<span class="text-brand-600">HUB</span>
+      </span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <div class="hidden items-center gap-8 md:flex">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="text-sm font-medium text-gray-600 transition-colors hover:text-brand-600"
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
+
+    <!-- Auth Buttons -->
+    <div class="hidden items-center gap-3 md:flex">
+      <a href="/login" class="btn-secondary text-sm">Log In</a>
+      <a href="/register" class="btn-primary text-sm">Sign Up</a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button
+      id="mobile-menu-btn"
+      class="flex items-center justify-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 md:hidden"
+      aria-label="Toggle menu"
+    >
+      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden border-t border-gray-200 bg-white md:hidden">
+    <div class="space-y-1 px-4 py-3">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-brand-600"
+        >
+          {link.label}
+        </a>
+      ))}
+      <hr class="my-2 border-gray-200" />
+      <a href="/login" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100">
+        Log In
+      </a>
+      <a href="/register" class="block rounded-lg bg-brand-600 px-3 py-2 text-center text-sm font-medium text-white">
+        Sign Up
+      </a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  btn?.addEventListener('click', () => {
+    menu?.classList.toggle('hidden');
+  });
+</script>

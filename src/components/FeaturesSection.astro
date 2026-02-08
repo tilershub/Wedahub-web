@@ -1,0 +1,59 @@
+---
+const features = [
+  {
+    icon: '🔍',
+    title: 'Find Talent',
+    description: 'Browse profiles of verified Sri Lankan freelancers across design, development, writing, and more.',
+  },
+  {
+    icon: '📋',
+    title: 'Post Projects',
+    description: 'Describe your project, set a budget, and receive proposals from qualified professionals.',
+  },
+  {
+    icon: '💬',
+    title: 'Collaborate',
+    description: 'Built-in messaging, file sharing, and milestone tracking to keep projects on track.',
+  },
+  {
+    icon: '🔒',
+    title: 'Secure Payments',
+    description: 'Escrow-protected payments ensure freelancers get paid and clients get quality work.',
+  },
+  {
+    icon: '⭐',
+    title: 'Ratings & Reviews',
+    description: 'Transparent feedback system helps you choose the right freelancer every time.',
+  },
+  {
+    icon: '🇱🇰',
+    title: 'Local First',
+    description: 'Built for Sri Lanka — supporting local talent, local payments, and the local economy.',
+  },
+];
+---
+
+<section class="bg-white py-20">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        Everything You Need to Get Work Done
+      </h2>
+      <p class="mt-4 text-lg text-gray-500">
+        Whether you're hiring or freelancing, වැඩHUB provides the tools to succeed.
+      </p>
+    </div>
+
+    <div class="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {features.map((feature) => (
+        <div class="card group">
+          <div class="mb-4 text-3xl">{feature.icon}</div>
+          <h3 class="text-lg font-semibold text-gray-900 group-hover:text-brand-600">
+            {feature.title}
+          </h3>
+          <p class="mt-2 text-sm text-gray-500">{feature.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

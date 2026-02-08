@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Dashboard" description="Your වැඩHUB dashboard">
+  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <!-- User Header -->
+    <div id="dashboard-loading" class="py-20 text-center text-gray-400">
+      Loading dashboard...
+    </div>
+
+    <div id="dashboard-content" class="hidden">
+      <!-- Welcome Banner -->
+      <div class="rounded-xl bg-gradient-to-r from-brand-600 to-brand-800 p-8 text-white shadow-lg">
+        <h1 class="text-2xl font-bold" id="welcome-msg">Welcome back!</h1>
+        <p class="mt-1 text-brand-200">Here's an overview of your activity on වැඩHUB.</p>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="card">
+          <div class="text-sm font-medium text-gray-500">Active Gigs</div>
+          <div class="mt-2 text-3xl font-bold text-gray-900">0</div>
+        </div>
+        <div class="card">
+          <div class="text-sm font-medium text-gray-500">Proposals Sent</div>
+          <div class="mt-2 text-3xl font-bold text-gray-900">0</div>
+        </div>
+        <div class="card">
+          <div class="text-sm font-medium text-gray-500">Earnings</div>
+          <div class="mt-2 text-3xl font-bold text-gray-900">LKR 0</div>
+        </div>
+        <div class="card">
+          <div class="text-sm font-medium text-gray-500">Rating</div>
+          <div class="mt-2 text-3xl font-bold text-gray-900">--</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="mt-8">
+        <h2 class="text-lg font-semibold text-gray-900">Quick Actions</h2>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <a href="/gigs" class="card flex items-center gap-4 hover:border-brand-300">
+            <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-brand-100 text-xl">🔍</div>
+            <div>
+              <div class="font-semibold text-gray-900">Browse Jobs</div>
+              <div class="text-sm text-gray-500">Find new opportunities</div>
+            </div>
+          </a>
+          <a href="/post" class="card flex items-center gap-4 hover:border-brand-300">
+            <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-xl">📋</div>
+            <div>
+              <div class="font-semibold text-gray-900">Post a Job</div>
+              <div class="text-sm text-gray-500">Hire talented freelancers</div>
+            </div>
+          </a>
+          <a href="/profile" class="card flex items-center gap-4 hover:border-brand-300">
+            <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-accent-100 text-xl">👤</div>
+            <div>
+              <div class="font-semibold text-gray-900">Edit Profile</div>
+              <div class="text-sm text-gray-500">Update your information</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Recent Activity Placeholder -->
+      <div class="mt-8">
+        <h2 class="text-lg font-semibold text-gray-900">Recent Activity</h2>
+        <div class="mt-4 card text-center py-12">
+          <p class="text-gray-400">No recent activity yet. Start by browsing available jobs!</p>
+          <a href="/gigs" class="btn-primary mt-4 inline-block">Browse Jobs</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Not authenticated -->
+    <div id="dashboard-unauthenticated" class="hidden py-20 text-center">
+      <h2 class="text-2xl font-bold text-gray-900">Please log in</h2>
+      <p class="mt-2 text-gray-500">You need to be logged in to access your dashboard.</p>
+      <a href="/login" class="btn-primary mt-6 inline-block">Log In</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  const loading = document.getElementById('dashboard-loading')!;
+  const content = document.getElementById('dashboard-content')!;
+  const unauthenticated = document.getElementById('dashboard-unauthenticated')!;
+  const welcomeMsg = document.getElementById('welcome-msg')!;
+
+  async function init() {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    loading.classList.add('hidden');
+
+    if (user) {
+      const name = user.user_metadata?.full_name || user.email;
+      welcomeMsg.textContent = `Welcome back, ${name}!`;
+      content.classList.remove('hidden');
+    } else {
+      unauthenticated.classList.remove('hidden');
+    }
+  }
+
+  init();
+</script>
