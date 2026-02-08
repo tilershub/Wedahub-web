@@ -1,0 +1,291 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const serviceCategories = [
+  'General Construction',
+  'Architecture & Design',
+  'Interior Design',
+  'Plumbing',
+  'Electrical Work',
+  'Masonry & Tiling',
+  'Carpentry & Woodwork',
+  'Painting & Finishing',
+  'Roofing',
+  'Landscaping',
+  'Welding & Metalwork',
+  'Waterproofing',
+  'Other',
+];
+
+const projectTypes = [
+  'New Build',
+  'Renovation',
+  'Repair',
+  'Extension',
+  'Interior Design',
+  'Landscaping',
+  'Restoration',
+];
+
+const districts = [
+  'Colombo', 'Gampaha', 'Kalutara', 'Kandy', 'Matale', 'Nuwara Eliya',
+  'Galle', 'Matara', 'Hambantota', 'Jaffna', 'Kilinochchi', 'Mannar',
+  'Vavuniya', 'Mullaitivu', 'Batticaloa', 'Ampara', 'Trincomalee',
+  'Kurunegala', 'Puttalam', 'Anuradhapura', 'Polonnaruwa', 'Badulla',
+  'Monaragala', 'Ratnapura', 'Kegalle',
+];
+---
+
+<BaseLayout title="Add Portfolio Project" description="Showcase your completed construction work on වැඩHUB">
+  <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+    <div>
+      <div class="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">For Professionals</div>
+      <h1 class="mt-3 text-3xl font-bold text-gray-900">Add a Portfolio Project</h1>
+      <p class="mt-1 text-gray-500">Showcase your completed work to attract new clients</p>
+    </div>
+
+    <form id="portfolio-form" class="mt-8 space-y-6">
+      <!-- Project Info -->
+      <div class="card space-y-5">
+        <h2 class="text-lg font-semibold text-gray-900">Project Information</h2>
+
+        <div>
+          <label for="title" class="block text-sm font-medium text-gray-700">Project Title</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            required
+            placeholder="e.g. Modern Kitchen Renovation in Colombo 7"
+            class="input-field mt-1"
+          />
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700">Service Category</label>
+            <select id="category" name="category" required class="input-field mt-1">
+              <option value="">Select category</option>
+              {serviceCategories.map((cat) => (
+                <option value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label for="project-type" class="block text-sm font-medium text-gray-700">Project Type</label>
+            <select id="project-type" name="project_type" required class="input-field mt-1">
+              <option value="">Select type</option>
+              {projectTypes.map((type) => (
+                <option value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="description" class="block text-sm font-medium text-gray-700">Project Description</label>
+          <textarea
+            id="description"
+            name="description"
+            required
+            rows="5"
+            placeholder="Describe the work you did: scope, materials used, challenges solved, client requirements, and final outcome..."
+            class="input-field mt-1 resize-y"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Location & Details -->
+      <div class="card space-y-5">
+        <h2 class="text-lg font-semibold text-gray-900">Location & Details</h2>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label for="district" class="block text-sm font-medium text-gray-700">District</label>
+            <select id="district" name="district" required class="input-field mt-1">
+              <option value="">Select district</option>
+              {districts.map((d) => (
+                <option value={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label for="area" class="block text-sm font-medium text-gray-700">Area / City</label>
+            <input
+              type="text"
+              id="area"
+              name="area"
+              placeholder="e.g. Colombo 7, Nugegoda"
+              class="input-field mt-1"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-3">
+          <div>
+            <label for="cost" class="block text-sm font-medium text-gray-700">Project Cost (LKR)</label>
+            <input
+              type="number"
+              id="cost"
+              name="cost"
+              placeholder="e.g. 2500000"
+              min="0"
+              class="input-field mt-1"
+            />
+          </div>
+          <div>
+            <label for="duration" class="block text-sm font-medium text-gray-700">Duration</label>
+            <input
+              type="text"
+              id="duration"
+              name="duration"
+              placeholder="e.g. 3 months"
+              class="input-field mt-1"
+            />
+          </div>
+          <div>
+            <label for="year" class="block text-sm font-medium text-gray-700">Year Completed</label>
+            <input
+              type="number"
+              id="year"
+              name="year_completed"
+              placeholder="e.g. 2025"
+              min="2000"
+              max="2026"
+              class="input-field mt-1"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
+          <input
+            type="text"
+            id="tags"
+            name="tags"
+            placeholder="e.g. modern, granite, open-plan, eco-friendly (comma separated)"
+            class="input-field mt-1"
+          />
+        </div>
+      </div>
+
+      <!-- Photos -->
+      <div class="card space-y-5">
+        <h2 class="text-lg font-semibold text-gray-900">Project Photos</h2>
+        <p class="text-sm text-gray-500">Add photo URLs of your completed work. Before and after photos are highly recommended.</p>
+
+        <div class="space-y-3" id="photo-fields">
+          <div class="flex gap-3">
+            <input type="url" name="photos[]" placeholder="Photo URL" class="input-field flex-1" />
+            <select name="photo_types[]" class="input-field w-32">
+              <option value="after">After</option>
+              <option value="before">Before</option>
+              <option value="during">During</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="button" id="add-photo-btn" class="text-sm font-medium text-brand-600 hover:text-brand-700">
+          + Add another photo
+        </button>
+      </div>
+
+      <div id="portfolio-error" class="hidden rounded-lg bg-red-50 p-3 text-sm text-red-600"></div>
+      <div id="portfolio-success" class="hidden rounded-lg bg-green-50 p-3 text-sm text-green-600"></div>
+
+      <div class="flex gap-4">
+        <button type="submit" class="btn-primary">Publish Project</button>
+        <a href="/dashboard" class="btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </section>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  // Add photo field button
+  const addBtn = document.getElementById('add-photo-btn');
+  const photoFields = document.getElementById('photo-fields');
+
+  addBtn?.addEventListener('click', () => {
+    const row = document.createElement('div');
+    row.className = 'flex gap-3';
+    row.innerHTML = `
+      <input type="url" name="photos[]" placeholder="Photo URL" class="input-field flex-1" />
+      <select name="photo_types[]" class="input-field w-32">
+        <option value="after">After</option>
+        <option value="before">Before</option>
+        <option value="during">During</option>
+      </select>
+    `;
+    photoFields?.appendChild(row);
+  });
+
+  // Form submission
+  const form = document.getElementById('portfolio-form') as HTMLFormElement;
+  const errorEl = document.getElementById('portfolio-error') as HTMLDivElement;
+  const successEl = document.getElementById('portfolio-success') as HTMLDivElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl.classList.add('hidden');
+    successEl.classList.add('hidden');
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      errorEl.textContent = 'You must be logged in as a professional to add portfolio projects.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    const formData = new FormData(form);
+    const photos = formData.getAll('photos[]') as string[];
+    const photoTypes = formData.getAll('photo_types[]') as string[];
+    const tags = (formData.get('tags') as string)?.split(',').map(t => t.trim()).filter(Boolean) || [];
+
+    // Insert portfolio project
+    const { data: project, error } = await supabase.from('portfolio_projects').insert({
+      professional_id: user.id,
+      title: formData.get('title'),
+      description: formData.get('description'),
+      category: formData.get('category'),
+      project_type: formData.get('project_type'),
+      district: formData.get('district'),
+      area: formData.get('area') || null,
+      cost: Number(formData.get('cost')) || null,
+      duration: formData.get('duration') || null,
+      year_completed: Number(formData.get('year_completed')) || null,
+      tags,
+    }).select().single();
+
+    if (error) {
+      errorEl.textContent = error.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    // Insert photos
+    const validPhotos = photos
+      .map((url, i) => ({ url, type: photoTypes[i] || 'after' }))
+      .filter(p => p.url.trim());
+
+    if (validPhotos.length > 0 && project) {
+      await supabase.from('project_photos').insert(
+        validPhotos.map(p => ({
+          project_id: null,
+          portfolio_project_id: project.id,
+          professional_id: user.id,
+          photo_url: p.url,
+          is_before: p.type === 'before',
+          caption: p.type,
+        }))
+      );
+    }
+
+    successEl.textContent = 'Portfolio project published! It will now appear in the project gallery.';
+    successEl.classList.remove('hidden');
+    form.reset();
+  });
+</script>

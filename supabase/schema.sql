@@ -31,7 +31,6 @@ create table if not exists public.professional_profiles (
   license_number text,
   years_experience integer,
   is_verified boolean default false,
-  portfolio_urls text[] default '{}',
   service_areas text[] default '{}',
   hourly_rate numeric(10, 2),
   completed_projects integer default 0,
@@ -40,7 +39,7 @@ create table if not exists public.professional_profiles (
 );
 
 -- ============================================================
--- PROJECTS (homeowner project requests)
+-- PROJECTS (homeowner project requests — seeking quotes)
 -- ============================================================
 create table if not exists public.projects (
   id uuid default uuid_generate_v4() primary key,
@@ -60,7 +59,28 @@ create table if not exists public.projects (
 );
 
 -- ============================================================
--- QUOTES (professional responses to projects)
+-- PORTFOLIO PROJECTS (completed work showcased by professionals)
+-- ============================================================
+create table if not exists public.portfolio_projects (
+  id uuid default uuid_generate_v4() primary key,
+  professional_id uuid references public.profiles(id) on delete cascade not null,
+  title text not null,
+  description text not null,
+  category text not null,
+  project_type text not null,
+  district text not null,
+  area text,
+  cost numeric(12, 2),
+  duration text,
+  year_completed integer,
+  tags text[] default '{}',
+  is_featured boolean default false,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- ============================================================
+-- QUOTES (professional responses to homeowner project requests)
 -- ============================================================
 create table if not exists public.quotes (
   id uuid default uuid_generate_v4() primary key,
@@ -89,7 +109,7 @@ create table if not exists public.messages (
 );
 
 -- ============================================================
--- REVIEWS
+-- REVIEWS (homeowners review professionals after project completion)
 -- ============================================================
 create table if not exists public.reviews (
   id uuid default uuid_generate_v4() primary key,
@@ -104,16 +124,18 @@ create table if not exists public.reviews (
 );
 
 -- ============================================================
--- PROJECT PHOTOS (completed project gallery)
+-- PROJECT PHOTOS (for both portfolio projects and project requests)
 -- ============================================================
 create table if not exists public.project_photos (
   id uuid default uuid_generate_v4() primary key,
-  project_id uuid references public.projects(id) on delete cascade not null,
+  project_id uuid references public.projects(id) on delete cascade,
+  portfolio_project_id uuid references public.portfolio_projects(id) on delete cascade,
   professional_id uuid references public.profiles(id) on delete cascade not null,
   photo_url text not null,
   caption text,
   is_before boolean default false,
-  created_at timestamptz default now()
+  created_at timestamptz default now(),
+  check (project_id is not null or portfolio_project_id is not null)
 );
 
 -- ============================================================
@@ -123,6 +145,7 @@ create table if not exists public.project_photos (
 alter table public.profiles enable row level security;
 alter table public.professional_profiles enable row level security;
 alter table public.projects enable row level security;
+alter table public.portfolio_projects enable row level security;
 alter table public.quotes enable row level security;
 alter table public.messages enable row level security;
 alter table public.reviews enable row level security;
@@ -138,10 +161,16 @@ create policy "Pro profiles are publicly readable" on public.professional_profil
 create policy "Pros can update own profile" on public.professional_profiles for update using (auth.uid() = id);
 create policy "Pros can insert own profile" on public.professional_profiles for insert with check (auth.uid() = id);
 
--- Projects
+-- Projects (homeowner requests)
 create policy "Projects are publicly readable" on public.projects for select using (true);
-create policy "Authenticated users can create projects" on public.projects for insert with check (auth.uid() = user_id);
+create policy "Homeowners can create projects" on public.projects for insert with check (auth.uid() = user_id);
 create policy "Owners can update projects" on public.projects for update using (auth.uid() = user_id);
+
+-- Portfolio Projects (professional showcases)
+create policy "Portfolio projects are publicly readable" on public.portfolio_projects for select using (true);
+create policy "Pros can create portfolio projects" on public.portfolio_projects for insert with check (auth.uid() = professional_id);
+create policy "Pros can update own portfolio" on public.portfolio_projects for update using (auth.uid() = professional_id);
+create policy "Pros can delete own portfolio" on public.portfolio_projects for delete using (auth.uid() = professional_id);
 
 -- Quotes
 create policy "Project owner and quoter can read quotes" on public.quotes for select
@@ -156,7 +185,7 @@ create policy "Authenticated users can send messages" on public.messages for ins
 
 -- Reviews
 create policy "Reviews are publicly readable" on public.reviews for select using (true);
-create policy "Authenticated users can create reviews" on public.reviews for insert with check (auth.uid() = reviewer_id);
+create policy "Homeowners can create reviews" on public.reviews for insert with check (auth.uid() = reviewer_id);
 
 -- Project Photos
 create policy "Project photos are publicly readable" on public.project_photos for select using (true);
@@ -184,7 +213,7 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 
 -- ============================================================
--- FUNCTION: Update professional stats after review
+-- TRIGGER: Update professional stats after review
 -- ============================================================
 create or replace function public.update_professional_stats()
 returns trigger as $$
@@ -214,9 +243,13 @@ create index if not exists idx_projects_user_id on public.projects(user_id);
 create index if not exists idx_projects_category on public.projects(category);
 create index if not exists idx_projects_status on public.projects(status);
 create index if not exists idx_projects_location on public.projects(location);
+create index if not exists idx_portfolio_professional on public.portfolio_projects(professional_id);
+create index if not exists idx_portfolio_category on public.portfolio_projects(category);
+create index if not exists idx_portfolio_district on public.portfolio_projects(district);
 create index if not exists idx_quotes_project_id on public.quotes(project_id);
 create index if not exists idx_quotes_professional_id on public.quotes(professional_id);
 create index if not exists idx_messages_sender on public.messages(sender_id);
 create index if not exists idx_messages_receiver on public.messages(receiver_id);
 create index if not exists idx_reviews_professional on public.reviews(professional_id);
-create index if not exists idx_project_photos_project on public.project_photos(project_id);
+create index if not exists idx_photos_portfolio on public.project_photos(portfolio_project_id);
+create index if not exists idx_photos_project on public.project_photos(project_id);

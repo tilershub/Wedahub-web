@@ -1,160 +1,276 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const projectTypes = ['All', 'New Build', 'Renovation', 'Kitchen', 'Bathroom', 'Landscaping', 'Interior Design', 'Roofing', 'Extension'];
+const projectTypes = ['All', 'New Build', 'Renovation', 'Kitchen', 'Bathroom', 'Landscaping', 'Interior Design', 'Roofing', 'Extension', 'Restoration'];
 ---
 
 <BaseLayout title="Projects" description="Browse completed construction and renovation projects across Sri Lanka for inspiration">
   <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <div>
-      <h1 class="text-3xl font-bold text-gray-900">Project Gallery</h1>
-      <p class="mt-1 text-gray-500">Browse completed projects for ideas and inspiration</p>
+    <!-- Page Header with tabs -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Projects</h1>
+        <p class="mt-1 text-gray-500">Explore completed work and active project requests</p>
+      </div>
+      <div class="flex gap-2">
+        <a href="/pro/add-project" class="btn-primary text-sm">Add Your Work</a>
+      </div>
     </div>
 
-    <!-- Type Filter -->
-    <div class="mt-8 flex flex-wrap gap-2">
-      {projectTypes.map((type, i) => (
-        <button
-          class:list={[
-            'rounded-full px-4 py-2 text-sm font-medium transition-colors',
-            i === 0
-              ? 'bg-brand-600 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
-          ]}
-        >
-          {type}
+    <!-- Tab Switcher -->
+    <div class="mt-8 border-b border-gray-200">
+      <div class="flex gap-6">
+        <button id="tab-portfolio" class="border-b-2 border-brand-600 pb-3 text-sm font-semibold text-brand-600">
+          Portfolio Gallery
         </button>
-      ))}
+        <button id="tab-requests" class="border-b-2 border-transparent pb-3 text-sm font-medium text-gray-500 hover:text-gray-700">
+          Project Requests
+        </button>
+      </div>
     </div>
 
-    <!-- Projects Grid -->
-    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <!-- PORTFOLIO TAB: Work showcased by professionals -->
+    <div id="panel-portfolio">
+      <p class="mt-6 text-sm text-gray-400">Completed projects showcased by verified professionals</p>
 
-      <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-        <div class="aspect-video bg-gradient-to-br from-brand-100 to-brand-200 p-6 flex items-center justify-center">
-          <span class="text-6xl">🏠</span>
-        </div>
-        <div class="p-5">
-          <div class="flex items-center gap-2">
-            <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">New Build</span>
-            <span class="text-xs text-gray-400">Colombo 7</span>
+      <!-- Type Filter -->
+      <div class="mt-4 flex flex-wrap gap-2">
+        {projectTypes.map((type, i) => (
+          <button
+            class:list={[
+              'rounded-full px-4 py-2 text-sm font-medium transition-colors',
+              i === 0 ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+            ]}
+          >
+            {type}
+          </button>
+        ))}
+      </div>
+
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+          <div class="aspect-video bg-gradient-to-br from-brand-100 to-brand-200 p-6 flex items-center justify-center">
+            <span class="text-6xl">🏠</span>
           </div>
-          <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Modern Two-Story Family Home</h3>
-          <p class="mt-1 text-sm text-gray-500">A 3,200 sq ft contemporary home with open floor plan, 4 bedrooms, and a rooftop terrace overlooking the garden.</p>
-          <div class="mt-3 flex items-center justify-between">
+          <div class="p-5">
             <div class="flex items-center gap-2">
-              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">SR</div>
-              <span class="text-xs text-gray-500">by Sampath Rajapaksa</span>
+              <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">New Build</span>
+              <span class="text-xs text-gray-400">Colombo 7</span>
             </div>
-            <span class="text-sm font-semibold text-gray-600">LKR 18M</span>
+            <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Modern Two-Story Family Home</h3>
+            <p class="mt-1 text-sm text-gray-500">3,200 sq ft contemporary home with open floor plan, 4 bedrooms, and a rooftop terrace.</p>
+            <div class="mt-3 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">SR</div>
+                <span class="text-xs text-gray-500">Sampath Rajapaksa</span>
+              </div>
+              <span class="text-sm font-semibold text-gray-600">LKR 18M</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+          <div class="aspect-video bg-gradient-to-br from-amber-100 to-amber-200 p-6 flex items-center justify-center">
+            <span class="text-6xl">🍳</span>
+          </div>
+          <div class="p-5">
+            <div class="flex items-center gap-2">
+              <span class="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">Kitchen</span>
+              <span class="text-xs text-gray-400">Kandy</span>
+            </div>
+            <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Modern Kitchen Renovation</h3>
+            <p class="mt-1 text-sm text-gray-500">Complete kitchen remodel with granite countertops, custom cabinetry, and modern appliances.</p>
+            <div class="mt-3 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="flex h-7 w-7 items-center justify-center rounded-full bg-pink-100 text-xs font-bold text-pink-700">MW</div>
+                <span class="text-xs text-gray-500">Malini Wickramasinghe</span>
+              </div>
+              <span class="text-sm font-semibold text-gray-600">LKR 2.5M</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+          <div class="aspect-video bg-gradient-to-br from-blue-100 to-blue-200 p-6 flex items-center justify-center">
+            <span class="text-6xl">🚿</span>
+          </div>
+          <div class="p-5">
+            <div class="flex items-center gap-2">
+              <span class="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">Bathroom</span>
+              <span class="text-xs text-gray-400">Gampaha</span>
+            </div>
+            <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Luxury Bathroom Upgrade</h3>
+            <p class="mt-1 text-sm text-gray-500">Master bathroom with walk-in rain shower, freestanding tub, and imported Italian tiles.</p>
+            <div class="mt-3 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="flex h-7 w-7 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">KP</div>
+                <span class="text-xs text-gray-500">Kamal Perera</span>
+              </div>
+              <span class="text-sm font-semibold text-gray-600">LKR 1.8M</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+          <div class="aspect-video bg-gradient-to-br from-green-100 to-green-200 p-6 flex items-center justify-center">
+            <span class="text-6xl">🌿</span>
+          </div>
+          <div class="p-5">
+            <div class="flex items-center gap-2">
+              <span class="rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">Landscaping</span>
+              <span class="text-xs text-gray-400">Negombo</span>
+            </div>
+            <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Tropical Garden & Pool Design</h3>
+            <p class="mt-1 text-sm text-gray-500">Full landscape with infinity pool, tropical plantings, stone pathways, and outdoor entertainment area.</p>
+            <div class="mt-3 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="flex h-7 w-7 items-center justify-center rounded-full bg-green-100 text-xs font-bold text-green-700">AS</div>
+                <span class="text-xs text-gray-500">Asanka Silva</span>
+              </div>
+              <span class="text-sm font-semibold text-gray-600">LKR 4.5M</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+          <div class="aspect-video bg-gradient-to-br from-purple-100 to-purple-200 p-6 flex items-center justify-center">
+            <span class="text-6xl">🏗️</span>
+          </div>
+          <div class="p-5">
+            <div class="flex items-center gap-2">
+              <span class="rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700">Restoration</span>
+              <span class="text-xs text-gray-400">Galle Fort</span>
+            </div>
+            <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Heritage Building Restoration</h3>
+            <p class="mt-1 text-sm text-gray-500">Colonial-era building restoration preserving heritage architecture while modernizing interiors.</p>
+            <div class="mt-3 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="flex h-7 w-7 items-center justify-center rounded-full bg-accent-100 text-xs font-bold text-accent-700">NF</div>
+                <span class="text-xs text-gray-500">Nirosha Fernando</span>
+              </div>
+              <span class="text-sm font-semibold text-gray-600">LKR 12M</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+          <div class="aspect-video bg-gradient-to-br from-yellow-100 to-orange-200 p-6 flex items-center justify-center">
+            <span class="text-6xl">⚡</span>
+          </div>
+          <div class="p-5">
+            <div class="flex items-center gap-2">
+              <span class="rounded-full bg-yellow-50 px-2.5 py-0.5 text-xs font-medium text-yellow-700">Electrical</span>
+              <span class="text-xs text-gray-400">Colombo 5</span>
+            </div>
+            <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Whole-Home Solar Installation</h3>
+            <p class="mt-1 text-sm text-gray-500">10kW rooftop solar system with battery backup, smart inverter, and net metering setup.</p>
+            <div class="mt-3 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="flex h-7 w-7 items-center justify-center rounded-full bg-yellow-100 text-xs font-bold text-yellow-700">DA</div>
+                <span class="text-xs text-gray-500">Dinesh Abeysekara</span>
+              </div>
+              <span class="text-sm font-semibold text-gray-600">LKR 3.2M</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REQUESTS TAB: Homeowner project requests seeking quotes -->
+    <div id="panel-requests" class="hidden">
+      <p class="mt-6 text-sm text-gray-400">Active project requests from homeowners looking for professionals</p>
+
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="card">
+          <div class="flex items-center gap-2">
+            <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Open</span>
+            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">3 quotes</span>
+          </div>
+          <h3 class="mt-3 font-semibold text-gray-900">New House Construction - 2,500 sq ft</h3>
+          <p class="mt-1 text-sm text-gray-500">Looking for a general contractor to build a two-story house on our plot in Kaduwela. Need complete construction from foundation to finishing.</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">General Construction</span>
+            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">New Build</span>
+          </div>
+          <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+            <span class="text-xs text-gray-400">Colombo &bull; Posted 2 days ago</span>
+            <span class="text-sm font-semibold text-green-600">LKR 15-20M</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="flex items-center gap-2">
+            <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Open</span>
+            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">1 quote</span>
+          </div>
+          <h3 class="mt-3 font-semibold text-gray-900">Kitchen Renovation with Modern Fittings</h3>
+          <p class="mt-1 text-sm text-gray-500">Want to renovate our outdated kitchen. Need new cabinets, countertops, tiling, plumbing, and electrical updates.</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Interior Design</span>
+            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Renovation</span>
+          </div>
+          <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+            <span class="text-xs text-gray-400">Kandy &bull; Posted 5 days ago</span>
+            <span class="text-sm font-semibold text-green-600">LKR 1.5-3M</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="flex items-center gap-2">
+            <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Open</span>
+            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">5 quotes</span>
+          </div>
+          <h3 class="mt-3 font-semibold text-gray-900">Full Bathroom Waterproofing & Retiling</h3>
+          <p class="mt-1 text-sm text-gray-500">Two bathrooms are leaking and need complete waterproofing, re-tiling, and new sanitary fittings installed.</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Waterproofing</span>
+            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Repair</span>
+          </div>
+          <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+            <span class="text-xs text-gray-400">Gampaha &bull; Posted 1 week ago</span>
+            <span class="text-sm font-semibold text-green-600">LKR 300-500K</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="flex items-center gap-2">
+            <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Open</span>
+            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">0 quotes</span>
+          </div>
+          <h3 class="mt-3 font-semibold text-gray-900">Rooftop Solar Panel Installation</h3>
+          <p class="mt-1 text-sm text-gray-500">Need a 5kW solar panel system installed on our house roof with battery backup and net metering connection.</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Electrical Work</span>
+            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">New Build</span>
+          </div>
+          <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+            <span class="text-xs text-gray-400">Matara &bull; Posted 3 days ago</span>
+            <span class="text-sm font-semibold text-green-600">LKR 1-1.5M</span>
           </div>
         </div>
       </div>
 
-      <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-        <div class="aspect-video bg-gradient-to-br from-amber-100 to-amber-200 p-6 flex items-center justify-center">
-          <span class="text-6xl">🍳</span>
-        </div>
-        <div class="p-5">
-          <div class="flex items-center gap-2">
-            <span class="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">Kitchen</span>
-            <span class="text-xs text-gray-400">Kandy</span>
-          </div>
-          <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Modern Kitchen Renovation</h3>
-          <p class="mt-1 text-sm text-gray-500">Complete kitchen remodel with granite countertops, custom cabinetry, island, and modern appliance integration.</p>
-          <div class="mt-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-pink-100 text-xs font-bold text-pink-700">MW</div>
-              <span class="text-xs text-gray-500">by Malini Wickramasinghe</span>
-            </div>
-            <span class="text-sm font-semibold text-gray-600">LKR 2.5M</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-        <div class="aspect-video bg-gradient-to-br from-blue-100 to-blue-200 p-6 flex items-center justify-center">
-          <span class="text-6xl">🚿</span>
-        </div>
-        <div class="p-5">
-          <div class="flex items-center gap-2">
-            <span class="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">Bathroom</span>
-            <span class="text-xs text-gray-400">Gampaha</span>
-          </div>
-          <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Luxury Bathroom Upgrade</h3>
-          <p class="mt-1 text-sm text-gray-500">Master bathroom renovation with walk-in rain shower, freestanding tub, heated floors, and imported Italian tiles.</p>
-          <div class="mt-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">KP</div>
-              <span class="text-xs text-gray-500">by Kamal Perera</span>
-            </div>
-            <span class="text-sm font-semibold text-gray-600">LKR 1.8M</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-        <div class="aspect-video bg-gradient-to-br from-green-100 to-green-200 p-6 flex items-center justify-center">
-          <span class="text-6xl">🌿</span>
-        </div>
-        <div class="p-5">
-          <div class="flex items-center gap-2">
-            <span class="rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">Landscaping</span>
-            <span class="text-xs text-gray-400">Negombo</span>
-          </div>
-          <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Tropical Garden & Pool Design</h3>
-          <p class="mt-1 text-sm text-gray-500">Full landscape design featuring an infinity pool, tropical plantings, stone pathways, and outdoor entertainment area.</p>
-          <div class="mt-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-green-100 text-xs font-bold text-green-700">AS</div>
-              <span class="text-xs text-gray-500">by Asanka Silva</span>
-            </div>
-            <span class="text-sm font-semibold text-gray-600">LKR 4.5M</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-        <div class="aspect-video bg-gradient-to-br from-purple-100 to-purple-200 p-6 flex items-center justify-center">
-          <span class="text-6xl">🏗️</span>
-        </div>
-        <div class="p-5">
-          <div class="flex items-center gap-2">
-            <span class="rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700">Renovation</span>
-            <span class="text-xs text-gray-400">Galle Fort</span>
-          </div>
-          <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Heritage Building Restoration</h3>
-          <p class="mt-1 text-sm text-gray-500">Careful restoration of a colonial-era building in Galle Fort, preserving heritage architecture while modernizing interiors.</p>
-          <div class="mt-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-accent-100 text-xs font-bold text-accent-700">NF</div>
-              <span class="text-xs text-gray-500">by Nirosha Fernando</span>
-            </div>
-            <span class="text-sm font-semibold text-gray-600">LKR 12M</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-        <div class="aspect-video bg-gradient-to-br from-yellow-100 to-orange-200 p-6 flex items-center justify-center">
-          <span class="text-6xl">⚡</span>
-        </div>
-        <div class="p-5">
-          <div class="flex items-center gap-2">
-            <span class="rounded-full bg-yellow-50 px-2.5 py-0.5 text-xs font-medium text-yellow-700">Electrical</span>
-            <span class="text-xs text-gray-400">Colombo 5</span>
-          </div>
-          <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-brand-600">Whole-Home Solar Installation</h3>
-          <p class="mt-1 text-sm text-gray-500">10kW rooftop solar panel system with battery backup, smart inverter, and net metering setup for complete energy independence.</p>
-          <div class="mt-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-yellow-100 text-xs font-bold text-yellow-700">DA</div>
-              <span class="text-xs text-gray-500">by Dinesh Abeysekara</span>
-            </div>
-            <span class="text-sm font-semibold text-gray-600">LKR 3.2M</span>
-          </div>
-        </div>
+      <div class="mt-8 text-center">
+        <p class="text-sm text-gray-500">Are you a professional? Send quotes to these projects to win work.</p>
+        <a href="/register" class="btn-primary mt-3 inline-block">Join as a Pro</a>
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  const tabPortfolio = document.getElementById('tab-portfolio')!;
+  const tabRequests = document.getElementById('tab-requests')!;
+  const panelPortfolio = document.getElementById('panel-portfolio')!;
+  const panelRequests = document.getElementById('panel-requests')!;
+
+  function activate(activeTab: HTMLElement, inactiveTab: HTMLElement, activePanel: HTMLElement, inactivePanel: HTMLElement) {
+    activeTab.className = 'border-b-2 border-brand-600 pb-3 text-sm font-semibold text-brand-600';
+    inactiveTab.className = 'border-b-2 border-transparent pb-3 text-sm font-medium text-gray-500 hover:text-gray-700';
+    activePanel.classList.remove('hidden');
+    inactivePanel.classList.add('hidden');
+  }
+
+  tabPortfolio.addEventListener('click', () => activate(tabPortfolio, tabRequests, panelPortfolio, panelRequests));
+  tabRequests.addEventListener('click', () => activate(tabRequests, tabPortfolio, panelRequests, panelPortfolio));
+</script>
