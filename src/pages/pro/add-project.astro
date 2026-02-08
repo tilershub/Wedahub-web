@@ -36,12 +36,12 @@ const districts = [
 ];
 ---
 
-<BaseLayout title="Add Portfolio Project" description="Showcase your completed construction work on වැඩHUB">
+<BaseLayout title="Add Project" description="Add your construction project on වැඩHUB">
   <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
     <div>
       <div class="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">For Professionals</div>
-      <h1 class="mt-3 text-3xl font-bold text-gray-900">Add a Portfolio Project</h1>
-      <p class="mt-1 text-gray-500">Showcase your completed work to attract new clients</p>
+      <h1 class="mt-3 text-3xl font-bold text-gray-900">Add a Project</h1>
+      <p class="mt-1 text-gray-500">Add your construction project to attract new clients</p>
     </div>
 
     <form id="portfolio-form" class="mt-8 space-y-6">
@@ -235,7 +235,7 @@ const districts = [
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      errorEl.textContent = 'You must be logged in as a professional to add portfolio projects.';
+      errorEl.textContent = 'You must be logged in as a professional to add projects.';
       errorEl.classList.remove('hidden');
       return;
     }
@@ -284,7 +284,7 @@ const districts = [
       );
     }
 
-    successEl.textContent = 'Portfolio project published! It will now appear in the project gallery.';
+    successEl.textContent = 'Project published successfully! It will now appear in the projects gallery.';
     successEl.classList.remove('hidden');
     form.reset();
   });

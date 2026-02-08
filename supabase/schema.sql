@@ -59,7 +59,7 @@ create table if not exists public.projects (
 );
 
 -- ============================================================
--- PORTFOLIO PROJECTS (completed work showcased by professionals)
+-- PORTFOLIO PROJECTS (construction projects added by professionals)
 -- ============================================================
 create table if not exists public.portfolio_projects (
   id uuid default uuid_generate_v4() primary key,

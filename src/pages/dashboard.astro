@@ -35,7 +35,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <!-- Stats: Professional -->
       <div id="stats-professional" class="mt-8 hidden grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div class="card">
-          <div class="text-sm font-medium text-gray-500">Portfolio Projects</div>
+          <div class="text-sm font-medium text-gray-500">My Projects</div>
           <div class="mt-2 text-3xl font-bold text-gray-900">0</div>
         </div>
         <div class="card">
@@ -94,15 +94,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <a href="/pro/add-project" class="card flex items-center gap-4 hover:border-brand-300">
             <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-brand-100 text-xl">📸</div>
             <div>
-              <div class="font-semibold text-gray-900">Add Portfolio Project</div>
-              <div class="text-sm text-gray-500">Showcase your completed work</div>
+              <div class="font-semibold text-gray-900">Add New Project</div>
+              <div class="text-sm text-gray-500">Add your construction project</div>
             </div>
           </a>
           <a href="/pro/projects" class="card flex items-center gap-4 hover:border-brand-300">
             <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-xl">📂</div>
             <div>
               <div class="font-semibold text-gray-900">Manage My Projects</div>
-              <div class="text-sm text-gray-500">View, edit & manage portfolio</div>
+              <div class="text-sm text-gray-500">View, edit & manage projects</div>
             </div>
           </a>
           <a href="/projects" class="card flex items-center gap-4 hover:border-brand-300">
@@ -170,7 +170,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     welcomeMsg.textContent = `Welcome back, ${name}!`;
     roleMsg.textContent = isPro
-      ? 'Manage your portfolio, quotes, and client connections.'
+      ? 'Manage your projects, quotes, and client connections.'
       : 'Manage your projects and connect with professionals.';
 
     // Show role-specific sections
@@ -180,9 +180,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       document.getElementById('stats-professional')!.classList.add('grid');
       document.getElementById('actions-homeowner')!.classList.add('hidden');
       document.getElementById('actions-professional')!.classList.remove('hidden');
-      document.getElementById('empty-msg')!.textContent = 'No recent activity yet. Add your first portfolio project!';
+      document.getElementById('empty-msg')!.textContent = 'No recent activity yet. Add your first project!';
       const cta = document.getElementById('empty-cta')!;
-      cta.textContent = 'Add Portfolio Project';
+      cta.textContent = 'Add New Project';
       cta.setAttribute('href', '/pro/add-project');
     }
 
