@@ -114,19 +114,21 @@ const districts = [
         <div class="card space-y-5">
           <h2 class="text-lg font-semibold text-gray-900">Business Information</h2>
 
-          <div class="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label for="company-name" class="block text-sm font-medium text-gray-700">Company / Business Name</label>
-              <input type="text" id="company-name" name="company_name" placeholder="e.g. DeSilva Construction" class="input-field mt-1" />
-            </div>
-            <div>
-              <label for="service-category" class="block text-sm font-medium text-gray-700">Primary Service</label>
-              <select id="service-category" name="service_category" required class="input-field mt-1">
-                <option value="">Select service</option>
-                {serviceCategories.map((cat) => (
-                  <option value={cat}>{cat}</option>
-                ))}
-              </select>
+          <div>
+            <label for="company-name" class="block text-sm font-medium text-gray-700">Company / Business Name</label>
+            <input type="text" id="company-name" name="company_name" placeholder="e.g. DeSilva Construction" class="input-field mt-1" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Services You Provide</label>
+            <p class="mt-1 text-xs text-gray-400">Select all the services you offer</p>
+            <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3" id="services-grid">
+              {serviceCategories.map((cat) => (
+                <label class="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm transition-colors hover:border-brand-300 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+                  <input type="checkbox" name="service_categories" value={cat} class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+                  {cat}
+                </label>
+              ))}
             </div>
           </div>
 
@@ -231,8 +233,15 @@ const districts = [
     // Fill in professional info
     if (proProfile) {
       (document.getElementById('company-name') as HTMLInputElement).value = proProfile.company_name || '';
-      (document.getElementById('service-category') as HTMLSelectElement).value = proProfile.service_category || '';
       (document.getElementById('specializations') as HTMLInputElement).value = (proProfile.specializations || []).join(', ');
+
+      // Check service categories
+      const categories = proProfile.service_categories || [];
+      document.querySelectorAll('input[name="service_categories"]').forEach((cb) => {
+        if (categories.includes((cb as HTMLInputElement).value)) {
+          (cb as HTMLInputElement).checked = true;
+        }
+      });
       (document.getElementById('years-experience') as HTMLInputElement).value = proProfile.years_experience?.toString() || '';
       (document.getElementById('license-number') as HTMLInputElement).value = proProfile.license_number || '';
       (document.getElementById('hourly-rate') as HTMLInputElement).value = proProfile.hourly_rate?.toString() || '';
@@ -262,6 +271,7 @@ const districts = [
 
     const formData = new FormData(form);
     const serviceAreas = formData.getAll('service_areas') as string[];
+    const serviceCategories = formData.getAll('service_categories') as string[];
     const specializations = (formData.get('specializations') as string)
       ?.split(',').map(s => s.trim()).filter(Boolean) || [];
 
@@ -289,7 +299,7 @@ const districts = [
     const proData = {
       id: user.id,
       company_name: formData.get('company_name') || null,
-      service_category: formData.get('service_category'),
+      service_categories: serviceCategories,
       specializations,
       license_number: formData.get('license_number') || null,
       years_experience: Number(formData.get('years_experience')) || null,

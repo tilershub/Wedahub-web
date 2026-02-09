@@ -26,7 +26,7 @@ create table if not exists public.profiles (
 create table if not exists public.professional_profiles (
   id uuid references public.profiles(id) on delete cascade primary key,
   company_name text,
-  service_category text not null,
+  service_categories text[] default '{}',
   specializations text[] default '{}',
   license_number text,
   years_experience integer,
@@ -237,7 +237,7 @@ create trigger on_review_created
 -- ============================================================
 create index if not exists idx_profiles_role on public.profiles(role);
 create index if not exists idx_profiles_district on public.profiles(district);
-create index if not exists idx_pro_profiles_category on public.professional_profiles(service_category);
+create index if not exists idx_pro_profiles_categories on public.professional_profiles using gin(service_categories);
 create index if not exists idx_pro_profiles_verified on public.professional_profiles(is_verified);
 create index if not exists idx_projects_user_id on public.projects(user_id);
 create index if not exists idx_projects_category on public.projects(category);
