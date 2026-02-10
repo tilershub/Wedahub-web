@@ -6,6 +6,12 @@ const navLinks = [
   { href: '/post', label: 'Get Quotes' },
   { href: '/about', label: 'About' },
 ];
+
+const currentPath = Astro.url.pathname;
+const isActivePath = (href) => {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+};
 ---
 
 <nav class="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
@@ -25,7 +31,13 @@ const navLinks = [
       {navLinks.map((link) => (
         <a
           href={link.href}
-          class="text-sm font-medium text-gray-600 transition-colors hover:text-brand-600"
+          class:list={[
+            'text-sm font-medium transition-colors',
+            isActivePath(link.href)
+              ? 'text-brand-600'
+              : 'text-gray-600 hover:text-brand-600',
+          ]}
+          aria-current={isActivePath(link.href) ? 'page' : undefined}
         >
           {link.label}
         </a>
@@ -73,6 +85,8 @@ const navLinks = [
       id="mobile-menu-btn"
       class="flex items-center justify-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 md:hidden"
       aria-label="Toggle menu"
+      aria-controls="mobile-menu"
+      aria-expanded="false"
     >
       <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -86,7 +100,13 @@ const navLinks = [
       {navLinks.map((link) => (
         <a
           href={link.href}
-          class="block rounded-lg px-3 py-2.5 text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-brand-600 active:bg-gray-200"
+          class:list={[
+            'block rounded-lg px-3 py-2.5 text-base font-medium active:bg-gray-200',
+            isActivePath(link.href)
+              ? 'bg-brand-50 text-brand-600'
+              : 'text-gray-600 hover:bg-gray-100 hover:text-brand-600',
+          ]}
+          aria-current={isActivePath(link.href) ? 'page' : undefined}
         >
           {link.label}
         </a>
@@ -142,11 +162,50 @@ const navLinks = [
     }
   }
 
-  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
+  const navElements = {
+    mobileMenuBtn: document.getElementById('mobile-menu-btn'),
+    mobileMenu: document.getElementById('mobile-menu'),
+    navGuest: document.getElementById('nav-guest'),
+    navUser: document.getElementById('nav-user'),
+    navProMenu: document.getElementById('nav-pro-menu'),
+    mobileGuest: document.getElementById('mobile-guest'),
+    mobileUser: document.getElementById('mobile-user'),
+    mobileProLinks: document.getElementById('mobile-pro-links'),
+    logoutBtn: document.getElementById('logout-btn'),
+    mobileLogoutBtn: document.getElementById('mobile-logout-btn'),
+  };
 
-  mobileMenuBtn?.addEventListener('click', () => {
-    mobileMenu?.classList.toggle('hidden');
+  function isMobileMenuOpen() {
+    return navElements.mobileMenu && !navElements.mobileMenu.classList.contains('hidden');
+  }
+
+  function toggleMobileMenu(forceOpen) {
+    if (!navElements.mobileMenu || !navElements.mobileMenuBtn) return;
+
+    const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !isMobileMenuOpen();
+    navElements.mobileMenu.classList.toggle('hidden', !shouldOpen);
+    navElements.mobileMenuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+  }
+
+  navElements.mobileMenuBtn?.addEventListener('click', () => {
+    toggleMobileMenu();
+  });
+
+  navElements.mobileMenu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => toggleMobileMenu(false));
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      toggleMobileMenu(false);
+      proDropdown?.classList.add('hidden');
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) {
+      toggleMobileMenu(false);
+    }
   });
 
   // Pro dropdown toggle
@@ -167,8 +226,8 @@ const navLinks = [
     const supabase = await getSupabaseClient();
 
     if (!supabase) {
-      document.getElementById('nav-guest')?.classList.remove('hidden');
-      document.getElementById('nav-guest')?.classList.add('flex');
+      navElements.navGuest?.classList.remove('hidden');
+      navElements.navGuest?.classList.add('flex');
       return;
     }
 
@@ -178,21 +237,21 @@ const navLinks = [
       const isPro = user.user_metadata?.role === 'professional';
 
       // Desktop
-      document.getElementById('nav-guest')?.classList.add('hidden');
-      document.getElementById('nav-user')?.classList.remove('hidden');
-      document.getElementById('nav-user')?.classList.add('flex');
+      navElements.navGuest?.classList.add('hidden');
+      navElements.navUser?.classList.remove('hidden');
+      navElements.navUser?.classList.add('flex');
 
       if (isPro) {
-        document.getElementById('nav-pro-menu')?.classList.remove('hidden');
-        document.getElementById('mobile-pro-links')?.classList.remove('hidden');
+        navElements.navProMenu?.classList.remove('hidden');
+        navElements.mobileProLinks?.classList.remove('hidden');
       }
 
       // Mobile
-      document.getElementById('mobile-guest')?.classList.add('hidden');
-      document.getElementById('mobile-user')?.classList.remove('hidden');
+      navElements.mobileGuest?.classList.add('hidden');
+      navElements.mobileUser?.classList.remove('hidden');
     } else {
-      document.getElementById('nav-guest')?.classList.remove('hidden');
-      document.getElementById('nav-guest')?.classList.add('flex');
+      navElements.navGuest?.classList.remove('hidden');
+      navElements.navGuest?.classList.add('flex');
     }
   }
 
@@ -209,8 +268,8 @@ const navLinks = [
     window.location.href = '/';
   }
 
-  document.getElementById('logout-btn')?.addEventListener('click', logout);
-  document.getElementById('mobile-logout-btn')?.addEventListener('click', logout);
+  navElements.logoutBtn?.addEventListener('click', logout);
+  navElements.mobileLogoutBtn?.addEventListener('click', logout);
 
   initNav();
 </script>
