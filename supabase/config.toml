@@ -1,0 +1,4 @@
+project_id = "wedahub-web"
+
+[functions.get-profile]
+verify_jwt = true
