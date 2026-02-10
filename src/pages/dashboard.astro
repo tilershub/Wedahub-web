@@ -164,8 +164,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       return;
     }
 
-    const name = user.user_metadata?.full_name || user.email;
-    const role = user.user_metadata?.role || 'homeowner';
+    const { data: profileResponse } = await supabase.functions.invoke('get-profile');
+    const profile = profileResponse?.profile;
+
+    const name = profile?.full_name || user.user_metadata?.full_name || user.email;
+    const role = profile?.role || user.user_metadata?.role || 'homeowner';
     const isPro = role === 'professional';
 
     welcomeMsg.textContent = `Welcome back, ${name}!`;

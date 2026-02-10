@@ -1,0 +1,7 @@
+project_id = "wedahub-web"
+
+[functions.get-profile]
+verify_jwt = true
+
+[functions.cloudinary-signature]
+verify_jwt = true
