@@ -37,11 +37,11 @@ const districts = [
 ---
 
 <BaseLayout title="Add Project" description="Add your construction project on වැඩHUB">
-  <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+  <section class="mx-auto max-w-3xl px-4 py-6 sm:py-10 sm:px-6 lg:px-8">
     <div>
       <div class="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">For Professionals</div>
-      <h1 class="mt-3 text-3xl font-bold text-gray-900">Add a Project</h1>
-      <p class="mt-1 text-gray-500">Add your construction project to attract new clients</p>
+      <h1 class="mt-2 text-2xl font-bold text-gray-900 sm:mt-3 sm:text-3xl">Add a Project</h1>
+      <p class="mt-1 text-sm text-gray-500 sm:text-base">Add your construction project to attract new clients</p>
     </div>
 
     <form id="portfolio-form" class="mt-8 space-y-6">
@@ -121,9 +121,9 @@ const districts = [
           </div>
         </div>
 
-        <div class="grid gap-5 sm:grid-cols-3">
+        <div class="grid grid-cols-2 gap-5 sm:grid-cols-3">
           <div>
-            <label for="cost" class="block text-sm font-medium text-gray-700">Project Cost (LKR)</label>
+            <label for="cost" class="block text-sm font-medium text-gray-700">Cost (LKR)</label>
             <input
               type="number"
               id="cost"
@@ -143,7 +143,7 @@ const districts = [
               class="input-field mt-1"
             />
           </div>
-          <div>
+          <div class="col-span-2 sm:col-span-1">
             <label for="year" class="block text-sm font-medium text-gray-700">Year Completed</label>
             <input
               type="number"

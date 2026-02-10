@@ -3,13 +3,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="My Projects" description="Manage your projects on වැඩHUB">
-  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+  <section class="mx-auto max-w-7xl px-4 py-6 sm:py-10 sm:px-6 lg:px-8">
     <div id="page-loading" class="py-20 text-center text-gray-400">Loading projects...</div>
 
     <div id="page-unauthenticated" class="hidden py-20 text-center">
       <div class="text-5xl">🔐</div>
-      <h2 class="mt-4 text-2xl font-bold text-gray-900">Professional Account Required</h2>
-      <p class="mt-2 text-gray-500">Log in with your professional account to manage your projects.</p>
+      <h2 class="mt-4 text-xl font-bold text-gray-900 sm:text-2xl">Professional Account Required</h2>
+      <p class="mt-2 text-sm text-gray-500 sm:text-base">Log in with your professional account to manage your projects.</p>
       <div class="mt-6 flex items-center justify-center gap-4">
         <a href="/login" class="btn-primary">Log In</a>
         <a href="/register" class="btn-secondary">Register as Pro</a>
@@ -18,11 +18,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
     <div id="page-content" class="hidden">
       <!-- Header -->
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <div>
           <div class="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">My Projects</div>
-          <h1 class="mt-3 text-3xl font-bold text-gray-900">My Projects</h1>
-          <p class="mt-1 text-gray-500">Manage your construction projects</p>
+          <h1 class="mt-2 text-2xl font-bold text-gray-900 sm:mt-3 sm:text-3xl">My Projects</h1>
+          <p class="mt-1 text-sm text-gray-500 sm:text-base">Manage your construction projects</p>
         </div>
         <a href="/pro/add-project" class="btn-primary inline-flex items-center gap-2 self-start">
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -33,7 +33,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       </div>
 
       <!-- Stats Summary -->
-      <div class="mt-6 grid gap-4 sm:grid-cols-3">
+      <div class="mt-4 grid grid-cols-3 gap-3 sm:mt-6 sm:gap-4">
         <div class="card">
           <div class="text-sm font-medium text-gray-500">Total Projects</div>
           <div class="mt-1 text-2xl font-bold text-gray-900" id="stat-total">0</div>

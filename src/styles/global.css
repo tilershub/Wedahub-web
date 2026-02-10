@@ -32,4 +32,22 @@
   .card {
     @apply rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md;
   }
+
+  /* Mobile-friendly horizontal scroll container */
+  .scroll-x {
+    @apply flex overflow-x-auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .scroll-x::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  /* Touch-friendly minimum tap target */
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

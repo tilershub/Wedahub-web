@@ -37,24 +37,24 @@ const districts = [
 ---
 
 <BaseLayout title="Edit Project" description="Edit your project on වැඩHUB">
-  <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+  <section class="mx-auto max-w-3xl px-4 py-6 sm:py-10 sm:px-6 lg:px-8">
     <div id="edit-loading" class="py-20 text-center text-gray-400">Loading project...</div>
 
     <div id="edit-not-found" class="hidden py-20 text-center">
       <div class="text-5xl">🔍</div>
-      <h2 class="mt-4 text-2xl font-bold text-gray-900">Project Not Found</h2>
-      <p class="mt-2 text-gray-500">This project doesn't exist or you don't have permission to edit it.</p>
+      <h2 class="mt-4 text-xl font-bold text-gray-900 sm:text-2xl">Project Not Found</h2>
+      <p class="mt-2 text-sm text-gray-500 sm:text-base">This project doesn't exist or you don't have permission to edit it.</p>
       <a href="/pro/projects" class="btn-primary mt-6 inline-block">Back to My Projects</a>
     </div>
 
     <div id="edit-content" class="hidden">
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div class="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Edit Project</div>
-          <h1 class="mt-3 text-3xl font-bold text-gray-900">Edit Project</h1>
-          <p class="mt-1 text-gray-500">Update your project details and photos</p>
+          <h1 class="mt-2 text-2xl font-bold text-gray-900 sm:mt-3 sm:text-3xl">Edit Project</h1>
+          <p class="mt-1 text-sm text-gray-500 sm:text-base">Update your project details and photos</p>
         </div>
-        <a href="/pro/projects" class="btn-secondary text-sm">Back to Projects</a>
+        <a href="/pro/projects" class="btn-secondary self-start text-sm">Back to Projects</a>
       </div>
 
       <form id="edit-form" class="mt-8 space-y-6">
@@ -114,16 +114,16 @@ const districts = [
             </div>
           </div>
 
-          <div class="grid gap-5 sm:grid-cols-3">
+          <div class="grid grid-cols-2 gap-5 sm:grid-cols-3">
             <div>
-              <label for="cost" class="block text-sm font-medium text-gray-700">Project Cost (LKR)</label>
+              <label for="cost" class="block text-sm font-medium text-gray-700">Cost (LKR)</label>
               <input type="number" id="cost" name="cost" min="0" class="input-field mt-1" />
             </div>
             <div>
               <label for="duration" class="block text-sm font-medium text-gray-700">Duration</label>
               <input type="text" id="duration" name="duration" class="input-field mt-1" />
             </div>
-            <div>
+            <div class="col-span-2 sm:col-span-1">
               <label for="year" class="block text-sm font-medium text-gray-700">Year Completed</label>
               <input type="number" id="year" name="year_completed" min="2000" max="2026" class="input-field mt-1" />
             </div>

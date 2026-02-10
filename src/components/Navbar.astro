@@ -86,7 +86,7 @@ const navLinks = [
       {navLinks.map((link) => (
         <a
           href={link.href}
-          class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-brand-600"
+          class="block rounded-lg px-3 py-2.5 text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-brand-600 active:bg-gray-200"
         >
           {link.label}
         </a>
@@ -95,30 +95,30 @@ const navLinks = [
       <!-- Mobile Pro Links (hidden by default, shown for professionals) -->
       <div id="mobile-pro-links" class="hidden">
         <hr class="my-2 border-gray-200" />
-        <div class="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-400">Pro Tools</div>
-        <a href="/pro/profile" class="block rounded-lg px-3 py-2 text-sm font-medium text-brand-600 hover:bg-brand-50">Business Profile</a>
-        <a href="/pro/add-project" class="block rounded-lg px-3 py-2 text-sm font-medium text-brand-600 hover:bg-brand-50">Add Project</a>
-        <a href="/pro/projects" class="block rounded-lg px-3 py-2 text-sm font-medium text-brand-600 hover:bg-brand-50">My Projects</a>
+        <div class="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Pro Tools</div>
+        <a href="/pro/profile" class="block rounded-lg px-3 py-2.5 text-base font-medium text-brand-600 hover:bg-brand-50 active:bg-brand-100">Business Profile</a>
+        <a href="/pro/add-project" class="block rounded-lg px-3 py-2.5 text-base font-medium text-brand-600 hover:bg-brand-50 active:bg-brand-100">Add Project</a>
+        <a href="/pro/projects" class="block rounded-lg px-3 py-2.5 text-base font-medium text-brand-600 hover:bg-brand-50 active:bg-brand-100">My Projects</a>
       </div>
 
       <hr class="my-2 border-gray-200" />
 
       <!-- Mobile Guest -->
       <div id="mobile-guest">
-        <a href="/login" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <a href="/login" class="block rounded-lg px-3 py-2.5 text-base font-medium text-gray-600 hover:bg-gray-100 active:bg-gray-200">
           Log In
         </a>
-        <a href="/register" class="block rounded-lg bg-brand-600 px-3 py-2 text-center text-sm font-medium text-white">
+        <a href="/register" class="mt-2 block rounded-lg bg-brand-600 px-3 py-3 text-center text-base font-medium text-white active:bg-brand-700">
           Join as Pro
         </a>
       </div>
 
       <!-- Mobile User -->
       <div id="mobile-user" class="hidden">
-        <a href="/dashboard" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <a href="/dashboard" class="block rounded-lg px-3 py-2.5 text-base font-medium text-gray-600 hover:bg-gray-100 active:bg-gray-200">
           Dashboard
         </a>
-        <button id="mobile-logout-btn" class="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-red-500 hover:bg-red-50">
+        <button id="mobile-logout-btn" class="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-red-500 hover:bg-red-50 active:bg-red-100">
           Log Out
         </button>
       </div>

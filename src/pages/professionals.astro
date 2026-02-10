@@ -33,14 +33,14 @@ const districts = [
 ---
 
 <BaseLayout title="Find Professionals" description="Find verified construction professionals, contractors, and home improvement experts across Sri Lanka">
-  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+  <section class="mx-auto max-w-7xl px-4 py-6 sm:py-10 sm:px-6 lg:px-8">
+    <div class="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-center md:justify-between">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Find Professionals</h1>
-        <p class="mt-1 text-gray-500">Verified construction professionals across Sri Lanka</p>
+        <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">Find Professionals</h1>
+        <p class="mt-1 text-sm text-gray-500 sm:text-base">Verified construction professionals across Sri Lanka</p>
       </div>
       <div class="flex gap-3">
-        <select class="input-field w-48" id="district-filter">
+        <select class="input-field w-full sm:w-48" id="district-filter">
           {districts.map((d) => (
             <option value={d}>{d}</option>
           ))}
@@ -49,24 +49,26 @@ const districts = [
     </div>
 
     <!-- Service Filter -->
-    <div class="mt-8 flex flex-wrap gap-2">
-      {services.map((svc, i) => (
-        <button
-          class:list={[
-            'rounded-full px-4 py-2 text-sm font-medium transition-colors',
-            i === 0
-              ? 'bg-brand-600 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
-          ]}
-          data-service={svc}
-        >
-          {svc}
-        </button>
-      ))}
+    <div class="mt-5 -mx-4 px-4 sm:mx-0 sm:mt-8 sm:px-0">
+      <div class="scroll-x gap-2 pb-1 sm:flex-wrap">
+        {services.map((svc, i) => (
+          <button
+            class:list={[
+              'shrink-0 rounded-full px-3 py-2 text-xs font-medium transition-colors sm:px-4 sm:text-sm',
+              i === 0
+                ? 'bg-brand-600 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+            ]}
+            data-service={svc}
+          >
+            {svc}
+          </button>
+        ))}
+      </div>
     </div>
 
     <!-- Professionals Grid -->
-    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="mt-5 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
 
       <!-- Pro Card: Contractor -->
       <div class="card">
