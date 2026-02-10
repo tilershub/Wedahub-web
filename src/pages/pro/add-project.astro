@@ -174,9 +174,11 @@ const districts = [
         <h2 class="text-lg font-semibold text-gray-900">Project Photos</h2>
         <p class="text-sm text-gray-500">Add photo URLs of your completed work. Before and after photos are highly recommended.</p>
 
+        <p class="text-sm text-gray-500">Images are uploaded securely to Cloudinary storage.</p>
+
         <div class="space-y-3" id="photo-fields">
           <div class="flex gap-3">
-            <input type="url" name="photos[]" placeholder="Photo URL" class="input-field flex-1" />
+            <input type="file" name="photos[]" accept="image/*" class="input-field flex-1" />
             <select name="photo_types[]" class="input-field w-32">
               <option value="after">After</option>
               <option value="before">Before</option>
@@ -212,7 +214,7 @@ const districts = [
     const row = document.createElement('div');
     row.className = 'flex gap-3';
     row.innerHTML = `
-      <input type="url" name="photos[]" placeholder="Photo URL" class="input-field flex-1" />
+      <input type="file" name="photos[]" accept="image/*" class="input-field flex-1" />
       <select name="photo_types[]" class="input-field w-32">
         <option value="after">After</option>
         <option value="before">Before</option>
@@ -241,7 +243,7 @@ const districts = [
     }
 
     const formData = new FormData(form);
-    const photos = formData.getAll('photos[]') as string[];
+    const photos = formData.getAll('photos[]') as File[];
     const photoTypes = formData.getAll('photo_types[]') as string[];
     const tags = (formData.get('tags') as string)?.split(',').map(t => t.trim()).filter(Boolean) || [];
 
@@ -266,14 +268,67 @@ const districts = [
       return;
     }
 
-    // Insert photos
+    // Upload photos to Cloudinary via signed Supabase Edge Function
     const validPhotos = photos
-      .map((url, i) => ({ url, type: photoTypes[i] || 'after' }))
-      .filter(p => p.url.trim());
+      .map((file, i) => ({ file, type: photoTypes[i] || 'after' }))
+      .filter((p) => p.file instanceof File && p.file.size > 0);
 
     if (validPhotos.length > 0 && project) {
+      const cloudName = import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const configuredApiKey = import.meta.env.PUBLIC_CLOUDINARY_API_KEY;
+
+      if (!cloudName || !configuredApiKey) {
+        errorEl.textContent = 'Cloudinary env vars are missing. Add PUBLIC_CLOUDINARY_CLOUD_NAME and PUBLIC_CLOUDINARY_API_KEY.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      const uploadedPhotos = [] as { url: string; type: string }[];
+
+      for (const item of validPhotos) {
+        const timestamp = Math.floor(Date.now() / 1000);
+        const folder = `wedahub/projects/${user.id}`;
+
+        const { data: signatureData, error: signatureError } = await supabase.functions.invoke('cloudinary-signature', {
+          body: { timestamp, folder },
+        });
+
+        if (signatureError || !signatureData?.signature || !signatureData?.apiKey) {
+          errorEl.textContent = signatureError?.message || 'Could not generate Cloudinary upload signature.';
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        const uploadData = new FormData();
+        uploadData.append('file', item.file);
+        uploadData.append('api_key', signatureData.apiKey);
+        uploadData.append('timestamp', String(signatureData.timestamp));
+        uploadData.append('signature', signatureData.signature);
+        uploadData.append('folder', signatureData.folder);
+
+        const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+          method: 'POST',
+          body: uploadData,
+        });
+
+        if (!uploadRes.ok) {
+          errorEl.textContent = 'Image upload failed. Please try again.';
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        const uploadJson = await uploadRes.json();
+        if (!uploadJson.secure_url) {
+          errorEl.textContent = 'Cloudinary upload did not return an image URL.';
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        uploadedPhotos.push({ url: uploadJson.secure_url, type: item.type });
+      }
+
       await supabase.from('project_photos').insert(
-        validPhotos.map(p => ({
+        uploadedPhotos.map((p) => ({
           project_id: null,
           portfolio_project_id: project.id,
           professional_id: user.id,
