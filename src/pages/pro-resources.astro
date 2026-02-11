@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const guides = [
+  {
+    icon: '📸',
+    title: 'Build a Winning Portfolio',
+    description: 'Learn how to photograph your projects, write compelling descriptions, and showcase your best work to attract more clients.',
+    tag: 'Getting Started',
+  },
+  {
+    icon: '💰',
+    title: 'Pricing Your Services Right',
+    description: 'A guide to competitive pricing in the Sri Lankan construction market. Understand rates by district and service type.',
+    tag: 'Business',
+  },
+  {
+    icon: '⭐',
+    title: 'Getting 5-Star Reviews',
+    description: 'Tips for delivering exceptional service that earns glowing reviews. Learn what homeowners value most.',
+    tag: 'Reputation',
+  },
+  {
+    icon: '📋',
+    title: 'Writing Winning Quotes',
+    description: 'How to write professional, detailed quotes that stand out. Includes templates and best practices.',
+    tag: 'Sales',
+  },
+  {
+    icon: '📱',
+    title: 'Optimizing Your Profile',
+    description: 'Make your profile stand out in search results. Complete checklist for a profile that converts visitors into clients.',
+    tag: 'Getting Started',
+  },
+  {
+    icon: '🤝',
+    title: 'Client Communication',
+    description: 'Best practices for professional communication — from first contact to project handover and follow-up.',
+    tag: 'Service',
+  },
+];
+
+const stats = [
+  { value: '3x', label: 'more leads with a complete profile' },
+  { value: '85%', label: 'of homeowners check reviews before hiring' },
+  { value: '48hrs', label: 'average time to receive first quote' },
+  { value: 'LKR 2.5M', label: 'average project value on platform' },
+];
+---
+
+<BaseLayout title="Pro Resources" description="Resources, guides, and tools for construction professionals on වැඩHUB">
+  <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">Professional Resources</h1>
+      <p class="mx-auto mt-3 max-w-xl text-gray-500">Everything you need to grow your construction business on වැඩHUB.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
+      {stats.map((stat) => (
+        <div class="rounded-xl border border-gray-200 bg-white p-5 text-center shadow-sm">
+          <div class="text-2xl font-bold text-brand-600">{stat.value}</div>
+          <div class="mt-1 text-xs text-gray-500">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Guides -->
+    <div class="mt-16">
+      <h2 class="text-2xl font-bold text-gray-900">Guides & Tips</h2>
+      <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {guides.map((guide) => (
+          <div class="group cursor-pointer rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+            <div class="flex items-start justify-between">
+              <span class="text-3xl">{guide.icon}</span>
+              <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">{guide.tag}</span>
+            </div>
+            <h3 class="mt-4 font-semibold text-gray-900 group-hover:text-brand-600">{guide.title}</h3>
+            <p class="mt-2 text-sm text-gray-500">{guide.description}</p>
+            <span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-600">
+              Read guide
+              <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Checklist -->
+    <div class="mt-16 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10">
+      <h2 class="text-2xl font-bold text-gray-900">Profile Completion Checklist</h2>
+      <p class="mt-2 text-gray-500">Complete all steps to maximize your visibility and attract more clients.</p>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <label class="flex items-center gap-3 rounded-lg border border-gray-100 p-4 transition-colors hover:bg-gray-50">
+          <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+          <div>
+            <div class="font-medium text-gray-900">Add company name & bio</div>
+            <div class="text-xs text-gray-400">Tell homeowners about your business</div>
+          </div>
+        </label>
+        <label class="flex items-center gap-3 rounded-lg border border-gray-100 p-4 transition-colors hover:bg-gray-50">
+          <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+          <div>
+            <div class="font-medium text-gray-900">Select service categories</div>
+            <div class="text-xs text-gray-400">Choose all services you provide</div>
+          </div>
+        </label>
+        <label class="flex items-center gap-3 rounded-lg border border-gray-100 p-4 transition-colors hover:bg-gray-50">
+          <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+          <div>
+            <div class="font-medium text-gray-900">Add at least 3 projects</div>
+            <div class="text-xs text-gray-400">Showcase your best completed work</div>
+          </div>
+        </label>
+        <label class="flex items-center gap-3 rounded-lg border border-gray-100 p-4 transition-colors hover:bg-gray-50">
+          <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+          <div>
+            <div class="font-medium text-gray-900">Set your service areas</div>
+            <div class="text-xs text-gray-400">Select the districts you cover</div>
+          </div>
+        </label>
+        <label class="flex items-center gap-3 rounded-lg border border-gray-100 p-4 transition-colors hover:bg-gray-50">
+          <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+          <div>
+            <div class="font-medium text-gray-900">Add license & experience</div>
+            <div class="text-xs text-gray-400">Build trust with verified credentials</div>
+          </div>
+        </label>
+        <label class="flex items-center gap-3 rounded-lg border border-gray-100 p-4 transition-colors hover:bg-gray-50">
+          <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-brand-600 focus:ring-brand-500" />
+          <div>
+            <div class="font-medium text-gray-900">Send your first quote</div>
+            <div class="text-xs text-gray-400">Browse open requests and respond</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 text-center">
+      <h2 class="text-2xl font-bold text-gray-900">Ready to grow your business?</h2>
+      <p class="mx-auto mt-2 max-w-lg text-gray-500">Join thousands of construction professionals across Sri Lanka who are winning more projects through වැඩHUB.</p>
+      <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+        <a href="/register" class="btn-primary">Join as a Professional</a>
+        <a href="/pricing" class="btn-secondary">View Pricing Plans</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

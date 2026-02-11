@@ -1,0 +1,168 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const stories = [
+  {
+    name: 'Sampath Rajapaksa',
+    initials: 'SR',
+    role: 'General Contractor',
+    location: 'Colombo',
+    color: 'bg-brand-100 text-brand-700',
+    quote: 'Since joining වැඩHUB, I\'ve completed over 45 projects and grown my team from 5 to 18 workers. The platform brought me clients I never could have reached through word-of-mouth alone.',
+    stats: { projects: 45, revenue: 'LKR 85M+', rating: 4.9 },
+    tag: 'Professional',
+  },
+  {
+    name: 'Anusha Navaratne',
+    initials: 'AN',
+    role: 'Homeowner',
+    location: 'Kandy',
+    color: 'bg-gray-200 text-gray-600',
+    quote: 'We renovated our entire kitchen through වැඩHUB. Got 6 quotes within a week, compared portfolios, and found the perfect contractor. The result exceeded our expectations!',
+    stats: { saved: 'LKR 400K', quotes: 6, duration: '3 months' },
+    tag: 'Homeowner',
+  },
+  {
+    name: 'Malini Wickramasinghe',
+    initials: 'MW',
+    role: 'Interior Designer',
+    location: 'Kandy',
+    color: 'bg-pink-100 text-pink-700',
+    quote: 'වැඩHUB gave my design firm the visibility we needed. Clients can see our portfolio, read reviews, and reach out directly. Our bookings have tripled in the last year.',
+    stats: { projects: 32, revenue: 'LKR 42M+', rating: 5.0 },
+    tag: 'Professional',
+  },
+  {
+    name: 'Tharindu Senanayake',
+    initials: 'TS',
+    role: 'Homeowner',
+    location: 'Kaduwela',
+    color: 'bg-gray-200 text-gray-600',
+    quote: 'Building our dream home felt overwhelming until we found වැඩHUB. We posted our project and had verified contractors bidding within days. The transparency made all the difference.',
+    stats: { saved: 'LKR 1.2M', quotes: 8, duration: '14 months' },
+    tag: 'Homeowner',
+  },
+  {
+    name: 'Dinesh Abeysekara',
+    initials: 'DA',
+    role: 'Electrical & Solar Specialist',
+    location: 'Colombo',
+    color: 'bg-yellow-100 text-yellow-700',
+    quote: 'The solar installation market in Sri Lanka is booming. වැඩHUB connected me with homeowners actively looking for solar solutions. I went from 2 installations a month to 8.',
+    stats: { projects: 67, revenue: 'LKR 120M+', rating: 4.9 },
+    tag: 'Professional',
+  },
+  {
+    name: 'Kumari Perera',
+    initials: 'KP',
+    role: 'Homeowner',
+    location: 'Galle',
+    color: 'bg-gray-200 text-gray-600',
+    quote: 'After a flood damaged our ground floor, we needed urgent repairs. Posted on වැඩHUB at 8pm and had 3 contractors respond by the next morning. Fast, professional, and affordable.',
+    stats: { saved: 'LKR 250K', quotes: 5, duration: '6 weeks' },
+    tag: 'Homeowner',
+  },
+];
+---
+
+<BaseLayout title="Success Stories" description="Real stories from homeowners and professionals using වැඩHUB">
+  <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+    <div class="text-center">
+      <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">Success Stories</h1>
+      <p class="mx-auto mt-3 max-w-xl text-gray-500">Real stories from homeowners and professionals who found success through වැඩHUB.</p>
+    </div>
+
+    <!-- Platform Stats -->
+    <div class="mx-auto mt-12 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
+      <div class="text-center">
+        <div class="text-3xl font-bold text-brand-600">3,500+</div>
+        <div class="mt-1 text-sm text-gray-500">Active Pros</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-brand-600">12,000+</div>
+        <div class="mt-1 text-sm text-gray-500">Projects Done</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-brand-600">4.8</div>
+        <div class="mt-1 text-sm text-gray-500">Avg Rating</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-brand-600">98%</div>
+        <div class="mt-1 text-sm text-gray-500">Satisfaction</div>
+      </div>
+    </div>
+
+    <!-- Stories Grid -->
+    <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {stories.map((story) => (
+        <article class="flex flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div class="flex items-center gap-3">
+            <div class={`flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold ${story.color}`}>
+              {story.initials}
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900">{story.name}</div>
+              <div class="text-xs text-gray-400">{story.role} &middot; {story.location}</div>
+            </div>
+            <span class={`ml-auto rounded-full px-2 py-0.5 text-xs font-medium ${story.tag === 'Professional' ? 'bg-brand-50 text-brand-700' : 'bg-green-50 text-green-700'}`}>
+              {story.tag}
+            </span>
+          </div>
+
+          <blockquote class="mt-4 flex-1 text-sm leading-relaxed text-gray-600">
+            "{story.quote}"
+          </blockquote>
+
+          <div class="mt-5 flex items-center gap-4 border-t border-gray-100 pt-4">
+            {story.stats.projects && (
+              <div>
+                <div class="text-sm font-bold text-gray-900">{story.stats.projects}</div>
+                <div class="text-xs text-gray-400">Projects</div>
+              </div>
+            )}
+            {story.stats.revenue && (
+              <div>
+                <div class="text-sm font-bold text-gray-900">{story.stats.revenue}</div>
+                <div class="text-xs text-gray-400">Revenue</div>
+              </div>
+            )}
+            {story.stats.rating && (
+              <div>
+                <div class="text-sm font-bold text-gray-900">{story.stats.rating}</div>
+                <div class="text-xs text-gray-400">Rating</div>
+              </div>
+            )}
+            {story.stats.saved && (
+              <div>
+                <div class="text-sm font-bold text-green-600">{story.stats.saved}</div>
+                <div class="text-xs text-gray-400">Saved</div>
+              </div>
+            )}
+            {story.stats.quotes && (
+              <div>
+                <div class="text-sm font-bold text-gray-900">{story.stats.quotes}</div>
+                <div class="text-xs text-gray-400">Quotes</div>
+              </div>
+            )}
+            {story.stats.duration && (
+              <div>
+                <div class="text-sm font-bold text-gray-900">{story.stats.duration}</div>
+                <div class="text-xs text-gray-400">Duration</div>
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 rounded-2xl bg-gradient-to-br from-brand-900 to-brand-800 p-8 text-center sm:p-12">
+      <h2 class="text-2xl font-bold text-white sm:text-3xl">Write Your Own Success Story</h2>
+      <p class="mx-auto mt-3 max-w-lg text-brand-200">Whether you're a homeowner or a professional, වැඩHUB is the platform that brings Sri Lanka's construction industry together.</p>
+      <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+        <a href="/register" class="btn-primary !bg-white !text-brand-700 hover:!bg-gray-100">Create Free Account</a>
+        <a href="/professionals" class="btn-secondary !border-brand-400 !text-brand-200 hover:!bg-brand-800">Browse Professionals</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,206 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const categories = [
+  { name: 'All', slug: 'all' },
+  { name: 'Kitchen', slug: 'kitchen' },
+  { name: 'Bathroom', slug: 'bathroom' },
+  { name: 'Living Room', slug: 'living' },
+  { name: 'Bedroom', slug: 'bedroom' },
+  { name: 'Exterior', slug: 'exterior' },
+  { name: 'Landscape', slug: 'landscape' },
+  { name: 'Office', slug: 'office' },
+];
+
+const ideas = [
+  {
+    title: 'Modern Minimalist Kitchen',
+    category: 'kitchen',
+    color: 'from-amber-100 to-amber-200',
+    icon: '🍳',
+    pro: 'Malini W.',
+    saves: 234,
+    description: 'Clean lines, handleless cabinets, and quartz countertops',
+  },
+  {
+    title: 'Tropical Garden Oasis',
+    category: 'landscape',
+    color: 'from-green-100 to-green-200',
+    icon: '🌿',
+    pro: 'Asanka S.',
+    saves: 189,
+    description: 'Lush tropical plants, natural stone, and water features',
+  },
+  {
+    title: 'Contemporary Living Room',
+    category: 'living',
+    color: 'from-blue-100 to-blue-200',
+    icon: '🛋️',
+    pro: 'Nirosha F.',
+    saves: 312,
+    description: 'Open-plan layout with neutral tones and statement lighting',
+  },
+  {
+    title: 'Luxury Master Bathroom',
+    category: 'bathroom',
+    color: 'from-teal-100 to-teal-200',
+    icon: '🚿',
+    pro: 'Sampath R.',
+    saves: 156,
+    description: 'Walk-in shower, freestanding tub, and marble finishes',
+  },
+  {
+    title: 'Sri Lankan Colonial Revival',
+    category: 'exterior',
+    color: 'from-orange-100 to-orange-200',
+    icon: '🏛️',
+    pro: 'Dinesh A.',
+    saves: 278,
+    description: 'Colonial architecture with modern amenities and tropical verandah',
+  },
+  {
+    title: 'Cozy Bedroom Retreat',
+    category: 'bedroom',
+    color: 'from-purple-100 to-purple-200',
+    icon: '🛏️',
+    pro: 'Malini W.',
+    saves: 145,
+    description: 'Warm textures, built-in storage, and ambient lighting',
+  },
+  {
+    title: 'Home Office Setup',
+    category: 'office',
+    color: 'from-gray-100 to-gray-200',
+    icon: '💻',
+    pro: 'Nirosha F.',
+    saves: 198,
+    description: 'Productive workspace with custom desk and smart storage',
+  },
+  {
+    title: 'Outdoor BBQ & Entertainment',
+    category: 'landscape',
+    color: 'from-red-100 to-red-200',
+    icon: '🔥',
+    pro: 'Asanka S.',
+    saves: 167,
+    description: 'Built-in grill area, bar counter, and covered seating',
+  },
+  {
+    title: 'Modern Villa Exterior',
+    category: 'exterior',
+    color: 'from-sky-100 to-sky-200',
+    icon: '🏠',
+    pro: 'Sampath R.',
+    saves: 345,
+    description: 'Flat roof design with large windows and natural materials',
+  },
+  {
+    title: 'Rustic Kitchen Renovation',
+    category: 'kitchen',
+    color: 'from-yellow-100 to-yellow-200',
+    icon: '🪵',
+    pro: 'Kamal P.',
+    saves: 121,
+    description: 'Exposed brick, wooden beams, and farmhouse sink',
+  },
+  {
+    title: 'Spa-Inspired Bathroom',
+    category: 'bathroom',
+    color: 'from-emerald-100 to-emerald-200',
+    icon: '🧖',
+    pro: 'Malini W.',
+    saves: 203,
+    description: 'Natural stone, rain shower, and zen atmosphere',
+  },
+  {
+    title: 'Infinity Pool Design',
+    category: 'landscape',
+    color: 'from-cyan-100 to-cyan-200',
+    icon: '🏊',
+    pro: 'Asanka S.',
+    saves: 289,
+    description: 'Vanishing edge pool with tropical surroundings',
+  },
+];
+---
+
+<BaseLayout title="Design Ideas" description="Browse construction and renovation design ideas on වැඩHUB">
+  <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+    <div class="text-center">
+      <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">Design Ideas & Inspiration</h1>
+      <p class="mx-auto mt-3 max-w-xl text-gray-500">Browse real project ideas from Sri Lankan professionals to inspire your next build or renovation.</p>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="mt-8 flex gap-2 overflow-x-auto pb-2">
+      {categories.map((cat, i) => (
+        <button
+          class={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${i === 0 ? 'bg-brand-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-brand-300 hover:text-brand-600'}`}
+          data-category={cat.slug}
+        >
+          {cat.name}
+        </button>
+      ))}
+    </div>
+
+    <!-- Ideas Grid -->
+    <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" id="ideas-grid">
+      {ideas.map((idea) => (
+        <article class="group cursor-pointer rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md" data-category={idea.category}>
+          <div class={`flex aspect-[4/3] items-center justify-center rounded-t-xl bg-gradient-to-br ${idea.color}`}>
+            <span class="text-6xl transition-transform group-hover:scale-110">{idea.icon}</span>
+          </div>
+          <div class="p-4">
+            <h3 class="font-semibold text-gray-900 group-hover:text-brand-600">{idea.title}</h3>
+            <p class="mt-1 text-sm text-gray-500">{idea.description}</p>
+            <div class="mt-3 flex items-center justify-between">
+              <span class="text-xs text-gray-400">by {idea.pro}</span>
+              <span class="flex items-center gap-1 text-xs text-gray-400">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                {idea.saves}
+              </span>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 rounded-2xl bg-brand-900 p-8 text-center sm:p-12">
+      <h2 class="text-2xl font-bold text-white sm:text-3xl">Ready to bring your idea to life?</h2>
+      <p class="mx-auto mt-3 max-w-lg text-brand-200">Post your project on වැඩHUB and get free quotes from verified professionals who can make it happen.</p>
+      <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+        <a href="/post" class="btn-primary !bg-white !text-brand-700 hover:!bg-gray-100">Post Your Project</a>
+        <a href="/professionals" class="btn-secondary !border-brand-400 !text-brand-200 hover:!bg-brand-800">Find Professionals</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll('[data-category]') as NodeListOf<HTMLButtonElement>;
+  const cards = document.querySelectorAll('#ideas-grid [data-category]') as NodeListOf<HTMLElement>;
+
+  buttons.forEach(btn => {
+    if (btn.tagName !== 'BUTTON') return;
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.category;
+
+      buttons.forEach(b => {
+        if (b.tagName !== 'BUTTON') return;
+        b.classList.remove('bg-brand-600', 'text-white');
+        b.classList.add('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+      });
+      btn.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+      btn.classList.add('bg-brand-600', 'text-white');
+
+      cards.forEach(card => {
+        if (cat === 'all' || card.dataset.category === cat) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
