@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { services } from '../../data/services';
+import { demoProviders } from '../../data/demoProviders';
 
 export function getStaticPaths() {
   return services.map((s) => ({
@@ -155,12 +156,14 @@ const adCards = [
   </div>
 </BaseLayout>
 
-<script define:vars={{ serviceName: service.name }}>
+<script define:vars={{ serviceName: service.name, demoProviders }}>
   window.__serviceName = serviceName;
 </script>
 
 <script>
   import { supabase } from '../../lib/supabase';
+
+  declare const demoProviders: any[];
 
   interface Provider {
     id: string;
@@ -275,6 +278,16 @@ const adCards = [
     applyFilters();
   });
 
+
+  function getDemoProvidersForService() {
+    return (demoProviders as any[])
+      .filter((provider) => (provider.service_categories || []).includes(currentService))
+      .map((provider) => ({
+        ...provider,
+        specializations: provider.specializations || [],
+      }));
+  }
+
   async function loadProviders() {
     try {
       const { data: pros, error } = await supabase
@@ -282,17 +295,16 @@ const adCards = [
         .select('id, company_name, service_categories, specializations, years_experience, completed_projects, average_rating, total_reviews, is_verified, hourly_rate')
         .contains('service_categories', [currentService]);
 
-      if (error || !pros) {
-        loadingEl.classList.add('hidden');
-        emptyEl.classList.remove('hidden');
-        countEl.textContent = '0 professionals found';
-        return;
-      }
-
-      if (pros.length === 0) {
-        loadingEl.classList.add('hidden');
-        emptyEl.classList.remove('hidden');
-        countEl.textContent = '0 professionals found';
+      if (error || !pros || pros.length === 0) {
+        const fallbackProviders = getDemoProvidersForService();
+        if (fallbackProviders.length > 0) {
+          allProviders = fallbackProviders;
+          renderProviders(allProviders);
+        } else {
+          loadingEl.classList.add('hidden');
+          emptyEl.classList.remove('hidden');
+          countEl.textContent = '0 professionals found';
+        }
         return;
       }
 
@@ -317,9 +329,15 @@ const adCards = [
 
       renderProviders(allProviders);
     } catch {
-      loadingEl.classList.add('hidden');
-      emptyEl.classList.remove('hidden');
-      countEl.textContent = 'Could not load professionals';
+      const fallbackProviders = getDemoProvidersForService();
+      if (fallbackProviders.length > 0) {
+        allProviders = fallbackProviders;
+        renderProviders(allProviders);
+      } else {
+        loadingEl.classList.add('hidden');
+        emptyEl.classList.remove('hidden');
+        countEl.textContent = 'Could not load professionals';
+      }
     }
   }
 

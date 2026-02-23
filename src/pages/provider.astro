@@ -154,6 +154,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <script>
   import { supabase } from '../lib/supabase';
+  import { getDemoProviderById } from '../data/demoProviders';
 
   let providerId = '';
   let providerName = '';
@@ -234,6 +235,70 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     if (!providerId) {
       document.getElementById('loading-state')!.classList.add('hidden');
       document.getElementById('error-state')!.classList.remove('hidden');
+      return;
+    }
+
+    const demoProvider = getDemoProviderById(providerId);
+    if (demoProvider) {
+      const p = demoProvider as any;
+      providerName = p.company_name || p.full_name || 'Provider';
+      document.getElementById('loading-state')!.classList.add('hidden');
+      document.getElementById('profile-content')!.classList.remove('hidden');
+
+      const avatarEl = document.getElementById('provider-avatar')!;
+      avatarEl.textContent = providerName.split(' ').slice(0, 2).map((w: string) => w[0]).join('').toUpperCase();
+
+      document.getElementById('provider-name')!.textContent = providerName;
+      const companyEl = document.getElementById('provider-company')!;
+      companyEl.textContent = p.full_name || p.district || '';
+
+      if (p.is_verified) {
+        document.getElementById('provider-verified')!.classList.remove('hidden');
+        document.getElementById('provider-verified')!.classList.add('inline-flex');
+      }
+
+      document.getElementById('provider-bio')!.textContent = p.bio || 'No bio provided.';
+
+      const statsEl = document.getElementById('provider-stats')!;
+      statsEl.innerHTML = `
+        <div class="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1.5">
+          <span class="flex items-center gap-0.5">${renderStars(p.average_rating || 0)}</span>
+          <span class="ml-1 text-sm font-semibold text-amber-700">${p.average_rating ? p.average_rating.toFixed(1) : 'New'}</span>
+          <span class="text-xs text-stone-400">(${p.total_reviews || 0})</span>
+        </div>
+        <span class="rounded-full bg-stone-100 px-3 py-1.5 text-sm text-stone-600">${p.completed_projects || 0} jobs completed</span>
+        <span class="rounded-full bg-stone-100 px-3 py-1.5 text-sm text-stone-600">${p.years_experience || 0} years experience</span>
+        ${p.hourly_rate ? `<span class="rounded-full bg-brand-50 px-3 py-1.5 text-sm font-medium text-brand-700">LKR ${p.hourly_rate.toLocaleString()}/hr</span>` : ''}
+      `;
+
+      const servicesEl = document.getElementById('provider-services')!;
+      const cats = p.service_categories || [];
+      servicesEl.innerHTML = cats.length
+        ? cats.map((svc: string) => `<span class="rounded-full bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-700">${svc}</span>`).join('')
+        : '<p class="text-sm text-stone-400">Not specified</p>';
+
+      const specsEl = document.getElementById('provider-specializations')!;
+      const specs = p.specializations || [];
+      specsEl.innerHTML = specs.length
+        ? specs.map((spec: string) => `<span class="rounded-full bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700">${spec}</span>`).join('')
+        : '<p class="text-sm text-stone-400">Not specified</p>';
+
+      const areasEl = document.getElementById('provider-areas')!;
+      const areas = p.service_areas || [];
+      areasEl.innerHTML = areas.length
+        ? areas.map((area: string) => `<span class="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">${area}</span>`).join('')
+        : '<p class="text-sm text-stone-400">Not specified</p>';
+
+      const detailsEl = document.getElementById('provider-details')!;
+      detailsEl.innerHTML = `
+        ${p.district ? `<p><span class="font-medium text-stone-700">Location:</span> ${p.district}${p.location ? ', ' + p.location : ''}</p>` : ''}
+        ${p.phone ? `<p><span class="font-medium text-stone-700">Phone:</span> ${p.phone}</p>` : ''}
+        ${p.license_number ? `<p><span class="font-medium text-stone-700">License:</span> ${p.license_number}</p>` : ''}
+        ${p.years_experience ? `<p><span class="font-medium text-stone-700">Experience:</span> ${p.years_experience} years</p>` : ''}
+      `;
+
+      document.getElementById('portfolio-empty')!.classList.remove('hidden');
+      document.getElementById('reviews-empty')!.classList.remove('hidden');
       return;
     }
 
