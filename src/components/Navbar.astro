@@ -13,15 +13,15 @@ const isActivePath = (href) => {
 };
 ---
 
-<nav class="fixed top-0 z-50 w-full border-b border-stone-200 bg-white/80 backdrop-blur-md">
-  <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+<nav class="fixed top-0 z-50 w-full border-b border-stone-200 bg-white/90 backdrop-blur-md">
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-3 py-2 sm:px-6 sm:py-3 lg:px-8">
     <!-- Logo -->
     <a href="/" class="flex items-center gap-2">
-      <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-lg font-bold text-white">
+      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-base font-bold text-white sm:h-9 sm:w-9 sm:text-lg">
         W
       </div>
-      <span class="text-xl font-bold text-stone-900">
-        වැඩ<span class="text-brand-600">HUB</span>
+      <span class="text-lg font-bold text-stone-900 sm:text-xl">
+        <span class="hidden sm:inline">වැඩ</span><span class="text-brand-600">HUB</span>
       </span>
     </a>
 
@@ -82,7 +82,7 @@ const isActivePath = (href) => {
     <!-- Mobile Menu Button -->
     <button
       id="mobile-menu-btn"
-      class="flex items-center justify-center rounded-lg p-2 text-stone-600 hover:bg-stone-100 md:hidden"
+      class="flex h-10 w-10 items-center justify-center rounded-lg text-stone-600 hover:bg-stone-100 md:hidden"
       aria-label="Toggle menu"
       aria-controls="mobile-menu"
       aria-expanded="false"
@@ -94,13 +94,13 @@ const isActivePath = (href) => {
   </div>
 
   <!-- Mobile Menu -->
-  <div id="mobile-menu" class="hidden border-t border-stone-200 bg-white md:hidden">
-    <div class="space-y-1 px-4 py-3">
+  <div id="mobile-menu" class="hidden border-t border-stone-200 bg-white/95 md:hidden">
+    <div class="max-h-[calc(100vh-4rem)] space-y-1 overflow-y-auto px-3 py-3">
       {navLinks.map((link) => (
         <a
           href={link.href}
           class:list={[
-            'block rounded-lg px-3 py-2.5 text-base font-medium active:bg-stone-200',
+            'block rounded-lg px-3 py-2.5 text-sm font-medium active:bg-stone-200',
             isActivePath(link.href)
               ? 'bg-brand-50 text-brand-600'
               : 'text-stone-600 hover:bg-stone-100 hover:text-brand-600',
@@ -115,29 +115,29 @@ const isActivePath = (href) => {
       <div id="mobile-pro-links" class="hidden">
         <hr class="my-2 border-stone-200" />
         <div class="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-stone-400">Pro Tools</div>
-        <a href="/pro/profile" class="block rounded-lg px-3 py-2.5 text-base font-medium text-brand-600 hover:bg-brand-50 active:bg-brand-100">Business Profile</a>
-        <a href="/pro/add-project" class="block rounded-lg px-3 py-2.5 text-base font-medium text-brand-600 hover:bg-brand-50 active:bg-brand-100">Add Project</a>
-        <a href="/pro/projects" class="block rounded-lg px-3 py-2.5 text-base font-medium text-brand-600 hover:bg-brand-50 active:bg-brand-100">My Projects</a>
+        <a href="/pro/profile" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-brand-600 hover:bg-brand-50 active:bg-brand-100">Business Profile</a>
+        <a href="/pro/add-project" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-brand-600 hover:bg-brand-50 active:bg-brand-100">Add Project</a>
+        <a href="/pro/projects" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-brand-600 hover:bg-brand-50 active:bg-brand-100">My Projects</a>
       </div>
 
       <hr class="my-2 border-stone-200" />
 
       <!-- Mobile Guest -->
       <div id="mobile-guest">
-        <a href="/login" class="block rounded-lg px-3 py-2.5 text-base font-medium text-stone-600 hover:bg-stone-100 active:bg-stone-200">
+        <a href="/login" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-100 active:bg-stone-200">
           Log In
         </a>
-        <a href="/register" class="mt-2 block rounded-lg bg-brand-600 px-3 py-3 text-center text-base font-medium text-white active:bg-brand-700">
+        <a href="/register" class="mt-2 block rounded-lg bg-brand-600 px-3 py-2.5 text-center text-sm font-medium text-white active:bg-brand-700">
           Join as Pro
         </a>
       </div>
 
       <!-- Mobile User -->
       <div id="mobile-user" class="hidden">
-        <a href="/dashboard" class="block rounded-lg px-3 py-2.5 text-base font-medium text-stone-600 hover:bg-stone-100 active:bg-stone-200">
+        <a href="/dashboard" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-100 active:bg-stone-200">
           Dashboard
         </a>
-        <button id="mobile-logout-btn" class="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-red-500 hover:bg-red-50 active:bg-red-100">
+        <button id="mobile-logout-btn" class="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-red-500 hover:bg-red-50 active:bg-red-100">
           Log Out
         </button>
       </div>
