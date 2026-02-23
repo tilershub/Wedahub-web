@@ -1,0 +1,57 @@
+---
+const appBarLinks = [
+  {
+    href: '/',
+    label: 'Home',
+    icon: 'M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1v-10.5z',
+  },
+  {
+    href: '/professionals',
+    label: 'Pros',
+    icon: 'M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2m18 0v-2a4 4 0 0 0-3-3.87M16 4.13a4 4 0 0 1 0 7.75M13 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z',
+  },
+  {
+    href: '/post',
+    label: 'Post',
+    icon: 'M12 5v14m-7-7h14',
+  },
+  {
+    href: '/projects',
+    label: 'Projects',
+    icon: 'M3 7h18M6 7V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-13 0v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7',
+  },
+  {
+    href: '/dashboard',
+    label: 'Account',
+    icon: 'M12 12a4 4 0 1 0-0.001-8.001A4 4 0 0 0 12 12zm0 2c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z',
+  },
+];
+
+const currentPath = Astro.url.pathname;
+const isActivePath = (href) => {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+};
+---
+
+<nav class="fixed bottom-0 left-0 right-0 z-40 border-t border-stone-200 bg-white/95 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-6px_16px_rgba(0,0,0,0.06)] backdrop-blur-md md:hidden" aria-label="Bottom app navigation">
+  <div class="mx-auto grid max-w-xl grid-cols-5 gap-1 px-2">
+    {appBarLinks.map((link) => (
+      <a
+        href={link.href}
+        class:list={[
+          'flex flex-col items-center justify-center gap-1 rounded-lg px-1 py-1.5 text-[11px] font-medium transition-colors',
+          isActivePath(link.href)
+            ? 'bg-brand-50 text-brand-600'
+            : 'text-stone-500 hover:bg-stone-100 active:bg-stone-200',
+        ]}
+        aria-current={isActivePath(link.href) ? 'page' : undefined}
+      >
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d={link.icon}></path>
+        </svg>
+        <span>{link.label}</span>
+      </a>
+    ))}
+  </div>
+</nav>
