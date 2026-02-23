@@ -178,7 +178,7 @@ const districts = [
         <h2 class="text-lg font-semibold text-gray-900">Project Photos</h2>
         <p class="text-sm text-gray-500">Add photo URLs of your completed work. Before and after photos are highly recommended.</p>
 
-        <p class="text-sm text-gray-500">Images are uploaded securely to Cloudinary storage.</p>
+        <p class="text-sm text-gray-500">Images are uploaded securely to Supabase Storage.</p>
 
         <div class="space-y-3" id="photo-fields">
           <div class="flex gap-3">
@@ -272,66 +272,45 @@ const districts = [
       return;
     }
 
-    // Upload photos to Cloudinary via signed Supabase Edge Function
+    // Upload photos to Supabase Storage
     const validPhotos = photos
       .map((file, i) => ({ file, type: photoTypes[i] || 'after' }))
       .filter((p) => p.file instanceof File && p.file.size > 0);
 
     if (validPhotos.length > 0 && project) {
-      const cloudName = import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME;
-      const configuredApiKey = import.meta.env.PUBLIC_CLOUDINARY_API_KEY;
-
-      if (!cloudName || !configuredApiKey) {
-        errorEl.textContent = 'Cloudinary env vars are missing. Add PUBLIC_CLOUDINARY_CLOUD_NAME and PUBLIC_CLOUDINARY_API_KEY.';
-        errorEl.classList.remove('hidden');
-        return;
-      }
-
       const uploadedPhotos = [] as { url: string; type: string }[];
 
-      for (const item of validPhotos) {
-        const timestamp = Math.floor(Date.now() / 1000);
-        const folder = `wedahub/projects/${user.id}`;
+      for (const [index, item] of validPhotos.entries()) {
+        const extension = item.file.name.split('.').pop() || 'jpg';
+        const path = `${user.id}/${project.id}/${Date.now()}-${index}-${crypto.randomUUID()}.${extension}`;
 
-        const { data: signatureData, error: signatureError } = await supabase.functions.invoke('cloudinary-signature', {
-          body: { timestamp, folder },
-        });
+        const { error: uploadError } = await supabase.storage
+          .from('project-media')
+          .upload(path, item.file, {
+            cacheControl: '3600',
+            upsert: false,
+          });
 
-        if (signatureError || !signatureData?.signature || !signatureData?.apiKey) {
-          errorEl.textContent = signatureError?.message || 'Could not generate Cloudinary upload signature.';
+        if (uploadError) {
+          errorEl.textContent = `Image upload failed: ${uploadError.message}`;
           errorEl.classList.remove('hidden');
           return;
         }
 
-        const uploadData = new FormData();
-        uploadData.append('file', item.file);
-        uploadData.append('api_key', signatureData.apiKey);
-        uploadData.append('timestamp', String(signatureData.timestamp));
-        uploadData.append('signature', signatureData.signature);
-        uploadData.append('folder', signatureData.folder);
+        const { data: publicFile } = supabase.storage
+          .from('project-media')
+          .getPublicUrl(path);
 
-        const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-          method: 'POST',
-          body: uploadData,
-        });
-
-        if (!uploadRes.ok) {
-          errorEl.textContent = 'Image upload failed. Please try again.';
+        if (!publicFile?.publicUrl) {
+          errorEl.textContent = 'Unable to generate public URL for an uploaded image.';
           errorEl.classList.remove('hidden');
           return;
         }
 
-        const uploadJson = await uploadRes.json();
-        if (!uploadJson.secure_url) {
-          errorEl.textContent = 'Cloudinary upload did not return an image URL.';
-          errorEl.classList.remove('hidden');
-          return;
-        }
-
-        uploadedPhotos.push({ url: uploadJson.secure_url, type: item.type });
+        uploadedPhotos.push({ url: publicFile.publicUrl, type: item.type });
       }
 
-      await supabase.from('project_photos').insert(
+      const { error: photosError } = await supabase.from('project_photos').insert(
         uploadedPhotos.map((p) => ({
           project_id: null,
           portfolio_project_id: project.id,
@@ -341,6 +320,12 @@ const districts = [
           caption: p.type,
         }))
       );
+
+      if (photosError) {
+        errorEl.textContent = photosError.message;
+        errorEl.classList.remove('hidden');
+        return;
+      }
     }
 
     successEl.textContent = 'Project published successfully! It will now appear in the projects gallery.';
