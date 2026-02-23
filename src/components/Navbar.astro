@@ -7,7 +7,7 @@ const navLinks = [
 ];
 
 const currentPath = Astro.url.pathname;
-const isActivePath = (href) => {
+const isActivePath = (href: string) => {
   if (href === '/') return currentPath === '/';
   return currentPath.startsWith(href);
 };
@@ -17,11 +17,11 @@ const isActivePath = (href) => {
   <div class="mx-auto flex max-w-7xl items-center justify-between px-3 py-2 sm:px-6 sm:py-3 lg:px-8">
     <!-- Logo -->
     <a href="/" class="flex items-center gap-2">
-      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-base font-bold text-white sm:h-9 sm:w-9 sm:text-lg">
+      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-base font-bold text-white sm:h-9 sm:w-9 sm:text-lg">
         W
       </div>
       <span class="text-lg font-bold text-stone-900 sm:text-xl">
-        <span class="hidden sm:inline">වැඩ</span><span class="text-brand-600">HUB</span>
+        වැඩ<span class="text-brand-600">HUB</span>
       </span>
     </a>
 
@@ -43,11 +43,8 @@ const isActivePath = (href) => {
       ))}
     </div>
 
-    <!-- Auth Buttons (shown when NOT logged in) -->
-    <div id="nav-guest" class="hidden items-center gap-3 md:flex">
-      <a href="/login" class="btn-secondary text-sm">Log In</a>
-      <a href="/register" class="btn-primary text-sm">Join as Pro</a>
-    </div>
+    <!-- Auth Buttons moved to hamburger menu -->
+    <div id="nav-guest" class="hidden"></div>
 
     <!-- User Menu (shown when logged in) -->
     <div id="nav-user" class="hidden items-center gap-3 md:flex">
@@ -82,7 +79,7 @@ const isActivePath = (href) => {
     <!-- Mobile Menu Button -->
     <button
       id="mobile-menu-btn"
-      class="flex h-10 w-10 items-center justify-center rounded-lg text-stone-600 hover:bg-stone-100 md:hidden"
+      class="flex h-10 w-10 items-center justify-center rounded-lg text-stone-600 hover:bg-stone-100"
       aria-label="Toggle menu"
       aria-controls="mobile-menu"
       aria-expanded="false"
@@ -94,7 +91,7 @@ const isActivePath = (href) => {
   </div>
 
   <!-- Mobile Menu -->
-  <div id="mobile-menu" class="hidden border-t border-stone-200 bg-white/95 md:hidden">
+  <div id="mobile-menu" class="hidden border-t border-stone-200 bg-white/95">
     <div class="max-h-[calc(100vh-4rem)] space-y-1 overflow-y-auto px-3 py-3">
       {navLinks.map((link) => (
         <a
@@ -146,7 +143,7 @@ const isActivePath = (href) => {
 </nav>
 
 <script>
-  let supabaseClient = null;
+  let supabaseClient: any = null;
 
   async function getSupabaseClient() {
     if (supabaseClient) return supabaseClient;
@@ -178,7 +175,7 @@ const isActivePath = (href) => {
     return navElements.mobileMenu && !navElements.mobileMenu.classList.contains('hidden');
   }
 
-  function toggleMobileMenu(forceOpen) {
+  function toggleMobileMenu(forceOpen?: boolean) {
     if (!navElements.mobileMenu || !navElements.mobileMenuBtn) return;
 
     const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !isMobileMenuOpen();
@@ -201,12 +198,6 @@ const isActivePath = (href) => {
     }
   });
 
-  window.addEventListener('resize', () => {
-    if (window.innerWidth >= 768) {
-      toggleMobileMenu(false);
-    }
-  });
-
   // Pro dropdown toggle
   const proMenuBtn = document.getElementById('pro-menu-btn');
   const proDropdown = document.getElementById('pro-dropdown');
@@ -225,8 +216,6 @@ const isActivePath = (href) => {
     const supabase = await getSupabaseClient();
 
     if (!supabase) {
-      navElements.navGuest?.classList.remove('hidden');
-      navElements.navGuest?.classList.add('flex');
       return;
     }
 
@@ -236,7 +225,6 @@ const isActivePath = (href) => {
       const isPro = user.user_metadata?.role === 'professional';
 
       // Desktop
-      navElements.navGuest?.classList.add('hidden');
       navElements.navUser?.classList.remove('hidden');
       navElements.navUser?.classList.add('flex');
 
@@ -249,8 +237,8 @@ const isActivePath = (href) => {
       navElements.mobileGuest?.classList.add('hidden');
       navElements.mobileUser?.classList.remove('hidden');
     } else {
-      navElements.navGuest?.classList.remove('hidden');
-      navElements.navGuest?.classList.add('flex');
+      navElements.navUser?.classList.add('hidden');
+      navElements.navUser?.classList.remove('flex');
     }
   }
 
