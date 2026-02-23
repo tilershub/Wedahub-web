@@ -18,6 +18,36 @@ const districts = [
   'Kurunegala','Puttalam','Anuradhapura','Polonnaruwa','Badulla',
   'Monaragala','Ratnapura','Kegalle',
 ];
+
+const blogCards = [
+  {
+    title: `How to choose the best ${service.name.toLowerCase()} provider`,
+    excerpt: 'A quick checklist to compare reviews, pricing, and timelines before you hire.',
+  },
+  {
+    title: `Budget guide for ${service.name.toLowerCase()} projects`,
+    excerpt: 'Understand typical costs, hidden fees, and practical ways to keep quality high.',
+  },
+  {
+    title: `${service.name} mistakes to avoid`,
+    excerpt: 'Learn the most common planning issues and how homeowners can prevent delays.',
+  },
+];
+
+const adCards = [
+  {
+    badge: 'Sponsored',
+    title: `${service.name} Material Deals`,
+    copy: 'Save up to 20% on materials from trusted partner stores this month.',
+    cta: 'View offers',
+  },
+  {
+    badge: 'Featured Brand',
+    title: 'Book a free on-site consultation',
+    copy: 'Get expert recommendations and an itemized estimate for your project.',
+    cta: 'Claim now',
+  },
+];
 ---
 
 <BaseLayout title={`${service.name} Professionals`}>
@@ -87,6 +117,39 @@ const districts = [
         <h3 class="mt-3 text-lg font-semibold text-stone-900">No professionals found</h3>
         <p class="mt-1 text-sm text-stone-500">Try a different district or check back later.</p>
         <button id="clear-filters-btn" class="mt-4 rounded-xl bg-brand-600 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-700">Clear filters</button>
+      </div>
+    </section>
+
+    <!-- Blog Cards -->
+    <section class="mx-auto mt-10 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-stone-900">{service.name} Blogs</h2>
+        <a href="/ideas" class="text-sm font-medium text-brand-700 hover:text-brand-800">View all</a>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {blogCards.map((blog) => (
+          <article class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+            <p class="text-xs font-semibold uppercase tracking-wide text-brand-600">Blog</p>
+            <h3 class="mt-2 text-base font-semibold text-stone-900">{blog.title}</h3>
+            <p class="mt-2 text-sm text-stone-600">{blog.excerpt}</p>
+            <a href="/ideas" class="mt-4 inline-flex text-sm font-medium text-brand-700 hover:text-brand-800">Read article →</a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Advertisement Cards -->
+    <section class="mx-auto mt-10 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="mb-4 text-xl font-semibold text-stone-900">Advertisements</h2>
+      <div class="grid gap-4 lg:grid-cols-2">
+        {adCards.map((ad) => (
+          <article class="rounded-2xl border border-brand-100 bg-gradient-to-r from-brand-50 to-white p-6">
+            <span class="inline-flex rounded-full bg-brand-100 px-2.5 py-1 text-xs font-semibold text-brand-700">{ad.badge}</span>
+            <h3 class="mt-3 text-lg font-semibold text-stone-900">{ad.title}</h3>
+            <p class="mt-2 text-sm text-stone-600">{ad.copy}</p>
+            <a href="/contact" class="mt-4 inline-flex rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">{ad.cta}</a>
+          </article>
+        ))}
       </div>
     </section>
   </div>
