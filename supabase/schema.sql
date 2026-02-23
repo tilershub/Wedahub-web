@@ -191,6 +191,27 @@ create policy "Homeowners can create reviews" on public.reviews for insert with 
 create policy "Project photos are publicly readable" on public.project_photos for select using (true);
 create policy "Professionals can add project photos" on public.project_photos for insert with check (auth.uid() = professional_id);
 
+
+-- Supabase Storage (portfolio/project media)
+insert into storage.buckets (id, name, public)
+values ('project-media', 'project-media', true)
+on conflict (id) do update set public = excluded.public;
+
+create policy "Project media is publicly readable" on storage.objects
+  for select using (bucket_id = 'project-media');
+
+create policy "Authenticated users can upload project media" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'project-media' and auth.uid()::text = split_part(name, '/', 1));
+
+create policy "Owners can update project media" on storage.objects
+  for update to authenticated
+  using (bucket_id = 'project-media' and auth.uid()::text = split_part(name, '/', 1));
+
+create policy "Owners can delete project media" on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'project-media' and auth.uid()::text = split_part(name, '/', 1));
+
 -- ============================================================
 -- TRIGGER: Auto-create profile on signup
 -- ============================================================
