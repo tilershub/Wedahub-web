@@ -28,7 +28,7 @@ const appBarLinks = [
 ];
 
 const currentPath = Astro.url.pathname;
-const isActivePath = (href) => {
+const isActivePath = (href: string) => {
   if (href === '/') return currentPath === '/';
   return currentPath.startsWith(href);
 };
