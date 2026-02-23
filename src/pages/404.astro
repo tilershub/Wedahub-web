@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page Not Found" description="The page you're looking for doesn't exist">
+  <div class="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4">
+    <div class="text-center">
+      <div class="text-8xl font-bold text-stone-200">404</div>
+      <h1 class="mt-4 text-2xl font-bold text-stone-900 sm:text-3xl">Page not found</h1>
+      <p class="mx-auto mt-3 max-w-md text-stone-500">Sorry, the page you're looking for doesn't exist or has been moved.</p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/" class="btn-primary">Go Home</a>
+        <a href="/professionals" class="btn-secondary">Find Professionals</a>
+      </div>
+      <div class="mt-10 flex flex-wrap justify-center gap-4 text-sm text-stone-400">
+        <a href="/projects" class="hover:text-brand-600">Browse Projects</a>
+        <a href="/ideas" class="hover:text-brand-600">Design Ideas</a>
+        <a href="/contact" class="hover:text-brand-600">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

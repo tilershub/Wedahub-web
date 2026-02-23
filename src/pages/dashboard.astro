@@ -191,6 +191,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
 
     content.classList.remove('hidden');
+
+    // Load real stats
+    try {
+      if (isPro) {
+        const { count: projectCount } = await supabase
+          .from('portfolio_projects')
+          .select('*', { count: 'exact', head: true })
+          .eq('professional_id', user.id);
+        const statsCards = document.querySelectorAll('#stats-professional .card');
+        if (statsCards[0]) statsCards[0].querySelector('.text-2xl,.text-3xl')!.textContent = String(projectCount || 0);
+      } else {
+        const { count: projectCount } = await supabase
+          .from('projects')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+        const statsCards = document.querySelectorAll('#stats-homeowner .card');
+        if (statsCards[0]) statsCards[0].querySelector('.text-2xl,.text-3xl')!.textContent = String(projectCount || 0);
+      }
+    } catch {
+      // Stats loading failed, keep defaults
+    }
   }
 
   init();

@@ -3,14 +3,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const services = [
   'All',
-  'General Contractors',
-  'Architects',
-  'Interior Designers',
+  'General Construction',
+  'Architecture & Design',
+  'Interior Design',
   'Plumbing',
   'Electrical Work',
   'Masonry & Tiling',
-  'Carpentry',
-  'Painting',
+  'Carpentry & Woodwork',
+  'Painting & Finishing',
   'Roofing',
   'Landscaping',
   'Welding & Metalwork',
@@ -21,6 +21,7 @@ const districts = [
   'All Districts',
   'Colombo',
   'Gampaha',
+  'Kalutara',
   'Kandy',
   'Galle',
   'Matara',
@@ -30,22 +31,51 @@ const districts = [
   'Anuradhapura',
   'Badulla',
 ];
+
+const defaultPros = [
+  {
+    initials: 'SR', name: 'Sampath Rajapaksa', bio: '15+ years building residential homes and commercial properties. Specializing in modern house construction and luxury villas.',
+    services: ['General Construction', 'Roofing', 'Masonry & Tiling'], district: 'Colombo', color: 'bg-brand-100 text-brand-700',
+    rating: '4.9', reviews: 127, projectCount: 48, verified: true,
+  },
+  {
+    initials: 'NF', name: 'Nirosha Fernando', bio: 'Award-winning architect blending modern design with traditional Sri Lankan elements. SLIA certified with expertise in sustainable architecture.',
+    services: ['Architecture & Design', 'Interior Design'], district: 'Kandy', color: 'bg-accent-100 text-accent-700',
+    rating: '4.8', reviews: 89, projectCount: 35, verified: true,
+  },
+  {
+    initials: 'KP', name: 'Kamal Perera', bio: 'Licensed plumber with 20 years experience. Expert in bathroom installations, water systems, drainage, and emergency plumbing repairs.',
+    services: ['Plumbing', 'Waterproofing'], district: 'Gampaha', color: 'bg-blue-100 text-blue-700',
+    rating: '4.7', reviews: 203, projectCount: 312, verified: true,
+  },
+  {
+    initials: 'DA', name: 'Dinesh Abeysekara', bio: 'CEB-certified electrician specializing in residential wiring, solar panel installation, smart home systems, and industrial electrical work.',
+    services: ['Electrical Work', 'Roofing'], district: 'Colombo', color: 'bg-yellow-100 text-yellow-700',
+    rating: '4.9', reviews: 156, projectCount: 185, verified: true,
+  },
+  {
+    initials: 'MW', name: 'Malini Wickramasinghe', bio: 'Transforming spaces with contemporary Sri Lankan aesthetics. Specializing in living rooms, kitchens, and full home interior makeovers.',
+    services: ['Interior Design', 'Painting & Finishing', 'Carpentry & Woodwork'], district: 'Colombo', color: 'bg-pink-100 text-pink-700',
+    rating: '5.0', reviews: 72, projectCount: 28, verified: true,
+  },
+  {
+    initials: 'RJ', name: 'Ruwan Jayawardena', bio: 'Expert in brick and block work, tiling, plastering, and decorative stonework. Known for quality craftsmanship across Southern Province.',
+    services: ['Masonry & Tiling', 'Landscaping', 'Waterproofing'], district: 'Galle', color: 'bg-orange-100 text-orange-700',
+    rating: '4.6', reviews: 94, projectCount: 145, verified: true,
+  },
+];
 ---
 
-<BaseLayout title="Find Professionals" description="Find verified construction professionals, contractors, and home improvement experts across Sri Lanka">
+<BaseLayout title="Find Professionals" description="Find verified construction professionals across Sri Lanka">
   <section class="mx-auto max-w-7xl px-4 py-6 sm:py-10 sm:px-6 lg:px-8">
     <div class="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-center md:justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">Find Professionals</h1>
-        <p class="mt-1 text-sm text-gray-500 sm:text-base">Verified construction professionals across Sri Lanka</p>
+        <h1 class="text-2xl font-bold text-stone-900 sm:text-3xl">Find Professionals</h1>
+        <p class="mt-1 text-sm text-stone-500 sm:text-base">Verified construction professionals across Sri Lanka</p>
       </div>
-      <div class="flex gap-3">
-        <select class="input-field w-full sm:w-48" id="district-filter">
-          {districts.map((d) => (
-            <option value={d}>{d}</option>
-          ))}
-        </select>
-      </div>
+      <select class="input-field w-full sm:w-48" id="district-filter">
+        {districts.map((d) => <option value={d}>{d}</option>)}
+      </select>
     </div>
 
     <!-- Service Filter -->
@@ -54,10 +84,8 @@ const districts = [
         {services.map((svc, i) => (
           <button
             class:list={[
-              'shrink-0 rounded-full px-3 py-2 text-xs font-medium transition-colors sm:px-4 sm:text-sm',
-              i === 0
-                ? 'bg-brand-600 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+              'svc-btn shrink-0 rounded-full px-3 py-2 text-xs font-medium transition-colors sm:px-4 sm:text-sm',
+              i === 0 ? 'bg-brand-600 text-white' : 'bg-stone-100 text-stone-600 hover:bg-stone-200',
             ]}
             data-service={svc}
           >
@@ -67,191 +95,163 @@ const districts = [
       </div>
     </div>
 
+    <!-- Loading -->
+    <div id="pros-loading" class="mt-8 hidden py-12 text-center text-stone-400">
+      <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-brand-200 border-t-brand-600"></div>
+      <p class="mt-3">Loading professionals...</p>
+    </div>
+
+    <!-- No results -->
+    <div id="pros-empty" class="mt-8 hidden rounded-2xl border border-stone-200 bg-white py-12 text-center">
+      <div class="text-4xl">🔍</div>
+      <p class="mt-3 text-stone-500">No professionals found matching your filters.</p>
+      <button id="reset-filters" class="mt-3 text-sm font-semibold text-brand-600 hover:text-brand-700">Clear filters</button>
+    </div>
+
     <!-- Professionals Grid -->
-    <div class="mt-5 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-
-      <!-- Pro Card: Contractor -->
-      <div class="card">
-        <div class="flex items-start gap-4">
-          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xl font-bold text-brand-700">SR</div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-2">
-              <h3 class="font-semibold text-gray-900">Sampath Rajapaksa</h3>
-              <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Verified</span>
+    <div id="pros-grid" class="mt-5 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+      {defaultPros.map((pro) => (
+        <div class="pro-card card" data-services={pro.services.join(',')} data-district={pro.district}>
+          <div class="flex items-start gap-4">
+            <div class={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-xl font-bold ${pro.color}`}>{pro.initials}</div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold text-stone-900">{pro.name}</h3>
+                {pro.verified && <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Verified</span>}
+              </div>
+              <p class="text-sm text-brand-600">{pro.services.join(', ')}</p>
+              <p class="text-xs text-stone-400">{pro.district}</p>
             </div>
-            <p class="text-sm text-brand-600">General Construction, Roofing, Masonry & Tiling</p>
-            <p class="text-xs text-gray-400">Colombo, Western Province</p>
           </div>
-        </div>
-        <p class="mt-3 text-sm text-gray-500">
-          15+ years building residential homes and commercial properties. Specializing in modern house construction and luxury villas.
-        </p>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">General Construction</span>
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Roofing</span>
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Masonry & Tiling</span>
-        </div>
-        <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-          <div class="flex items-center gap-1">
-            <span class="text-sm font-semibold text-yellow-500">4.9</span>
-            <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <span class="text-xs text-gray-400">(127 reviews)</span>
+          <p class="mt-3 text-sm text-stone-500">{pro.bio}</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            {pro.services.map((s) => (
+              <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">{s}</span>
+            ))}
           </div>
-          <span class="text-sm font-semibold text-gray-600">48 projects</span>
-        </div>
-      </div>
-
-      <!-- Pro Card: Architect -->
-      <div class="card">
-        <div class="flex items-start gap-4">
-          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent-100 text-xl font-bold text-accent-700">NF</div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-2">
-              <h3 class="font-semibold text-gray-900">Nirosha Fernando</h3>
-              <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Verified</span>
+          <div class="mt-4 flex items-center justify-between border-t border-stone-100 pt-4">
+            <div class="flex items-center gap-1">
+              <span class="text-sm font-semibold text-yellow-500">{pro.rating}</span>
+              <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <span class="text-xs text-stone-400">({pro.reviews} reviews)</span>
             </div>
-            <p class="text-sm text-accent-600">Architecture & Design, Interior Design</p>
-            <p class="text-xs text-gray-400">Kandy, Central Province</p>
+            <span class="text-sm font-semibold text-stone-600">{pro.projectCount} projects</span>
           </div>
         </div>
-        <p class="mt-3 text-sm text-gray-500">
-          Award-winning architect blending modern design with traditional Sri Lankan elements. SLIA certified with expertise in sustainable architecture.
-        </p>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Architecture & Design</span>
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Interior Design</span>
-        </div>
-        <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-          <div class="flex items-center gap-1">
-            <span class="text-sm font-semibold text-yellow-500">4.8</span>
-            <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <span class="text-xs text-gray-400">(89 reviews)</span>
-          </div>
-          <span class="text-sm font-semibold text-gray-600">35 projects</span>
-        </div>
-      </div>
-
-      <!-- Pro Card: Plumber -->
-      <div class="card">
-        <div class="flex items-start gap-4">
-          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xl font-bold text-blue-700">KP</div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-2">
-              <h3 class="font-semibold text-gray-900">Kamal Perera</h3>
-              <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Verified</span>
-            </div>
-            <p class="text-sm text-blue-600">Plumbing, Waterproofing</p>
-            <p class="text-xs text-gray-400">Gampaha, Western Province</p>
-          </div>
-        </div>
-        <p class="mt-3 text-sm text-gray-500">
-          Licensed plumber with 20 years experience. Expert in bathroom installations, water systems, drainage, and emergency plumbing repairs.
-        </p>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Plumbing</span>
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Waterproofing</span>
-        </div>
-        <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-          <div class="flex items-center gap-1">
-            <span class="text-sm font-semibold text-yellow-500">4.7</span>
-            <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <span class="text-xs text-gray-400">(203 reviews)</span>
-          </div>
-          <span class="text-sm font-semibold text-gray-600">312 projects</span>
-        </div>
-      </div>
-
-      <!-- Pro Card: Electrician -->
-      <div class="card">
-        <div class="flex items-start gap-4">
-          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-yellow-100 text-xl font-bold text-yellow-700">DA</div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-2">
-              <h3 class="font-semibold text-gray-900">Dinesh Abeysekara</h3>
-              <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Verified</span>
-            </div>
-            <p class="text-sm text-yellow-600">Electrical Work, Roofing</p>
-            <p class="text-xs text-gray-400">Colombo, Western Province</p>
-          </div>
-        </div>
-        <p class="mt-3 text-sm text-gray-500">
-          CEB-certified electrician specializing in residential wiring, solar panel installation, smart home systems, and industrial electrical work.
-        </p>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Electrical Work</span>
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Roofing</span>
-        </div>
-        <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-          <div class="flex items-center gap-1">
-            <span class="text-sm font-semibold text-yellow-500">4.9</span>
-            <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <span class="text-xs text-gray-400">(156 reviews)</span>
-          </div>
-          <span class="text-sm font-semibold text-gray-600">185 projects</span>
-        </div>
-      </div>
-
-      <!-- Pro Card: Interior Designer -->
-      <div class="card">
-        <div class="flex items-start gap-4">
-          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-pink-100 text-xl font-bold text-pink-700">MW</div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-2">
-              <h3 class="font-semibold text-gray-900">Malini Wickramasinghe</h3>
-              <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Verified</span>
-            </div>
-            <p class="text-sm text-pink-600">Interior Design, Painting & Finishing, Carpentry & Woodwork</p>
-            <p class="text-xs text-gray-400">Colombo, Western Province</p>
-          </div>
-        </div>
-        <p class="mt-3 text-sm text-gray-500">
-          Transforming spaces with contemporary Sri Lankan aesthetics. Specializing in living rooms, kitchens, and full home interior makeovers.
-        </p>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Interior Design</span>
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Painting & Finishing</span>
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Carpentry & Woodwork</span>
-        </div>
-        <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-          <div class="flex items-center gap-1">
-            <span class="text-sm font-semibold text-yellow-500">5.0</span>
-            <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <span class="text-xs text-gray-400">(72 reviews)</span>
-          </div>
-          <span class="text-sm font-semibold text-gray-600">28 projects</span>
-        </div>
-      </div>
-
-      <!-- Pro Card: Mason -->
-      <div class="card">
-        <div class="flex items-start gap-4">
-          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-orange-100 text-xl font-bold text-orange-700">RJ</div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-2">
-              <h3 class="font-semibold text-gray-900">Ruwan Jayawardena</h3>
-              <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Verified</span>
-            </div>
-            <p class="text-sm text-orange-600">Masonry & Tiling, Landscaping, Waterproofing</p>
-            <p class="text-xs text-gray-400">Galle, Southern Province</p>
-          </div>
-        </div>
-        <p class="mt-3 text-sm text-gray-500">
-          Expert in brick and block work, tiling, plastering, and decorative stonework. Known for quality craftsmanship across Southern Province.
-        </p>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Masonry & Tiling</span>
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Landscaping</span>
-          <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">Waterproofing</span>
-        </div>
-        <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-          <div class="flex items-center gap-1">
-            <span class="text-sm font-semibold text-yellow-500">4.6</span>
-            <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <span class="text-xs text-gray-400">(94 reviews)</span>
-          </div>
-          <span class="text-sm font-semibold text-gray-600">145 projects</span>
-        </div>
-      </div>
+      ))}
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  const grid = document.getElementById('pros-grid')!;
+  const emptyState = document.getElementById('pros-empty')!;
+  const cards = grid.querySelectorAll('.pro-card') as NodeListOf<HTMLElement>;
+  const svcBtns = document.querySelectorAll('.svc-btn') as NodeListOf<HTMLButtonElement>;
+  const districtFilter = document.getElementById('district-filter') as HTMLSelectElement;
+  const resetBtn = document.getElementById('reset-filters');
+
+  let activeService = 'All';
+
+  function applyFilters() {
+    const district = districtFilter.value;
+    let visible = 0;
+
+    cards.forEach(card => {
+      const cardServices = card.dataset.services || '';
+      const cardDistrict = card.dataset.district || '';
+
+      const matchesService = activeService === 'All' || cardServices.includes(activeService);
+      const matchesDistrict = district === 'All Districts' || cardDistrict === district;
+
+      if (matchesService && matchesDistrict) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    emptyState.classList.toggle('hidden', visible > 0);
+  }
+
+  svcBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      svcBtns.forEach(b => {
+        b.classList.remove('bg-brand-600', 'text-white');
+        b.classList.add('bg-stone-100', 'text-stone-600');
+      });
+      btn.classList.remove('bg-stone-100', 'text-stone-600');
+      btn.classList.add('bg-brand-600', 'text-white');
+      activeService = btn.dataset.service || 'All';
+      applyFilters();
+    });
+  });
+
+  districtFilter.addEventListener('change', applyFilters);
+
+  resetBtn?.addEventListener('click', () => {
+    activeService = 'All';
+    districtFilter.value = 'All Districts';
+    svcBtns.forEach(b => {
+      b.classList.remove('bg-brand-600', 'text-white');
+      b.classList.add('bg-stone-100', 'text-stone-600');
+    });
+    svcBtns[0]?.classList.remove('bg-stone-100', 'text-stone-600');
+    svcBtns[0]?.classList.add('bg-brand-600', 'text-white');
+    applyFilters();
+  });
+
+  // Try loading real data from Supabase
+  async function loadFromSupabase() {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      const { data: pros } = await supabase
+        .from('professional_profiles')
+        .select('id, company_name, service_categories, specializations, years_experience, service_areas')
+        .limit(20);
+
+      if (!pros || pros.length === 0) return; // Keep hardcoded fallback
+
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, bio, district, avatar_url')
+        .in('id', pros.map(p => p.id));
+
+      const profileMap = new Map((profiles || []).map(p => [p.id, p]));
+      const colors = ['bg-brand-100 text-brand-700', 'bg-accent-100 text-accent-700', 'bg-blue-100 text-blue-700', 'bg-yellow-100 text-yellow-700', 'bg-pink-100 text-pink-700', 'bg-orange-100 text-orange-700'];
+
+      grid.innerHTML = pros.map((pro, i) => {
+        const profile = profileMap.get(pro.id);
+        const name = pro.company_name || profile?.full_name || 'Professional';
+        const initials = name.split(' ').slice(0, 2).map((w: string) => w[0]).join('');
+        const svcs = pro.service_categories || [];
+        const district = profile?.district || '';
+        const bio = profile?.bio || `Experienced ${svcs[0] || 'construction'} professional.`;
+        const color = colors[i % colors.length];
+
+        return `
+          <div class="pro-card card" data-services="${svcs.join(',')}" data-district="${district}">
+            <div class="flex items-start gap-4">
+              <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-xl font-bold ${color}">${initials}</div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <h3 class="font-semibold text-stone-900">${name}</h3>
+                </div>
+                <p class="text-sm text-brand-600">${svcs.join(', ')}</p>
+                <p class="text-xs text-stone-400">${district}</p>
+              </div>
+            </div>
+            <p class="mt-3 text-sm text-stone-500">${bio}</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              ${svcs.map((s: string) => `<span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">${s}</span>`).join('')}
+            </div>
+          </div>`;
+      }).join('');
+    } catch {
+      // Supabase unavailable, keep hardcoded data
+    }
+  }
+
+  loadFromSupabase();
+</script>
