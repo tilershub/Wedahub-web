@@ -1,0 +1,415 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Service Provider Profile">
+  <div class="bg-stone-50 pb-12">
+    <!-- Loading state -->
+    <div id="loading-state" class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+      <div class="animate-pulse space-y-6">
+        <div class="flex items-center gap-4">
+          <div class="h-20 w-20 rounded-full bg-stone-200"></div>
+          <div class="flex-1 space-y-3">
+            <div class="h-6 w-48 rounded bg-stone-200"></div>
+            <div class="h-4 w-32 rounded bg-stone-100"></div>
+          </div>
+        </div>
+        <div class="h-32 rounded-2xl bg-stone-200"></div>
+        <div class="h-48 rounded-2xl bg-stone-200"></div>
+      </div>
+    </div>
+
+    <!-- Error state -->
+    <div id="error-state" class="hidden py-20 text-center">
+      <span class="text-4xl">😕</span>
+      <h2 class="mt-3 text-lg font-semibold text-stone-900">Provider not found</h2>
+      <p class="mt-1 text-sm text-stone-500">This profile may not exist or has been removed.</p>
+      <a href="/" class="mt-4 inline-block rounded-xl bg-brand-600 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-700">Back to Services</a>
+    </div>
+
+    <!-- Profile content (hidden until loaded) -->
+    <div id="profile-content" class="hidden">
+      <!-- Back link -->
+      <div class="mx-auto max-w-4xl px-4 pt-6 sm:px-6 lg:px-8">
+        <a href="/professionals" id="back-link" class="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-brand-700">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+          Back to results
+        </a>
+      </div>
+
+      <!-- Profile Header Card -->
+      <section class="mx-auto mt-4 max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-7">
+          <div class="flex flex-col gap-5 sm:flex-row sm:items-start">
+            <div id="provider-avatar" class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-brand-100 text-2xl font-bold text-brand-700"></div>
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h1 id="provider-name" class="text-xl font-bold text-stone-900 sm:text-2xl"></h1>
+                  <p id="provider-company" class="text-sm text-stone-500"></p>
+                </div>
+                <div id="provider-verified" class="hidden items-center gap-1 rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+                  <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Verified Professional
+                </div>
+              </div>
+              <p id="provider-bio" class="mt-3 text-sm leading-relaxed text-stone-600"></p>
+              <div id="provider-stats" class="mt-4 flex flex-wrap gap-3"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Action Buttons -->
+      <section class="mx-auto mt-4 max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-3 sm:grid-cols-2">
+          <button id="btn-get-quote" class="flex items-center justify-center gap-2 rounded-2xl bg-brand-600 px-6 py-4 text-sm font-semibold text-white transition hover:bg-brand-700">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+            Get a Free Quote
+          </button>
+          <button id="btn-site-visit" class="flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-600 px-6 py-4 text-sm font-semibold text-brand-700 transition hover:bg-brand-50">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            Request Site Visit
+          </button>
+        </div>
+      </section>
+
+      <!-- Details Grid -->
+      <section class="mx-auto mt-4 max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <!-- Services -->
+          <div class="rounded-2xl border border-stone-200 bg-white p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400">Services Offered</h2>
+            <div id="provider-services" class="mt-3 flex flex-wrap gap-2"></div>
+          </div>
+
+          <!-- Specializations -->
+          <div class="rounded-2xl border border-stone-200 bg-white p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400">Specializations</h2>
+            <div id="provider-specializations" class="mt-3 flex flex-wrap gap-2"></div>
+          </div>
+
+          <!-- Service Areas -->
+          <div class="rounded-2xl border border-stone-200 bg-white p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400">Service Areas</h2>
+            <div id="provider-areas" class="mt-3 flex flex-wrap gap-2"></div>
+          </div>
+
+          <!-- Contact Info -->
+          <div class="rounded-2xl border border-stone-200 bg-white p-5">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400">Details</h2>
+            <div id="provider-details" class="mt-3 space-y-2 text-sm text-stone-600"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Portfolio Projects -->
+      <section class="mx-auto mt-6 max-w-4xl px-4 sm:px-6 lg:px-8">
+        <h2 class="text-lg font-semibold text-stone-900">Portfolio</h2>
+        <div id="portfolio-grid" class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+        <div id="portfolio-empty" class="hidden mt-4 rounded-2xl border border-stone-200 bg-white p-8 text-center">
+          <p class="text-sm text-stone-500">No portfolio projects yet.</p>
+        </div>
+      </section>
+
+      <!-- Reviews -->
+      <section class="mx-auto mt-6 max-w-4xl px-4 sm:px-6 lg:px-8">
+        <h2 class="text-lg font-semibold text-stone-900">Reviews</h2>
+        <div id="reviews-list" class="mt-4 space-y-3"></div>
+        <div id="reviews-empty" class="hidden mt-4 rounded-2xl border border-stone-200 bg-white p-8 text-center">
+          <p class="text-sm text-stone-500">No reviews yet.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Message Sent Confirmation Modal -->
+    <div id="message-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+      <div class="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-xl">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
+          <svg class="h-7 w-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <h3 id="modal-title" class="mt-4 text-lg font-semibold text-stone-900">Message Sent!</h3>
+        <p id="modal-message" class="mt-2 text-sm text-stone-500">The provider has been notified and will respond soon.</p>
+        <button id="modal-close" class="mt-5 w-full rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">OK</button>
+      </div>
+    </div>
+
+    <!-- Login Required Modal -->
+    <div id="login-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+      <div class="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-xl">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-100">
+          <svg class="h-7 w-7 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        </div>
+        <h3 class="mt-4 text-lg font-semibold text-stone-900">Sign in required</h3>
+        <p class="mt-2 text-sm text-stone-500">Create a free account or log in to contact this professional.</p>
+        <div class="mt-5 grid gap-2">
+          <a href="/register" class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">Create free account</a>
+          <a href="/login" class="rounded-xl border border-stone-200 px-4 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50">Log in</a>
+        </div>
+        <button id="login-modal-close" class="mt-3 text-sm text-stone-400 hover:text-stone-600">Cancel</button>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  let providerId = '';
+  let providerName = '';
+
+  const PRE_SET_MESSAGES = {
+    quote: `Hi, I'm interested in your services and would like to request a free quote. Could you please provide me with an estimate? I'd be happy to share more details about my project. Thank you!`,
+    siteVisit: `Hi, I'd like to request a site visit so you can assess my project in person. Could you please let me know your available dates for an on-site consultation? Thank you!`,
+  };
+
+  // Modal helpers
+  function showModal(id: string) {
+    const modal = document.getElementById(id)!;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+  function hideModal(id: string) {
+    const modal = document.getElementById(id)!;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  document.getElementById('modal-close')?.addEventListener('click', () => hideModal('message-modal'));
+  document.getElementById('login-modal-close')?.addEventListener('click', () => hideModal('login-modal'));
+
+  // Close modals on backdrop click
+  ['message-modal', 'login-modal'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) hideModal(id);
+    });
+  });
+
+  async function sendMessage(type: 'quote' | 'siteVisit') {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      showModal('login-modal');
+      return;
+    }
+
+    const content = type === 'quote'
+      ? PRE_SET_MESSAGES.quote
+      : PRE_SET_MESSAGES.siteVisit;
+
+    const { error } = await supabase.from('messages').insert({
+      sender_id: user.id,
+      receiver_id: providerId,
+      content: content,
+    });
+
+    if (error) {
+      document.getElementById('modal-title')!.textContent = 'Something went wrong';
+      document.getElementById('modal-message')!.textContent = 'Could not send your message. Please try again later.';
+    } else {
+      const label = type === 'quote' ? 'Quote Request' : 'Site Visit Request';
+      document.getElementById('modal-title')!.textContent = `${label} Sent!`;
+      document.getElementById('modal-message')!.textContent = `Your message has been sent to ${providerName}. They will respond soon.`;
+    }
+    showModal('message-modal');
+  }
+
+  document.getElementById('btn-get-quote')?.addEventListener('click', () => sendMessage('quote'));
+  document.getElementById('btn-site-visit')?.addEventListener('click', () => sendMessage('siteVisit'));
+
+  function renderStars(rating: number) {
+    const full = Math.floor(rating);
+    const half = rating % 1 >= 0.5 ? 1 : 0;
+    const empty = 5 - full - half;
+    let html = '';
+    for (let i = 0; i < full; i++) html += '<svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>';
+    for (let i = 0; i < half; i++) html += '<svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" opacity="0.4"/></svg>';
+    for (let i = 0; i < empty; i++) html += '<svg class="h-4 w-4 text-stone-200" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>';
+    return html;
+  }
+
+  async function loadProvider() {
+    const params = new URLSearchParams(window.location.search);
+    providerId = params.get('id') || '';
+
+    if (!providerId) {
+      document.getElementById('loading-state')!.classList.add('hidden');
+      document.getElementById('error-state')!.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      // Load professional profile
+      const { data: pro, error: proError } = await supabase
+        .from('professional_profiles')
+        .select('*')
+        .eq('id', providerId)
+        .single();
+
+      if (proError || !pro) {
+        document.getElementById('loading-state')!.classList.add('hidden');
+        document.getElementById('error-state')!.classList.remove('hidden');
+        return;
+      }
+
+      // Load user profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', providerId)
+        .single();
+
+      const p = { ...pro, ...(profile || {}) };
+      providerName = p.company_name || p.full_name || 'Provider';
+
+      // Hide loading, show content
+      document.getElementById('loading-state')!.classList.add('hidden');
+      document.getElementById('profile-content')!.classList.remove('hidden');
+
+      // Avatar
+      const avatarEl = document.getElementById('provider-avatar')!;
+      if (p.avatar_url) {
+        avatarEl.innerHTML = `<img src="${p.avatar_url}" alt="${providerName}" class="h-20 w-20 rounded-full object-cover" />`;
+      } else {
+        avatarEl.textContent = providerName.split(' ').slice(0, 2).map((w: string) => w[0]).join('').toUpperCase();
+      }
+
+      // Name & Company
+      document.getElementById('provider-name')!.textContent = providerName;
+      const companyEl = document.getElementById('provider-company')!;
+      if (p.company_name && p.full_name) {
+        companyEl.textContent = p.full_name;
+      } else {
+        companyEl.textContent = p.district || '';
+      }
+
+      // Verified badge
+      if (p.is_verified) {
+        document.getElementById('provider-verified')!.classList.remove('hidden');
+        document.getElementById('provider-verified')!.classList.add('inline-flex');
+      }
+
+      // Bio
+      const bioEl = document.getElementById('provider-bio')!;
+      bioEl.textContent = p.bio || 'No bio provided.';
+
+      // Stats
+      const statsEl = document.getElementById('provider-stats')!;
+      statsEl.innerHTML = `
+        <div class="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1.5">
+          <span class="flex items-center gap-0.5">${renderStars(p.average_rating || 0)}</span>
+          <span class="ml-1 text-sm font-semibold text-amber-700">${p.average_rating ? p.average_rating.toFixed(1) : 'New'}</span>
+          <span class="text-xs text-stone-400">(${p.total_reviews || 0})</span>
+        </div>
+        <span class="rounded-full bg-stone-100 px-3 py-1.5 text-sm text-stone-600">${p.completed_projects || 0} jobs completed</span>
+        <span class="rounded-full bg-stone-100 px-3 py-1.5 text-sm text-stone-600">${p.years_experience || 0} years experience</span>
+        ${p.hourly_rate ? `<span class="rounded-full bg-brand-50 px-3 py-1.5 text-sm font-medium text-brand-700">LKR ${p.hourly_rate.toLocaleString()}/hr</span>` : ''}
+      `;
+
+      // Services
+      const servicesEl = document.getElementById('provider-services')!;
+      const cats = p.service_categories || [];
+      servicesEl.innerHTML = cats.length
+        ? cats.map((s: string) => `<span class="rounded-full bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-700">${s}</span>`).join('')
+        : '<p class="text-sm text-stone-400">Not specified</p>';
+
+      // Specializations
+      const specsEl = document.getElementById('provider-specializations')!;
+      const specs = p.specializations || [];
+      specsEl.innerHTML = specs.length
+        ? specs.map((s: string) => `<span class="rounded-full bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700">${s}</span>`).join('')
+        : '<p class="text-sm text-stone-400">Not specified</p>';
+
+      // Service Areas
+      const areasEl = document.getElementById('provider-areas')!;
+      const areas = p.service_areas || [];
+      areasEl.innerHTML = areas.length
+        ? areas.map((a: string) => `<span class="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">${a}</span>`).join('')
+        : '<p class="text-sm text-stone-400">Not specified</p>';
+
+      // Details
+      const detailsEl = document.getElementById('provider-details')!;
+      detailsEl.innerHTML = `
+        ${p.district ? `<p><span class="font-medium text-stone-700">Location:</span> ${p.district}${p.location ? ', ' + p.location : ''}</p>` : ''}
+        ${p.phone ? `<p><span class="font-medium text-stone-700">Phone:</span> ${p.phone}</p>` : ''}
+        ${p.license_number ? `<p><span class="font-medium text-stone-700">License:</span> ${p.license_number}</p>` : ''}
+        ${p.years_experience ? `<p><span class="font-medium text-stone-700">Experience:</span> ${p.years_experience} years</p>` : ''}
+      `;
+
+      // Load portfolio projects
+      const { data: portfolio } = await supabase
+        .from('portfolio_projects')
+        .select('id, title, description, category, district, year_completed, cost, tags, is_featured')
+        .eq('professional_id', providerId)
+        .order('is_featured', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(9);
+
+      const portfolioGrid = document.getElementById('portfolio-grid')!;
+      const portfolioEmpty = document.getElementById('portfolio-empty')!;
+
+      if (portfolio && portfolio.length > 0) {
+        portfolioGrid.innerHTML = portfolio.map((proj: any) => `
+          <article class="rounded-2xl border border-stone-200 bg-white p-4">
+            ${proj.is_featured ? '<span class="mb-2 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">Featured</span>' : ''}
+            <h3 class="font-semibold text-stone-900">${proj.title}</h3>
+            <p class="mt-1 text-xs text-stone-500">${proj.category || ''}${proj.district ? ' · ' + proj.district : ''}${proj.year_completed ? ' · ' + proj.year_completed : ''}</p>
+            ${proj.description ? `<p class="mt-2 line-clamp-2 text-xs text-stone-500">${proj.description}</p>` : ''}
+            ${proj.cost ? `<p class="mt-2 text-xs font-medium text-brand-700">LKR ${Number(proj.cost).toLocaleString()}</p>` : ''}
+            ${(proj.tags || []).length > 0 ? `<div class="mt-2 flex flex-wrap gap-1">${proj.tags.map((t: string) => `<span class="rounded bg-stone-100 px-1.5 py-0.5 text-[10px] text-stone-500">${t}</span>`).join('')}</div>` : ''}
+          </article>
+        `).join('');
+      } else {
+        portfolioEmpty.classList.remove('hidden');
+      }
+
+      // Load reviews
+      const { data: reviews } = await supabase
+        .from('reviews')
+        .select('id, rating, comment, created_at, reviewer_id')
+        .eq('professional_id', providerId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      const reviewsList = document.getElementById('reviews-list')!;
+      const reviewsEmpty = document.getElementById('reviews-empty')!;
+
+      if (reviews && reviews.length > 0) {
+        // Get reviewer names
+        const reviewerIds = reviews.map((r: any) => r.reviewer_id);
+        const { data: reviewers } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', reviewerIds);
+        const reviewerMap = new Map((reviewers || []).map((r: any) => [r.id, r.full_name]));
+
+        reviewsList.innerHTML = reviews.map((r: any) => `
+          <div class="rounded-2xl border border-stone-200 bg-white p-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-stone-900">${reviewerMap.get(r.reviewer_id) || 'Anonymous'}</span>
+              <span class="text-xs text-stone-400">${new Date(r.created_at).toLocaleDateString()}</span>
+            </div>
+            <div class="mt-1 flex items-center gap-0.5">${renderStars(r.rating)}</div>
+            ${r.comment ? `<p class="mt-2 text-sm text-stone-600">${r.comment}</p>` : ''}
+          </div>
+        `).join('');
+      } else {
+        reviewsEmpty.classList.remove('hidden');
+      }
+
+    } catch {
+      document.getElementById('loading-state')!.classList.add('hidden');
+      document.getElementById('error-state')!.classList.remove('hidden');
+    }
+  }
+
+  loadProvider();
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

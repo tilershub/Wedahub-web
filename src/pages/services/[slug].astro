@@ -1,0 +1,273 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { services } from '../../data/services';
+
+export function getStaticPaths() {
+  return services.map((s) => ({
+    params: { slug: s.slug },
+    props: { service: s },
+  }));
+}
+
+const { service } = Astro.props;
+
+const districts = [
+  'Colombo','Gampaha','Kalutara','Kandy','Matale','Nuwara Eliya',
+  'Galle','Matara','Hambantota','Jaffna','Kilinochchi','Mannar',
+  'Vavuniya','Mullaitivu','Batticaloa','Ampara','Trincomalee',
+  'Kurunegala','Puttalam','Anuradhapura','Polonnaruwa','Badulla',
+  'Monaragala','Ratnapura','Kegalle',
+];
+---
+
+<BaseLayout title={`${service.name} Professionals`}>
+  <div class="bg-stone-50 pb-12">
+    <!-- Header -->
+    <section class={`bg-gradient-to-br ${service.gradient} border-b border-stone-200`}>
+      <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <a href="/" class="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-brand-700">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+          All Services
+        </a>
+        <div class="mt-3 flex items-center gap-4">
+          <span class="text-4xl">{service.icon}</span>
+          <div>
+            <h1 class="text-2xl font-bold text-stone-900 sm:text-3xl">{service.name}</h1>
+            <p class="mt-1 text-sm text-stone-600">{service.description}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-center gap-3">
+          <select id="district-filter" class="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm text-stone-700 outline-none focus:border-brand-400">
+            <option value="">All Districts</option>
+            {districts.map((d) => <option value={d}>{d}</option>)}
+          </select>
+          <select id="sort-filter" class="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm text-stone-700 outline-none focus:border-brand-400">
+            <option value="rating">Highest Rated</option>
+            <option value="jobs">Most Jobs Completed</option>
+            <option value="experience">Most Experience</option>
+          </select>
+        </div>
+        <p id="results-count" class="text-sm text-stone-500">Loading professionals...</p>
+      </div>
+    </section>
+
+    <!-- Provider Cards -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <!-- Loading skeleton -->
+      <div id="loading-state" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {[1,2,3,4,5,6].map(() => (
+          <div class="animate-pulse rounded-2xl border border-stone-200 bg-white p-5">
+            <div class="flex items-center gap-3">
+              <div class="h-12 w-12 rounded-full bg-stone-200"></div>
+              <div class="flex-1">
+                <div class="h-4 w-32 rounded bg-stone-200"></div>
+                <div class="mt-2 h-3 w-20 rounded bg-stone-100"></div>
+              </div>
+            </div>
+            <div class="mt-4 space-y-2">
+              <div class="h-3 w-full rounded bg-stone-100"></div>
+              <div class="h-3 w-2/3 rounded bg-stone-100"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Actual provider list -->
+      <div id="providers-grid" class="hidden grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="hidden py-16 text-center">
+        <span class="text-4xl">🔍</span>
+        <h3 class="mt-3 text-lg font-semibold text-stone-900">No professionals found</h3>
+        <p class="mt-1 text-sm text-stone-500">Try a different district or check back later.</p>
+        <button id="clear-filters-btn" class="mt-4 rounded-xl bg-brand-600 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-700">Clear filters</button>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ serviceName: service.name }}>
+  window.__serviceName = serviceName;
+</script>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  interface Provider {
+    id: string;
+    company_name: string;
+    service_categories: string[];
+    specializations: string[];
+    years_experience: number;
+    completed_projects: number;
+    average_rating: number;
+    total_reviews: number;
+    is_verified: boolean;
+    hourly_rate: number;
+    full_name: string;
+    bio: string;
+    district: string;
+    avatar_url: string;
+  }
+
+  const currentService = (window as any).__serviceName as string;
+  let allProviders: Provider[] = [];
+
+  const loadingEl = document.getElementById('loading-state')!;
+  const gridEl = document.getElementById('providers-grid')!;
+  const emptyEl = document.getElementById('empty-state')!;
+  const countEl = document.getElementById('results-count')!;
+  const districtFilter = document.getElementById('district-filter') as HTMLSelectElement;
+  const sortFilter = document.getElementById('sort-filter') as HTMLSelectElement;
+
+  function renderProviders(providers: Provider[]) {
+    loadingEl.classList.add('hidden');
+
+    if (providers.length === 0) {
+      gridEl.classList.add('hidden');
+      emptyEl.classList.remove('hidden');
+      countEl.textContent = '0 professionals found';
+      return;
+    }
+
+    emptyEl.classList.add('hidden');
+    gridEl.classList.remove('hidden');
+    countEl.textContent = `${providers.length} professional${providers.length !== 1 ? 's' : ''} found`;
+
+    gridEl.innerHTML = providers.map(p => {
+      const initials = (p.company_name || p.full_name || 'P')
+        .split(' ').slice(0, 2).map((w: string) => w[0]).join('').toUpperCase();
+      const stars = p.average_rating ? `${p.average_rating.toFixed(1)}` : 'New';
+      const specs = (p.specializations || []).slice(0, 3);
+
+      return `
+        <a href="/provider?id=${p.id}" class="group rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-brand-300 hover:shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+              ${p.avatar_url ? `<img src="${p.avatar_url}" alt="" class="h-12 w-12 rounded-full object-cover" />` : initials}
+            </div>
+            <div class="min-w-0">
+              <h3 class="truncate font-semibold text-stone-900 group-hover:text-brand-700">${p.company_name || p.full_name}</h3>
+              <p class="text-xs text-stone-500">${p.district || 'Sri Lanka'}${p.is_verified ? ' · <span class="text-green-600">Verified</span>' : ''}</p>
+            </div>
+          </div>
+
+          <div class="mt-3 flex flex-wrap gap-1.5">
+            <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
+              <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              ${stars}
+            </span>
+            <span class="rounded-full bg-stone-100 px-2.5 py-1 text-xs text-stone-600">${p.completed_projects || 0} jobs</span>
+            <span class="rounded-full bg-stone-100 px-2.5 py-1 text-xs text-stone-600">${p.years_experience || 0} yrs exp</span>
+          </div>
+
+          ${specs.length > 0 ? `
+            <div class="mt-3 flex flex-wrap gap-1">
+              ${specs.map((s: string) => `<span class="rounded-full bg-brand-50 px-2 py-0.5 text-xs text-brand-700">${s}</span>`).join('')}
+            </div>
+          ` : ''}
+
+          ${p.bio ? `<p class="mt-3 line-clamp-2 text-xs leading-relaxed text-stone-500">${p.bio}</p>` : ''}
+
+          <div class="mt-4 grid grid-cols-2 gap-2">
+            <span class="rounded-xl border border-stone-200 py-2 text-center text-xs font-semibold text-stone-700 transition group-hover:border-brand-200">View Profile</span>
+            <span class="rounded-xl bg-brand-600 py-2 text-center text-xs font-semibold text-white">Get Quote</span>
+          </div>
+        </a>
+      `;
+    }).join('');
+  }
+
+  function applyFilters() {
+    let filtered = [...allProviders];
+
+    const district = districtFilter.value;
+    if (district) {
+      filtered = filtered.filter(p => p.district === district);
+    }
+
+    const sort = sortFilter.value;
+    if (sort === 'rating') {
+      filtered.sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0));
+    } else if (sort === 'jobs') {
+      filtered.sort((a, b) => (b.completed_projects || 0) - (a.completed_projects || 0));
+    } else if (sort === 'experience') {
+      filtered.sort((a, b) => (b.years_experience || 0) - (a.years_experience || 0));
+    }
+
+    renderProviders(filtered);
+  }
+
+  districtFilter.addEventListener('change', applyFilters);
+  sortFilter.addEventListener('change', applyFilters);
+  document.getElementById('clear-filters-btn')?.addEventListener('click', () => {
+    districtFilter.value = '';
+    sortFilter.value = 'rating';
+    applyFilters();
+  });
+
+  async function loadProviders() {
+    try {
+      const { data: pros, error } = await supabase
+        .from('professional_profiles')
+        .select('id, company_name, service_categories, specializations, years_experience, completed_projects, average_rating, total_reviews, is_verified, hourly_rate')
+        .contains('service_categories', [currentService]);
+
+      if (error || !pros) {
+        loadingEl.classList.add('hidden');
+        emptyEl.classList.remove('hidden');
+        countEl.textContent = '0 professionals found';
+        return;
+      }
+
+      if (pros.length === 0) {
+        loadingEl.classList.add('hidden');
+        emptyEl.classList.remove('hidden');
+        countEl.textContent = '0 professionals found';
+        return;
+      }
+
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, bio, district, avatar_url')
+        .in('id', pros.map((p: any) => p.id));
+
+      const profileMap = new Map((profiles || []).map((p: any) => [p.id, p]));
+
+      allProviders = pros.map((pro: any) => {
+        const profile = profileMap.get(pro.id) || {};
+        return { ...pro, ...(profile as any) };
+      });
+
+      // Default sort: highest rated, then most jobs
+      allProviders.sort((a, b) => {
+        const ratingDiff = (b.average_rating || 0) - (a.average_rating || 0);
+        if (ratingDiff !== 0) return ratingDiff;
+        return (b.completed_projects || 0) - (a.completed_projects || 0);
+      });
+
+      renderProviders(allProviders);
+    } catch {
+      loadingEl.classList.add('hidden');
+      emptyEl.classList.remove('hidden');
+      countEl.textContent = 'Could not load professionals';
+    }
+  }
+
+  loadProviders();
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

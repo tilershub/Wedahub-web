@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const services = [
+const serviceList = [
   'All',
   'General Construction',
   'Architecture & Design',
@@ -19,47 +19,39 @@ const services = [
 
 const districts = [
   'All Districts',
-  'Colombo',
-  'Gampaha',
-  'Kalutara',
-  'Kandy',
-  'Galle',
-  'Matara',
-  'Kurunegala',
-  'Ratnapura',
-  'Jaffna',
-  'Anuradhapura',
-  'Badulla',
+  'Colombo','Gampaha','Kalutara','Kandy','Matale','Nuwara Eliya',
+  'Galle','Matara','Hambantota','Jaffna','Kurunegala','Puttalam',
+  'Anuradhapura','Polonnaruwa','Badulla','Ratnapura','Kegalle',
 ];
 
 const defaultPros = [
   {
-    initials: 'SR', name: 'Sampath Rajapaksa', bio: '15+ years building residential homes and commercial properties. Specializing in modern house construction and luxury villas.',
+    id: 'demo-1', initials: 'SR', name: 'Sampath Rajapaksa', bio: '15+ years building residential homes and commercial properties.',
     services: ['General Construction', 'Roofing', 'Masonry & Tiling'], district: 'Colombo', color: 'bg-brand-100 text-brand-700',
     rating: '4.9', reviews: 127, projectCount: 48, verified: true,
   },
   {
-    initials: 'NF', name: 'Nirosha Fernando', bio: 'Award-winning architect blending modern design with traditional Sri Lankan elements. SLIA certified with expertise in sustainable architecture.',
+    id: 'demo-2', initials: 'NF', name: 'Nirosha Fernando', bio: 'Award-winning architect blending modern design with traditional Sri Lankan elements.',
     services: ['Architecture & Design', 'Interior Design'], district: 'Kandy', color: 'bg-accent-100 text-accent-700',
     rating: '4.8', reviews: 89, projectCount: 35, verified: true,
   },
   {
-    initials: 'KP', name: 'Kamal Perera', bio: 'Licensed plumber with 20 years experience. Expert in bathroom installations, water systems, drainage, and emergency plumbing repairs.',
+    id: 'demo-3', initials: 'KP', name: 'Kamal Perera', bio: 'Licensed plumber with 20 years experience in bathroom installations and water systems.',
     services: ['Plumbing', 'Waterproofing'], district: 'Gampaha', color: 'bg-blue-100 text-blue-700',
     rating: '4.7', reviews: 203, projectCount: 312, verified: true,
   },
   {
-    initials: 'DA', name: 'Dinesh Abeysekara', bio: 'CEB-certified electrician specializing in residential wiring, solar panel installation, smart home systems, and industrial electrical work.',
+    id: 'demo-4', initials: 'DA', name: 'Dinesh Abeysekara', bio: 'CEB-certified electrician specializing in residential wiring and solar panel installation.',
     services: ['Electrical Work', 'Roofing'], district: 'Colombo', color: 'bg-yellow-100 text-yellow-700',
     rating: '4.9', reviews: 156, projectCount: 185, verified: true,
   },
   {
-    initials: 'MW', name: 'Malini Wickramasinghe', bio: 'Transforming spaces with contemporary Sri Lankan aesthetics. Specializing in living rooms, kitchens, and full home interior makeovers.',
+    id: 'demo-5', initials: 'MW', name: 'Malini Wickramasinghe', bio: 'Transforming spaces with contemporary Sri Lankan aesthetics.',
     services: ['Interior Design', 'Painting & Finishing', 'Carpentry & Woodwork'], district: 'Colombo', color: 'bg-pink-100 text-pink-700',
     rating: '5.0', reviews: 72, projectCount: 28, verified: true,
   },
   {
-    initials: 'RJ', name: 'Ruwan Jayawardena', bio: 'Expert in brick and block work, tiling, plastering, and decorative stonework. Known for quality craftsmanship across Southern Province.',
+    id: 'demo-6', initials: 'RJ', name: 'Ruwan Jayawardena', bio: 'Expert in brick and block work, tiling, plastering, and decorative stonework.',
     services: ['Masonry & Tiling', 'Landscaping', 'Waterproofing'], district: 'Galle', color: 'bg-orange-100 text-orange-700',
     rating: '4.6', reviews: 94, projectCount: 145, verified: true,
   },
@@ -73,15 +65,22 @@ const defaultPros = [
         <h1 class="text-2xl font-bold text-stone-900 sm:text-3xl">Find Professionals</h1>
         <p class="mt-1 text-sm text-stone-500 sm:text-base">Verified construction professionals across Sri Lanka</p>
       </div>
-      <select class="input-field w-full sm:w-48" id="district-filter">
-        {districts.map((d) => <option value={d}>{d}</option>)}
-      </select>
+      <div class="flex gap-3">
+        <select class="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm text-stone-700 outline-none focus:border-brand-400" id="district-filter">
+          {districts.map((d) => <option value={d}>{d}</option>)}
+        </select>
+        <select class="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm text-stone-700 outline-none focus:border-brand-400" id="sort-filter">
+          <option value="rating">Highest Rated</option>
+          <option value="jobs">Most Jobs</option>
+          <option value="experience">Most Experience</option>
+        </select>
+      </div>
     </div>
 
     <!-- Service Filter -->
     <div class="mt-5 -mx-4 px-4 sm:mx-0 sm:mt-8 sm:px-0">
       <div class="scroll-x gap-2 pb-1 sm:flex-wrap">
-        {services.map((svc, i) => (
+        {serviceList.map((svc, i) => (
           <button
             class:list={[
               'svc-btn shrink-0 rounded-full px-3 py-2 text-xs font-medium transition-colors sm:px-4 sm:text-sm',
@@ -95,12 +94,6 @@ const defaultPros = [
       </div>
     </div>
 
-    <!-- Loading -->
-    <div id="pros-loading" class="mt-8 hidden py-12 text-center text-stone-400">
-      <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-brand-200 border-t-brand-600"></div>
-      <p class="mt-3">Loading professionals...</p>
-    </div>
-
     <!-- No results -->
     <div id="pros-empty" class="mt-8 hidden rounded-2xl border border-stone-200 bg-white py-12 text-center">
       <div class="text-4xl">🔍</div>
@@ -111,33 +104,36 @@ const defaultPros = [
     <!-- Professionals Grid -->
     <div id="pros-grid" class="mt-5 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
       {defaultPros.map((pro) => (
-        <div class="pro-card card" data-services={pro.services.join(',')} data-district={pro.district}>
+        <a href={`/provider?id=${pro.id}`} class="pro-card group rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-brand-300 hover:shadow-md" data-services={pro.services.join(',')} data-district={pro.district}>
           <div class="flex items-start gap-4">
             <div class={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-xl font-bold ${pro.color}`}>{pro.initials}</div>
             <div class="min-w-0">
               <div class="flex items-center gap-2">
-                <h3 class="font-semibold text-stone-900">{pro.name}</h3>
+                <h3 class="font-semibold text-stone-900 group-hover:text-brand-700">{pro.name}</h3>
                 {pro.verified && <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Verified</span>}
               </div>
-              <p class="text-sm text-brand-600">{pro.services.join(', ')}</p>
               <p class="text-xs text-stone-400">{pro.district}</p>
             </div>
           </div>
           <p class="mt-3 text-sm text-stone-500">{pro.bio}</p>
-          <div class="mt-3 flex flex-wrap gap-2">
+          <div class="mt-3 flex flex-wrap gap-1.5">
             {pro.services.map((s) => (
-              <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">{s}</span>
+              <span class="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-600">{s}</span>
             ))}
           </div>
           <div class="mt-4 flex items-center justify-between border-t border-stone-100 pt-4">
             <div class="flex items-center gap-1">
               <span class="text-sm font-semibold text-yellow-500">{pro.rating}</span>
               <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-              <span class="text-xs text-stone-400">({pro.reviews} reviews)</span>
+              <span class="text-xs text-stone-400">({pro.reviews})</span>
             </div>
-            <span class="text-sm font-semibold text-stone-600">{pro.projectCount} projects</span>
+            <span class="text-sm font-semibold text-stone-600">{pro.projectCount} jobs</span>
           </div>
-        </div>
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <span class="rounded-xl border border-stone-200 py-2 text-center text-xs font-semibold text-stone-700">View Profile</span>
+            <span class="rounded-xl bg-brand-600 py-2 text-center text-xs font-semibold text-white">Get Quote</span>
+          </div>
+        </a>
       ))}
     </div>
   </section>
@@ -146,9 +142,10 @@ const defaultPros = [
 <script>
   const grid = document.getElementById('pros-grid')!;
   const emptyState = document.getElementById('pros-empty')!;
-  const cards = grid.querySelectorAll('.pro-card') as NodeListOf<HTMLElement>;
+  let cards = grid.querySelectorAll('.pro-card') as NodeListOf<HTMLElement>;
   const svcBtns = document.querySelectorAll('.svc-btn') as NodeListOf<HTMLButtonElement>;
   const districtFilter = document.getElementById('district-filter') as HTMLSelectElement;
+  const sortFilter = document.getElementById('sort-filter') as HTMLSelectElement;
   const resetBtn = document.getElementById('reset-filters');
 
   let activeService = 'All';
@@ -189,10 +186,12 @@ const defaultPros = [
   });
 
   districtFilter.addEventListener('change', applyFilters);
+  sortFilter.addEventListener('change', applyFilters);
 
   resetBtn?.addEventListener('click', () => {
     activeService = 'All';
     districtFilter.value = 'All Districts';
+    sortFilter.value = 'rating';
     svcBtns.forEach(b => {
       b.classList.remove('bg-brand-600', 'text-white');
       b.classList.add('bg-stone-100', 'text-stone-600');
@@ -202,52 +201,71 @@ const defaultPros = [
     applyFilters();
   });
 
-  // Try loading real data from Supabase
+  // Load real data from Supabase
   async function loadFromSupabase() {
     try {
       const { supabase } = await import('../lib/supabase');
       const { data: pros } = await supabase
         .from('professional_profiles')
-        .select('id, company_name, service_categories, specializations, years_experience, service_areas')
-        .limit(20);
+        .select('id, company_name, service_categories, specializations, years_experience, completed_projects, average_rating, total_reviews, is_verified, service_areas')
+        .order('average_rating', { ascending: false })
+        .limit(30);
 
-      if (!pros || pros.length === 0) return; // Keep hardcoded fallback
+      if (!pros || pros.length === 0) return;
 
       const { data: profiles } = await supabase
         .from('profiles')
         .select('id, full_name, bio, district, avatar_url')
-        .in('id', pros.map(p => p.id));
+        .in('id', pros.map((p: any) => p.id));
 
-      const profileMap = new Map((profiles || []).map(p => [p.id, p]));
+      const profileMap = new Map((profiles || []).map((p: any) => [p.id, p]));
       const colors = ['bg-brand-100 text-brand-700', 'bg-accent-100 text-accent-700', 'bg-blue-100 text-blue-700', 'bg-yellow-100 text-yellow-700', 'bg-pink-100 text-pink-700', 'bg-orange-100 text-orange-700'];
 
-      grid.innerHTML = pros.map((pro, i) => {
-        const profile = profileMap.get(pro.id);
+      grid.innerHTML = pros.map((pro: any, i: number) => {
+        const profile = profileMap.get(pro.id) as any;
         const name = pro.company_name || profile?.full_name || 'Professional';
         const initials = name.split(' ').slice(0, 2).map((w: string) => w[0]).join('');
         const svcs = pro.service_categories || [];
         const district = profile?.district || '';
-        const bio = profile?.bio || `Experienced ${svcs[0] || 'construction'} professional.`;
+        const bio = profile?.bio || '';
         const color = colors[i % colors.length];
+        const rating = pro.average_rating ? pro.average_rating.toFixed(1) : 'New';
 
         return `
-          <div class="pro-card card" data-services="${svcs.join(',')}" data-district="${district}">
+          <a href="/provider?id=${pro.id}" class="pro-card group rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-brand-300 hover:shadow-md" data-services="${svcs.join(',')}" data-district="${district}">
             <div class="flex items-start gap-4">
-              <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-xl font-bold ${color}">${initials}</div>
+              <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-xl font-bold ${color}">
+                ${profile?.avatar_url ? `<img src="${profile.avatar_url}" class="h-14 w-14 rounded-full object-cover" />` : initials}
+              </div>
               <div class="min-w-0">
                 <div class="flex items-center gap-2">
-                  <h3 class="font-semibold text-stone-900">${name}</h3>
+                  <h3 class="font-semibold text-stone-900 group-hover:text-brand-700">${name}</h3>
+                  ${pro.is_verified ? '<span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Verified</span>' : ''}
                 </div>
-                <p class="text-sm text-brand-600">${svcs.join(', ')}</p>
                 <p class="text-xs text-stone-400">${district}</p>
               </div>
             </div>
-            <p class="mt-3 text-sm text-stone-500">${bio}</p>
-            <div class="mt-3 flex flex-wrap gap-2">
-              ${svcs.map((s: string) => `<span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">${s}</span>`).join('')}
+            ${bio ? `<p class="mt-3 text-sm text-stone-500 line-clamp-2">${bio}</p>` : ''}
+            <div class="mt-3 flex flex-wrap gap-1.5">
+              ${svcs.slice(0, 3).map((s: string) => `<span class="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-600">${s}</span>`).join('')}
             </div>
-          </div>`;
+            <div class="mt-4 flex items-center justify-between border-t border-stone-100 pt-4">
+              <div class="flex items-center gap-1">
+                <span class="text-sm font-semibold text-yellow-500">${rating}</span>
+                <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <span class="text-xs text-stone-400">(${pro.total_reviews || 0})</span>
+              </div>
+              <span class="text-sm font-semibold text-stone-600">${pro.completed_projects || 0} jobs</span>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <span class="rounded-xl border border-stone-200 py-2 text-center text-xs font-semibold text-stone-700">View Profile</span>
+              <span class="rounded-xl bg-brand-600 py-2 text-center text-xs font-semibold text-white">Get Quote</span>
+            </div>
+          </a>`;
       }).join('');
+
+      // Re-bind card references after dynamic load
+      cards = grid.querySelectorAll('.pro-card') as NodeListOf<HTMLElement>;
     } catch {
       // Supabase unavailable, keep hardcoded data
     }
@@ -255,3 +273,12 @@ const defaultPros = [
 
   loadFromSupabase();
 </script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
