@@ -1,0 +1,247 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { demoProviders } from '../data/demoProviders';
+---
+
+<BaseLayout title="Professional Profile">
+  <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+    <div id="loading-state" class="rounded-2xl border border-stone-200 bg-white p-8 text-center text-stone-500">Loading profile...</div>
+    <div id="error-state" class="hidden rounded-2xl border border-red-100 bg-red-50 p-8 text-center">
+      <h1 class="text-lg font-semibold text-red-800">Profile not found</h1>
+      <p class="mt-1 text-sm text-red-600">Please check the profile link and try again.</p>
+    </div>
+
+    <div id="profile-shell" class="hidden grid gap-6 lg:grid-cols-[1fr_300px]">
+      <section id="profile-card" class="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-start">
+          <div id="avatar" class="flex h-20 w-20 items-center justify-center rounded-full bg-brand-100 text-xl font-bold text-brand-700"></div>
+          <div class="flex-1">
+            <h1 id="name" class="text-2xl font-bold text-stone-900"></h1>
+            <p id="subtitle" class="mt-1 text-sm text-stone-500"></p>
+            <p id="bio" class="mt-3 text-sm leading-relaxed text-stone-600"></p>
+            <div id="meta" class="mt-4 flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+          <div class="rounded-2xl border border-stone-200 p-4">
+            <h2 class="text-xs font-semibold uppercase tracking-wide text-stone-400">Services</h2>
+            <div id="services" class="mt-2 flex flex-wrap gap-2"></div>
+          </div>
+          <div class="rounded-2xl border border-stone-200 p-4">
+            <h2 class="text-xs font-semibold uppercase tracking-wide text-stone-400">Specializations</h2>
+            <div id="specializations" class="mt-2 flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <div id="contact-block" class="mt-4 rounded-2xl border border-stone-200 p-4">
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-stone-400">Contact</h2>
+          <p id="contact" class="mt-2 text-sm text-stone-600"></p>
+        </div>
+      </section>
+
+      <aside class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+        <h2 class="text-base font-semibold text-stone-900">Customize Profile View</h2>
+        <p class="mt-1 text-xs text-stone-500">Choose how this profile is shown on your browser.</p>
+
+        <div class="mt-4 space-y-4">
+          <label class="block text-sm font-medium text-stone-700">Accent color
+            <input id="accent-color" type="color" class="mt-1 h-10 w-full rounded-lg border border-stone-200" value="#ff6b00" />
+          </label>
+
+          <label class="block text-sm font-medium text-stone-700">Layout
+            <select id="layout" class="mt-1 w-full rounded-lg border border-stone-200 px-3 py-2 text-sm">
+              <option value="comfortable">Comfortable</option>
+              <option value="compact">Compact</option>
+            </select>
+          </label>
+
+          <label class="flex items-center gap-2 text-sm text-stone-700">
+            <input id="toggle-contact" type="checkbox" class="h-4 w-4 rounded border-stone-300" checked />
+            Show contact section
+          </label>
+
+          <button id="save-prefs" class="w-full rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">Save customization</button>
+          <button id="reset-prefs" class="w-full rounded-xl border border-stone-200 px-4 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50">Reset</button>
+          <p id="prefs-msg" class="hidden text-xs text-green-700">Customization saved.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ demoProviders }}>
+  window.__demoProviders = demoProviders;
+</script>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  interface Provider {
+    id: string;
+    full_name?: string;
+    company_name?: string;
+    district?: string;
+    location?: string;
+    bio?: string;
+    phone?: string;
+    service_categories?: string[];
+    specializations?: string[];
+    years_experience?: number;
+    completed_projects?: number;
+    average_rating?: number;
+    total_reviews?: number;
+    is_verified?: boolean;
+    hourly_rate?: number;
+    avatar_url?: string;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const providerId = params.get('id');
+
+  const loading = document.getElementById('loading-state')!;
+  const error = document.getElementById('error-state')!;
+  const shell = document.getElementById('profile-shell')!;
+  const card = document.getElementById('profile-card') as HTMLElement;
+  const contactBlock = document.getElementById('contact-block') as HTMLElement;
+
+  const accentInput = document.getElementById('accent-color') as HTMLInputElement;
+  const layoutInput = document.getElementById('layout') as HTMLSelectElement;
+  const contactToggle = document.getElementById('toggle-contact') as HTMLInputElement;
+  const prefsMsg = document.getElementById('prefs-msg') as HTMLParagraphElement;
+
+  function pill(label: string, brand = false) {
+    return `<span class="rounded-full px-3 py-1 text-xs font-medium ${brand ? 'bg-brand-50 text-brand-700' : 'bg-stone-100 text-stone-600'}">${label}</span>`;
+  }
+
+  function renderProvider(p: Provider) {
+    const name = p.company_name || p.full_name || 'Professional';
+    const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+
+    document.getElementById('avatar')!.innerHTML = p.avatar_url
+      ? `<img src="${p.avatar_url}" alt="${name}" class="h-20 w-20 rounded-full object-cover"/>`
+      : initials;
+
+    document.getElementById('name')!.textContent = name;
+    document.getElementById('subtitle')!.textContent = [p.full_name, p.location || p.district, p.is_verified ? 'Verified' : ''].filter(Boolean).join(' · ');
+    document.getElementById('bio')!.textContent = p.bio || 'No bio provided yet.';
+
+    document.getElementById('meta')!.innerHTML = [
+      pill(`⭐ ${(p.average_rating || 0).toFixed(1)} (${p.total_reviews || 0})`, true),
+      pill(`${p.completed_projects || 0} projects`),
+      pill(`${p.years_experience || 0} years experience`),
+      p.hourly_rate ? pill(`LKR ${p.hourly_rate.toLocaleString()}/hr`) : '',
+    ].join('');
+
+    document.getElementById('services')!.innerHTML = (p.service_categories || []).length
+      ? (p.service_categories || []).map((s) => pill(s, true)).join('')
+      : '<p class="text-sm text-stone-400">Not specified</p>';
+
+    document.getElementById('specializations')!.innerHTML = (p.specializations || []).length
+      ? (p.specializations || []).map((s) => pill(s)).join('')
+      : '<p class="text-sm text-stone-400">Not specified</p>';
+
+    document.getElementById('contact')!.textContent = p.phone || 'Contact details are shared after quote request.';
+  }
+
+  function prefsKey() {
+    return `profile-customization:${providerId || 'default'}`;
+  }
+
+  function applyCustomization() {
+    card.style.setProperty('--profile-accent', accentInput.value);
+    card.style.borderColor = accentInput.value;
+    card.querySelectorAll('.bg-brand-50').forEach((el) => {
+      (el as HTMLElement).style.backgroundColor = `${accentInput.value}1A`;
+      (el as HTMLElement).style.color = accentInput.value;
+    });
+
+    card.classList.toggle('p-5', layoutInput.value === 'compact');
+    card.classList.toggle('sm:p-6', layoutInput.value === 'compact');
+    card.classList.toggle('p-6', layoutInput.value !== 'compact');
+    card.classList.toggle('sm:p-8', layoutInput.value !== 'compact');
+
+    contactBlock.classList.toggle('hidden', !contactToggle.checked);
+  }
+
+  function loadCustomization() {
+    const raw = localStorage.getItem(prefsKey());
+    if (!raw) return;
+    try {
+      const prefs = JSON.parse(raw);
+      accentInput.value = prefs.accent || '#ff6b00';
+      layoutInput.value = prefs.layout || 'comfortable';
+      contactToggle.checked = prefs.showContact ?? true;
+    } catch {
+      // ignore invalid local data
+    }
+  }
+
+  document.getElementById('save-prefs')?.addEventListener('click', () => {
+    const prefs = {
+      accent: accentInput.value,
+      layout: layoutInput.value,
+      showContact: contactToggle.checked,
+    };
+    localStorage.setItem(prefsKey(), JSON.stringify(prefs));
+    prefsMsg.classList.remove('hidden');
+    setTimeout(() => prefsMsg.classList.add('hidden'), 1500);
+    applyCustomization();
+  });
+
+  document.getElementById('reset-prefs')?.addEventListener('click', () => {
+    localStorage.removeItem(prefsKey());
+    accentInput.value = '#ff6b00';
+    layoutInput.value = 'comfortable';
+    contactToggle.checked = true;
+    applyCustomization();
+  });
+
+  [accentInput, layoutInput, contactToggle].forEach((input) => input.addEventListener('change', applyCustomization));
+
+  async function loadProvider() {
+    if (!providerId) {
+      loading.classList.add('hidden');
+      error.classList.remove('hidden');
+      return;
+    }
+
+    const demoProviders = (window as any).__demoProviders as Provider[];
+    const demo = demoProviders.find((p) => p.id === providerId);
+
+    if (demo) {
+      renderProvider(demo);
+      loading.classList.add('hidden');
+      shell.classList.remove('hidden');
+      loadCustomization();
+      applyCustomization();
+      return;
+    }
+
+    const { data: pro } = await supabase
+      .from('professional_profiles')
+      .select('*')
+      .eq('id', providerId)
+      .single();
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', providerId)
+      .single();
+
+    if (!pro && !profile) {
+      loading.classList.add('hidden');
+      error.classList.remove('hidden');
+      return;
+    }
+
+    renderProvider({ ...(pro || {}), ...(profile || {}) });
+    loading.classList.add('hidden');
+    shell.classList.remove('hidden');
+    loadCustomization();
+    applyCustomization();
+  }
+
+  loadProvider();
+</script>
