@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { demoProviders } from '../data/demoProviders';
 ---
 
 <BaseLayout title="Professional Profile">
@@ -70,9 +69,6 @@ import { demoProviders } from '../data/demoProviders';
   </div>
 </BaseLayout>
 
-<script define:vars={{ demoProviders }}>
-  window.__demoProviders = demoProviders;
-</script>
 
 <script>
   import { supabase } from '../lib/supabase';
@@ -203,18 +199,6 @@ import { demoProviders } from '../data/demoProviders';
     if (!providerId) {
       loading.classList.add('hidden');
       error.classList.remove('hidden');
-      return;
-    }
-
-    const demoProviders = (window as any).__demoProviders as Provider[];
-    const demo = demoProviders.find((p) => p.id === providerId);
-
-    if (demo) {
-      renderProvider(demo);
-      loading.classList.add('hidden');
-      shell.classList.remove('hidden');
-      loadCustomization();
-      applyCustomization();
       return;
     }
 
