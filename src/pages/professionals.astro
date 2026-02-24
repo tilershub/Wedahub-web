@@ -28,7 +28,21 @@ const districts = [
   'Anuradhapura','Polonnaruwa','Badulla','Ratnapura','Kegalle',
 ];
 
-const defaultPros = [];
+type DefaultPro = {
+  id: string;
+  services: string[];
+  district: string;
+  color: string;
+  initials: string;
+  name: string;
+  verified: boolean;
+  bio: string;
+  rating: string;
+  reviews: number;
+  projectCount: number;
+};
+
+const defaultPros: DefaultPro[] = [];
 ---
 
 <BaseLayout title="Find Professionals" description="Find verified construction professionals across Sri Lanka">
@@ -79,50 +93,61 @@ const defaultPros = [];
       <div class="grid gap-5 p-5 sm:p-6 lg:grid-cols-[1.35fr_1fr] lg:gap-8">
         <div>
           <div class="flex flex-wrap items-center gap-2">
-            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">Glass Work Provider</span>
+            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">Tiling Provider</span>
             <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Featured</span>
           </div>
-          <h2 class="mt-3 text-2xl font-bold text-stone-900">YL Construction</h2>
+          <h2 class="mt-3 text-2xl font-bold text-stone-900">TILERSHUB</h2>
           <p class="mt-2 text-sm text-stone-600">
-            Specialists in custom shower cubicles and durable hand railing installations for homes, apartments, and commercial properties.
+            TILERSHUB handles tiling, bathrooms, kitchen pantry finishes, and staircase installations with complete project execution and skilled workmanship.
           </p>
 
           <div class="mt-4 grid gap-4 sm:grid-cols-2">
             <section class="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
-              <h3 class="text-sm font-semibold text-stone-800">Shower Cubicles</h3>
+              <h3 class="text-sm font-semibold text-stone-800">Floor Tiling Rates</h3>
               <ul class="mt-2 space-y-1.5 text-sm text-stone-600">
-                <li><span class="font-medium text-stone-800">L shape with swing door</span> — from Rs. 97,500</li>
-                <li><span class="font-medium text-stone-800">Panel with swing door</span> — Rs. 76,500</li>
-                <li><span class="font-medium text-stone-800">Panel with sliding door</span> — Rs. 88,500</li>
-                <li><span class="font-medium text-stone-800">Double sliding door</span> — Rs. 123,000</li>
+                <li><span class="font-medium text-stone-800">Up to 4×2 tiles (Area)</span> — from Rs. 350</li>
+                <li><span class="font-medium text-stone-800">Up to 4×2 tiles (Skirting)</span> — Rs. 250</li>
+                <li><span class="font-medium text-stone-800">Large format tiles (Area)</span> — from Rs. 600</li>
+                <li><span class="font-medium text-stone-800">Large format tiles (Skirting)</span> — Rs. 400</li>
               </ul>
             </section>
             <section class="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
-              <h3 class="text-sm font-semibold text-stone-800">Hand Railing</h3>
+              <h3 class="text-sm font-semibold text-stone-800">Specialty Packages</h3>
               <ul class="mt-2 space-y-1.5 text-sm text-stone-600">
-                <li><span class="font-medium text-stone-800">Staircase handrail railing</span> — Rs. 12,500 onwards</li>
-                <li><span class="font-medium text-stone-800">Balcony/Terrace hand railing</span> — Rs. 12,500 onwards</li>
+                <li><span class="font-medium text-stone-800">Bathroom renovation</span> — from Rs. 16,750 per sq.ft</li>
+                <li><span class="font-medium text-stone-800">Kitchen pantry top + backsplash</span> — Rs. 5,000 per lin.ft</li>
+                <li><span class="font-medium text-stone-800">Staircase tiling</span> — from Rs. 8,500 per step</li>
               </ul>
             </section>
           </div>
 
+          <section class="mt-4 rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
+            <h3 class="text-sm font-semibold text-stone-800">Bathroom Package Includes</h3>
+            <div class="mt-2 flex flex-wrap gap-2">
+              {['Demolition work', 'Mason work', 'Plumbing', 'Electrical wiring', 'Waterproofing', 'Tiling', 'Ceiling', 'Fix fixtures', 'Shower cubicle', 'Vanity cupboard'].map((item) => (
+                <span class="rounded-full bg-white px-3 py-1 text-xs font-medium text-stone-700 ring-1 ring-stone-200">{item}</span>
+              ))}
+            </div>
+          </section>
+
           <div class="mt-4 flex flex-wrap gap-2">
-            <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">Shower Cubicles</span>
-            <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">Hand Railing</span>
-            <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">Glass Work</span>
+            <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">Tiling</span>
+            <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">Bathroom</span>
+            <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">Kitchen Pantry</span>
+            <span class="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">Staircase</span>
           </div>
         </div>
 
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
           <img
-            src="https://images.unsplash.com/photo-1616594039964-3d67bfbf307d?auto=format&fit=crop&w=1200&q=80"
-            alt="Frameless shower cubicle installation"
+            src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80"
+            alt="Modern tiled bathroom by TILERSHUB"
             class="h-48 w-full rounded-2xl object-cover sm:h-52 lg:h-56"
             loading="lazy"
           />
           <img
-            src="https://images.unsplash.com/photo-1621293954908-907159247fc8?auto=format&fit=crop&w=1200&q=80"
-            alt="Modern glass and metal hand railing"
+            src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1200&q=80"
+            alt="Kitchen pantry backsplash tiling"
             class="h-48 w-full rounded-2xl object-cover sm:h-52 lg:h-56"
             loading="lazy"
           />
@@ -146,7 +171,7 @@ const defaultPros = [];
           </div>
           <p class="mt-3 text-sm text-stone-500">{pro.bio}</p>
           <div class="mt-3 flex flex-wrap gap-1.5">
-            {pro.services.map((s) => (
+            {pro.services.map((s: string) => (
               <span class="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-600">{s}</span>
             ))}
           </div>
