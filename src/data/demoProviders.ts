@@ -228,6 +228,30 @@ export const demoProviders: DemoProvider[] = [
     is_verified: true,
     hourly_rate: 4500,
   },
+  {
+    id: 'demo-20',
+    full_name: 'YL Construction Team',
+    company_name: 'YL Construction',
+    district: 'Colombo',
+    bio: 'Glass work specialists for tempered glass shower cubicles and hand railings. Shower cubicle options: L-shape with swing door (3x3, 7ft) Rs. 97,500; panel type with swing door (4ft, 7ft) Rs. 76,500; panel type with sliding door (5ft, 7ft) Rs. 88,500. Staircase and balcony/terrace hand railings from Rs. 12,500 onward.',
+    phone: '+94 71 011 1506',
+    service_categories: ['Glass Work'],
+    specializations: [
+      'Tempered Glass Shower Cubicles',
+      'L-Shape Swing Door Cubicle (3x3, 7ft) - Rs. 97,500',
+      'Panel Swing Door Cubicle (4ft, 7ft) - Rs. 76,500',
+      'Panel Sliding Door Cubicle (5ft, 7ft) - Rs. 88,500',
+      'Tempered Glass Staircase Hand Railing - From Rs. 12,500',
+      'Tempered Glass Balcony/Terrace Hand Railing - From Rs. 12,500',
+    ],
+    service_areas: ['Colombo', 'Gampaha', 'Kalutara'],
+    years_experience: 8,
+    completed_projects: 96,
+    average_rating: 4.8,
+    total_reviews: 61,
+    is_verified: true,
+    hourly_rate: 5000,
+  },
 ];
 
 export const getDemoProviderById = (id: string) => demoProviders.find((provider) => provider.id === id);
