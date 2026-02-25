@@ -119,4 +119,18 @@ export const services: ServiceCategory[] = [
     description: 'Basement, roof and wall waterproofing solutions',
     gradient: 'from-blue-50 to-indigo-50',
   },
+  {
+    name: 'YL Construction',
+    slug: 'yl-construction',
+    icon: '🏗️',
+    description: 'Construction solutions from YL Construction for residential and commercial projects',
+    gradient: 'from-amber-50 to-orange-50',
+  },
+  {
+    name: 'TILERSHUB',
+    slug: 'tilershub',
+    icon: '⬜',
+    description: 'Specialized tiling, bathroom, pantry, and staircase execution by TILERSHUB',
+    gradient: 'from-orange-50 to-amber-50',
+  },
 ];
