@@ -183,6 +183,10 @@ const isActivePath = (href: string) => {
     navElements.mobileMenuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
   }
 
+  // Pro dropdown toggle
+  const proMenuBtn = document.getElementById('pro-menu-btn');
+  const proDropdown = document.getElementById('pro-dropdown');
+
   navElements.mobileMenuBtn?.addEventListener('click', () => {
     toggleMobileMenu();
   });
@@ -197,10 +201,6 @@ const isActivePath = (href: string) => {
       proDropdown?.classList.add('hidden');
     }
   });
-
-  // Pro dropdown toggle
-  const proMenuBtn = document.getElementById('pro-menu-btn');
-  const proDropdown = document.getElementById('pro-dropdown');
 
   proMenuBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
