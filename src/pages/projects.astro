@@ -276,6 +276,14 @@ const projectTypes = ['All', 'New Build', 'Renovation', 'Kitchen', 'Bathroom', '
   tabPortfolio.addEventListener('click', () => activate(tabPortfolio, tabRequests, panelPortfolio, panelRequests));
   tabRequests.addEventListener('click', () => activate(tabRequests, tabPortfolio, panelRequests, panelPortfolio));
 
+  function escapeHtml(str: string): string {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
   // Load real data from Supabase
   async function loadProjects() {
     try {
@@ -310,11 +318,11 @@ const projectTypes = ['All', 'New Build', 'Renovation', 'Kitchen', 'Bathroom', '
               </div>
               <div class="p-5">
                 <div class="flex items-center gap-2">
-                  <span class="rounded-full ${c.badge} px-2.5 py-0.5 text-xs font-medium">${p.project_type || p.category || 'Project'}</span>
-                  <span class="text-xs text-gray-400">${p.district || ''}</span>
+                  <span class="rounded-full ${c.badge} px-2.5 py-0.5 text-xs font-medium">${escapeHtml(p.project_type || p.category || 'Project')}</span>
+                  <span class="text-xs text-gray-400">${escapeHtml(p.district || '')}</span>
                 </div>
-                <h3 class="mt-2 font-semibold text-gray-900">${p.title}</h3>
-                <p class="mt-1 text-sm text-gray-500">${(p.description || '').slice(0, 120)}</p>
+                <h3 class="mt-2 font-semibold text-gray-900">${escapeHtml(p.title)}</h3>
+                <p class="mt-1 text-sm text-gray-500">${escapeHtml((p.description || '').slice(0, 120))}</p>
                 ${cost ? `<div class="mt-3"><span class="text-sm font-semibold text-gray-600">${cost}</span></div>` : ''}
               </div>
             </div>`;
@@ -339,21 +347,21 @@ const projectTypes = ['All', 'New Build', 'Renovation', 'Kitchen', 'Bathroom', '
               <div class="flex items-center gap-2">
                 <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Open</span>
               </div>
-              <h3 class="mt-3 font-semibold text-gray-900">${r.title}</h3>
-              <p class="mt-1 text-sm text-gray-500">${(r.description || '').slice(0, 150)}</p>
+              <h3 class="mt-3 font-semibold text-gray-900">${escapeHtml(r.title)}</h3>
+              <p class="mt-1 text-sm text-gray-500">${escapeHtml((r.description || '').slice(0, 150))}</p>
               <div class="mt-3 flex flex-wrap gap-2">
-                ${r.category ? `<span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">${r.category}</span>` : ''}
-                ${r.project_type ? `<span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">${r.project_type}</span>` : ''}
+                ${r.category ? `<span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">${escapeHtml(r.category)}</span>` : ''}
+                ${r.project_type ? `<span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">${escapeHtml(r.project_type)}</span>` : ''}
               </div>
               <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-                <span class="text-xs text-gray-400">${r.location || ''}</span>
+                <span class="text-xs text-gray-400">${escapeHtml(r.location || '')}</span>
                 ${budget ? `<span class="text-sm font-semibold text-green-600">${budget}</span>` : ''}
               </div>
             </div>`;
         }).join('');
       }
-    } catch {
-      // Keep hardcoded fallback
+    } catch (err) {
+      console.error('Failed to load projects from Supabase:', err);
     }
   }
 
