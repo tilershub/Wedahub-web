@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { services } from '../../data/services';
+import FloorAreaCalculator from '../../components/FloorAreaCalculator.svelte';
 
 export function getStaticPaths() {
   return services.map((s) => ({
@@ -121,6 +122,14 @@ const adCards = [
         <button id="clear-filters-btn" class="mt-4 rounded-xl bg-brand-600 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-700">Clear filters</button>
       </div>
     </section>
+
+    <!-- Floor Area Calculator (tiling only) -->
+    {service.slug === 'tiling' && (
+      <section class="mx-auto mt-10 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="mb-4 text-xl font-semibold text-stone-900">Floor Area Calculator</h2>
+        <FloorAreaCalculator client:load />
+      </section>
+    )}
 
     <!-- Blog Cards -->
     <section class="mx-auto mt-10 max-w-7xl px-4 sm:px-6 lg:px-8">
