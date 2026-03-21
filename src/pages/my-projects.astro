@@ -1,0 +1,334 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="My Projects" description="View your projects and quotes on වැඩHUB">
+  <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+    <div id="page-loading" class="py-20 text-center text-gray-400">Loading your projects...</div>
+
+    <div id="page-unauthenticated" class="hidden py-20 text-center">
+      <div class="text-5xl">🔐</div>
+      <h2 class="mt-4 text-2xl font-bold text-gray-900">Please log in</h2>
+      <p class="mt-2 text-gray-500">You need to be logged in to view your projects.</p>
+      <div class="mt-6 flex items-center justify-center gap-4">
+        <a href="/login" class="btn-primary">Log In</a>
+        <a href="/register" class="btn-secondary">Create Account</a>
+      </div>
+    </div>
+
+    <div id="page-content" class="hidden">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">My Projects</h1>
+          <p class="mt-1 text-sm text-gray-500">Track your project requests and incoming quotes</p>
+        </div>
+        <a href="/post" class="btn-primary self-start">+ Post New Project</a>
+      </div>
+
+      <div id="projects-container" class="mt-8 space-y-6"></div>
+
+      <div id="empty-state" class="hidden mt-8 card py-16 text-center">
+        <div class="text-5xl">📋</div>
+        <h3 class="mt-4 text-xl font-semibold text-gray-900">No projects yet</h3>
+        <p class="mt-2 text-gray-500">Post your first project to start receiving quotes from professionals.</p>
+        <a href="/post" class="btn-primary mt-6 inline-block">Post a Project</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Accept Quote Confirmation Modal -->
+  <div id="accept-modal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-black/50" id="accept-modal-backdrop"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+      <div class="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+        <h3 class="text-lg font-semibold text-gray-900">Accept Quote</h3>
+        <p class="mt-2 text-sm text-gray-500">Are you sure you want to accept this quote? Other quotes for this project will be marked as rejected.</p>
+        <div id="accept-quote-details" class="mt-4 rounded-lg bg-gray-50 p-4 text-sm text-gray-700"></div>
+        <div class="mt-6 flex justify-end gap-3">
+          <button id="accept-cancel" class="btn-secondary text-sm">Cancel</button>
+          <button id="accept-confirm" class="btn-primary text-sm">Accept Quote</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reject Quote Confirmation Modal -->
+  <div id="reject-modal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-black/50" id="reject-modal-backdrop"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+      <div class="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+        <h3 class="text-lg font-semibold text-gray-900">Reject Quote</h3>
+        <p class="mt-2 text-sm text-gray-500">Are you sure you want to reject this quote?</p>
+        <div class="mt-6 flex justify-end gap-3">
+          <button id="reject-cancel" class="btn-secondary text-sm">Cancel</button>
+          <button id="reject-confirm" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Reject Quote</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  const loading = document.getElementById('page-loading')!;
+  const content = document.getElementById('page-content')!;
+  const unauthenticated = document.getElementById('page-unauthenticated')!;
+  const projectsContainer = document.getElementById('projects-container')!;
+  const emptyState = document.getElementById('empty-state')!;
+
+  let pendingAcceptQuoteId: string | null = null;
+  let pendingRejectQuoteId: string | null = null;
+
+  function escapeHtml(str: string): string {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function statusBadge(status: string): string {
+    const map: Record<string, string> = {
+      open: 'bg-green-100 text-green-700',
+      quoting: 'bg-blue-100 text-blue-700',
+      in_progress: 'bg-amber-100 text-amber-700',
+      completed: 'bg-gray-100 text-gray-600',
+      cancelled: 'bg-red-100 text-red-600',
+    };
+    const label: Record<string, string> = {
+      open: 'Open',
+      quoting: 'Quoting',
+      in_progress: 'In Progress',
+      completed: 'Completed',
+      cancelled: 'Cancelled',
+    };
+    return `<span class="rounded-full px-2.5 py-0.5 text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}">${label[status] || status}</span>`;
+  }
+
+  function quoteStatusBadge(status: string): string {
+    const map: Record<string, string> = {
+      pending: 'bg-yellow-100 text-yellow-700',
+      accepted: 'bg-green-100 text-green-700',
+      rejected: 'bg-red-100 text-red-600',
+      withdrawn: 'bg-gray-100 text-gray-500',
+    };
+    return `<span class="rounded-full px-2 py-0.5 text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}">${escapeHtml(status)}</span>`;
+  }
+
+  function renderQuote(q: any, projectStatus: string): string {
+    const canAct = q.status === 'pending' && projectStatus === 'open';
+    const proName = q.professional?.company_name || q.professional?.full_name || 'Professional';
+
+    return `
+      <div class="rounded-xl border border-gray-200 bg-gray-50 p-4" data-quote-id="${q.id}">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-medium text-gray-900 text-sm">${escapeHtml(proName)}</span>
+              ${quoteStatusBadge(q.status)}
+            </div>
+            <p class="mt-1 text-xs text-gray-500">${escapeHtml(q.description)}</p>
+            ${q.estimated_duration ? `<p class="mt-1 text-xs text-gray-400">Duration: ${escapeHtml(q.estimated_duration)}</p>` : ''}
+            ${q.materials_included ? '<p class="mt-1 text-xs text-green-600">Materials included</p>' : ''}
+          </div>
+          <div class="flex flex-col items-end gap-2 shrink-0">
+            <span class="text-base font-bold text-gray-900">LKR ${Number(q.amount).toLocaleString()}</span>
+            ${canAct ? `
+              <div class="flex gap-2">
+                <button onclick="openAcceptModal('${q.id}', '${escapeHtml(proName)}', ${q.amount})" class="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700">Accept</button>
+                <button onclick="openRejectModal('${q.id}')" class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50">Reject</button>
+              </div>
+            ` : ''}
+            ${q.status === 'accepted' ? `<a href="/review?project_id=${q.project_id}&professional_id=${q.professional_id}" class="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-700">Write Review</a>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderProject(project: any): string {
+    const quotes = project.quotes || [];
+    const budget = project.budget_min && project.budget_max
+      ? `LKR ${Number(project.budget_min).toLocaleString()} – ${Number(project.budget_max).toLocaleString()}`
+      : project.budget_min ? `From LKR ${Number(project.budget_min).toLocaleString()}` : '';
+
+    return `
+      <div class="card" data-project-id="${project.id}">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              ${statusBadge(project.status)}
+              <span class="text-xs text-gray-400">${new Date(project.created_at).toLocaleDateString()}</span>
+            </div>
+            <h3 class="mt-2 text-lg font-semibold text-gray-900">${escapeHtml(project.title)}</h3>
+            <p class="mt-1 text-sm text-gray-500 line-clamp-2">${escapeHtml(project.description)}</p>
+            <div class="mt-2 flex flex-wrap gap-2 text-xs text-gray-500">
+              <span class="rounded-full bg-brand-50 px-2.5 py-1 font-medium text-brand-700">${escapeHtml(project.category)}</span>
+              <span class="rounded-full bg-gray-100 px-2.5 py-1">${escapeHtml(project.project_type)}</span>
+              <span>${escapeHtml(project.location)}</span>
+              ${budget ? `<span class="font-medium text-gray-700">${budget}</span>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-semibold text-gray-700">Quotes Received (${quotes.length})</h4>
+            ${quotes.length === 0 ? '<span class="text-xs text-gray-400">Waiting for pros to respond…</span>' : ''}
+          </div>
+          ${quotes.length > 0
+            ? `<div class="mt-3 space-y-3">${quotes.map((q: any) => renderQuote(q, project.status)).join('')}</div>`
+            : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  // Accept modal
+  (window as any).openAcceptModal = (quoteId: string, proName: string, amount: number) => {
+    pendingAcceptQuoteId = quoteId;
+    document.getElementById('accept-quote-details')!.textContent = `${proName} — LKR ${Number(amount).toLocaleString()}`;
+    document.getElementById('accept-modal')!.classList.remove('hidden');
+  };
+
+  document.getElementById('accept-cancel')?.addEventListener('click', () => {
+    pendingAcceptQuoteId = null;
+    document.getElementById('accept-modal')!.classList.add('hidden');
+  });
+  document.getElementById('accept-modal-backdrop')?.addEventListener('click', () => {
+    pendingAcceptQuoteId = null;
+    document.getElementById('accept-modal')!.classList.add('hidden');
+  });
+
+  document.getElementById('accept-confirm')?.addEventListener('click', async () => {
+    if (!pendingAcceptQuoteId) return;
+    const quoteId = pendingAcceptQuoteId;
+    document.getElementById('accept-modal')!.classList.add('hidden');
+    pendingAcceptQuoteId = null;
+
+    // Get quote to find project_id
+    const { data: quote, error: qErr } = await supabase
+      .from('quotes')
+      .select('project_id')
+      .eq('id', quoteId)
+      .single();
+
+    if (qErr || !quote) { alert('Failed to accept quote.'); return; }
+
+    // Accept this quote
+    const { error: aErr } = await supabase
+      .from('quotes')
+      .update({ status: 'accepted' })
+      .eq('id', quoteId);
+
+    if (aErr) { alert('Failed to accept quote: ' + aErr.message); return; }
+
+    // Reject all other pending quotes for same project
+    await supabase
+      .from('quotes')
+      .update({ status: 'rejected' })
+      .eq('project_id', quote.project_id)
+      .eq('status', 'pending')
+      .neq('id', quoteId);
+
+    // Update project status to quoting
+    await supabase
+      .from('projects')
+      .update({ status: 'quoting' })
+      .eq('id', quote.project_id);
+
+    // Reload
+    await init();
+  });
+
+  // Reject modal
+  (window as any).openRejectModal = (quoteId: string) => {
+    pendingRejectQuoteId = quoteId;
+    document.getElementById('reject-modal')!.classList.remove('hidden');
+  };
+
+  document.getElementById('reject-cancel')?.addEventListener('click', () => {
+    pendingRejectQuoteId = null;
+    document.getElementById('reject-modal')!.classList.add('hidden');
+  });
+  document.getElementById('reject-modal-backdrop')?.addEventListener('click', () => {
+    pendingRejectQuoteId = null;
+    document.getElementById('reject-modal')!.classList.add('hidden');
+  });
+
+  document.getElementById('reject-confirm')?.addEventListener('click', async () => {
+    if (!pendingRejectQuoteId) return;
+    const quoteId = pendingRejectQuoteId;
+    document.getElementById('reject-modal')!.classList.add('hidden');
+    pendingRejectQuoteId = null;
+
+    const { error } = await supabase
+      .from('quotes')
+      .update({ status: 'rejected' })
+      .eq('id', quoteId);
+
+    if (error) { alert('Failed to reject quote: ' + error.message); return; }
+    await init();
+  });
+
+  async function init() {
+    const { data: { user } } = await supabase.auth.getUser();
+    loading.classList.add('hidden');
+
+    if (!user) {
+      unauthenticated.classList.remove('hidden');
+      return;
+    }
+
+    const { data: projects, error } = await supabase
+      .from('projects')
+      .select(`
+        *,
+        quotes (
+          id, amount, description, estimated_duration, materials_included, status, project_id, professional_id,
+          professional:profiles!quotes_professional_id_fkey(full_name),
+          pro_profile:professional_profiles!quotes_professional_id_fkey(company_name)
+        )
+      `)
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    content.classList.remove('hidden');
+
+    if (error) {
+      projectsContainer.innerHTML = `<div class="card text-center py-8 text-red-500">Failed to load projects: ${escapeHtml(error.message)}</div>`;
+      return;
+    }
+
+    if (!projects || projects.length === 0) {
+      emptyState.classList.remove('hidden');
+      return;
+    }
+
+    // Merge pro_profile company_name into professional object
+    const enriched = projects.map((p: any) => ({
+      ...p,
+      quotes: (p.quotes || []).map((q: any) => ({
+        ...q,
+        professional: {
+          full_name: q.professional?.full_name,
+          company_name: q.pro_profile?.company_name,
+        },
+      })),
+    }));
+
+    projectsContainer.innerHTML = enriched.map(renderProject).join('');
+  }
+
+  init();
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

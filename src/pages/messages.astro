@@ -1,0 +1,274 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Messages" description="Your messages on වැඩHUB">
+  <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+    <div id="page-loading" class="py-20 text-center text-gray-400">Loading messages...</div>
+
+    <div id="page-unauthenticated" class="hidden py-20 text-center">
+      <div class="text-5xl">🔐</div>
+      <h2 class="mt-4 text-2xl font-bold text-gray-900">Please log in</h2>
+      <p class="mt-2 text-gray-500">You need to be logged in to view your messages.</p>
+      <div class="mt-6 flex items-center justify-center gap-4">
+        <a href="/login" class="btn-primary">Log In</a>
+        <a href="/register" class="btn-secondary">Create Account</a>
+      </div>
+    </div>
+
+    <div id="page-content" class="hidden">
+      <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">Messages</h1>
+
+      <!-- Layout: conversation list (left) + thread (right) -->
+      <div class="mt-6 flex gap-4 min-h-[60vh]">
+        <!-- Conversation list -->
+        <div id="conversations-panel" class="w-full sm:w-72 shrink-0 space-y-2" id="conv-list"></div>
+
+        <!-- Thread panel -->
+        <div id="thread-panel" class="hidden flex-1 flex-col rounded-xl border border-gray-200 bg-white overflow-hidden sm:flex">
+          <div id="thread-header" class="border-b border-gray-100 px-5 py-4">
+            <p class="font-semibold text-gray-900" id="thread-name">Select a conversation</p>
+          </div>
+          <div id="thread-messages" class="flex-1 overflow-y-auto p-4 space-y-3 max-h-[50vh]"></div>
+          <div class="border-t border-gray-100 p-4">
+            <form id="reply-form" class="flex gap-2">
+              <input
+                type="text"
+                id="reply-input"
+                placeholder="Type a message…"
+                class="input-field flex-1"
+                autocomplete="off"
+              />
+              <button type="submit" class="btn-primary shrink-0">Send</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Empty thread state (mobile: hidden when no convo selected) -->
+        <div id="thread-empty" class="hidden flex-1 items-center justify-center rounded-xl border border-gray-200 bg-gray-50 sm:flex">
+          <div class="text-center">
+            <div class="text-4xl">💬</div>
+            <p class="mt-3 text-sm text-gray-400">Select a conversation to view messages</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="empty-state" class="hidden mt-8 card py-16 text-center">
+        <div class="text-5xl">💬</div>
+        <h3 class="mt-4 text-xl font-semibold text-gray-900">No messages yet</h3>
+        <p class="mt-2 text-gray-500">Visit a professional's profile to send your first message.</p>
+        <a href="/professionals" class="btn-primary mt-6 inline-block">Find Professionals</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  const loading = document.getElementById('page-loading')!;
+  const content = document.getElementById('page-content')!;
+  const unauthenticated = document.getElementById('page-unauthenticated')!;
+  const emptyState = document.getElementById('empty-state')!;
+  const conversationsPanel = document.getElementById('conversations-panel')!;
+  const threadPanel = document.getElementById('thread-panel')!;
+  const threadEmpty = document.getElementById('thread-empty')!;
+  const threadMessages = document.getElementById('thread-messages')!;
+  const threadName = document.getElementById('thread-name')!;
+  const replyForm = document.getElementById('reply-form') as HTMLFormElement;
+  const replyInput = document.getElementById('reply-input') as HTMLInputElement;
+
+  let currentUserId = '';
+  let activeReceiverId = '';
+  let conversations: Map<string, { name: string; messages: any[] }> = new Map();
+
+  function escapeHtml(str: string): string {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function timeAgo(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return new Date(dateStr).toLocaleDateString();
+  }
+
+  function renderConversations() {
+    if (conversations.size === 0) {
+      emptyState.classList.remove('hidden');
+      conversationsPanel.innerHTML = '';
+      return;
+    }
+
+    conversationsPanel.innerHTML = Array.from(conversations.entries()).map(([otherId, conv]) => {
+      const lastMsg = conv.messages[conv.messages.length - 1];
+      const unread = conv.messages.filter(m => m.sender_id === otherId && !m.read).length;
+      const isActive = otherId === activeReceiverId;
+
+      return `
+        <button onclick="selectConversation('${otherId}')" class="w-full text-left rounded-xl border p-4 transition-colors ${isActive ? 'border-brand-300 bg-brand-50' : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'}">
+          <div class="flex items-center justify-between gap-2">
+            <span class="truncate font-medium text-sm text-gray-900">${escapeHtml(conv.name)}</span>
+            <div class="flex items-center gap-1 shrink-0">
+              ${unread > 0 ? `<span class="rounded-full bg-brand-600 px-1.5 py-0.5 text-[10px] font-bold text-white">${unread}</span>` : ''}
+              <span class="text-[10px] text-gray-400">${lastMsg ? timeAgo(lastMsg.created_at) : ''}</span>
+            </div>
+          </div>
+          ${lastMsg ? `<p class="mt-0.5 truncate text-xs text-gray-500">${escapeHtml(lastMsg.content)}</p>` : ''}
+        </button>
+      `;
+    }).join('');
+  }
+
+  function renderThread(otherId: string) {
+    const conv = conversations.get(otherId);
+    if (!conv) return;
+
+    threadName.textContent = conv.name;
+    threadMessages.innerHTML = conv.messages.map(m => {
+      const isMe = m.sender_id === currentUserId;
+      return `
+        <div class="flex ${isMe ? 'justify-end' : 'justify-start'}">
+          <div class="max-w-xs rounded-2xl px-4 py-2.5 text-sm ${isMe ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-800'}">
+            <p>${escapeHtml(m.content)}</p>
+            <p class="mt-0.5 text-[10px] ${isMe ? 'text-brand-200' : 'text-gray-400'}">${timeAgo(m.created_at)}</p>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Scroll to bottom
+    threadMessages.scrollTop = threadMessages.scrollHeight;
+
+    // Show thread panel
+    threadPanel.classList.remove('hidden');
+    threadPanel.classList.add('flex');
+    threadEmpty.classList.add('hidden');
+  }
+
+  (window as any).selectConversation = async (otherId: string) => {
+    activeReceiverId = otherId;
+
+    // Mark messages from this person as read
+    await supabase
+      .from('messages')
+      .update({ read: true })
+      .eq('sender_id', otherId)
+      .eq('receiver_id', currentUserId)
+      .eq('read', false);
+
+    // Update local unread count
+    const conv = conversations.get(otherId);
+    if (conv) {
+      conv.messages.forEach(m => { if (m.sender_id === otherId) m.read = true; });
+    }
+
+    renderConversations();
+    renderThread(otherId);
+  };
+
+  replyForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const content = replyInput.value.trim();
+    if (!content || !activeReceiverId) return;
+
+    replyInput.value = '';
+
+    const { data, error } = await supabase
+      .from('messages')
+      .insert({
+        sender_id: currentUserId,
+        receiver_id: activeReceiverId,
+        content,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      replyInput.value = content;
+      alert('Failed to send message: ' + error.message);
+      return;
+    }
+
+    const conv = conversations.get(activeReceiverId);
+    if (conv && data) conv.messages.push(data);
+    renderConversations();
+    renderThread(activeReceiverId);
+  });
+
+  async function init() {
+    const { data: { user } } = await supabase.auth.getUser();
+    loading.classList.add('hidden');
+
+    if (!user) {
+      unauthenticated.classList.remove('hidden');
+      return;
+    }
+
+    currentUserId = user.id;
+    content.classList.remove('hidden');
+
+    // Load all messages involving this user
+    const { data: messages, error } = await supabase
+      .from('messages')
+      .select('*')
+      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      conversationsPanel.innerHTML = `<div class="card text-center py-8 text-red-500">Failed to load messages: ${escapeHtml(error.message)}</div>`;
+      return;
+    }
+
+    if (!messages || messages.length === 0) {
+      emptyState.classList.remove('hidden');
+      threadEmpty.classList.remove('hidden');
+      threadEmpty.classList.add('flex');
+      return;
+    }
+
+    // Group messages by the other person
+    const otherIds = new Set<string>();
+    messages.forEach(m => {
+      const otherId = m.sender_id === user.id ? m.receiver_id : m.sender_id;
+      otherIds.add(otherId);
+      if (!conversations.has(otherId)) {
+        conversations.set(otherId, { name: 'Loading…', messages: [] });
+      }
+      conversations.get(otherId)!.messages.push(m);
+    });
+
+    // Load names for all other participants
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, full_name')
+      .in('id', Array.from(otherIds));
+
+    const { data: proProfiles } = await supabase
+      .from('professional_profiles')
+      .select('id, company_name')
+      .in('id', Array.from(otherIds));
+
+    const proMap = new Map((proProfiles || []).map(p => [p.id, p.company_name]));
+    const nameMap = new Map((profiles || []).map(p => [p.id, p.full_name]));
+
+    conversations.forEach((conv, otherId) => {
+      conv.name = proMap.get(otherId) || nameMap.get(otherId) || 'User';
+    });
+
+    renderConversations();
+
+    // Show empty thread state
+    threadEmpty.classList.remove('hidden');
+    threadEmpty.classList.add('flex');
+  }
+
+  init();
+</script>

@@ -1,28 +1,117 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { services } from '../data/services';
+
+const steps = [
+  {
+    number: '1',
+    title: 'Post your job',
+    description: 'Describe what you need done — renovation, plumbing, painting, anything.',
+    icon: '📋',
+  },
+  {
+    number: '2',
+    title: 'Get free quotes',
+    description: 'Verified local professionals send you quotes. Compare and choose.',
+    icon: '💬',
+  },
+  {
+    number: '3',
+    title: 'Get it done',
+    description: 'Hire the right pro, track progress, and leave a review when finished.',
+    icon: '✅',
+  },
+];
 ---
 
-<BaseLayout title="Find trusted home service professionals">
-  <div class="bg-stone-50 pb-10 pt-6 sm:pt-8">
-    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <h1 class="text-3xl font-bold text-stone-900 sm:text-4xl">Choose a service</h1>
-        <p class="mt-2 text-sm text-stone-500">Open a service page to view providers, blogs, and promotions.</p>
-      </div>
+<BaseLayout title="Hire trusted home professionals — වැඩHUB" description="Find verified plumbers, electricians, builders, and more across Sri Lanka. Post your job and get free quotes.">
 
-      <div class="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+  <!-- ── HERO ─────────────────────────────────────────────── -->
+  <section class="bg-white pt-8 pb-10 sm:pt-12 sm:pb-14">
+    <div class="mx-auto max-w-2xl px-4 text-center sm:px-6">
+      <p class="text-xs font-semibold uppercase tracking-widest text-brand-600">Sri Lanka's home services platform</p>
+      <h1 class="mt-3 text-3xl font-extrabold leading-tight text-stone-900 sm:text-4xl lg:text-5xl">
+        Hire trusted local pros.<br class="hidden sm:block" /> Fast.
+      </h1>
+      <p class="mx-auto mt-4 max-w-md text-base text-stone-500">
+        From plumbing to full builds — post your job and get free quotes from verified professionals near you.
+      </p>
+
+      <div class="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <a href="/post" class="w-full rounded-2xl bg-brand-600 px-8 py-4 text-center text-sm font-bold text-white shadow-sm transition hover:bg-brand-700 active:scale-95 sm:w-auto">
+          Post a Job — Free
+        </a>
+        <a href="/professionals" class="w-full rounded-2xl border border-stone-200 bg-white px-8 py-4 text-center text-sm font-semibold text-stone-700 transition hover:border-brand-300 hover:text-brand-700 active:scale-95 sm:w-auto">
+          Browse Professionals
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SERVICES GRID ──────────────────────────────────────── -->
+  <section class="bg-stone-50 py-10 sm:py-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-center text-lg font-bold text-stone-900 sm:text-xl">What do you need done?</h2>
+
+      <div class="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 lg:gap-4">
         {services.map((service) => (
           <a
-            href={`/services/${service.slug}`}
-            class={`group rounded-2xl border border-stone-200 bg-gradient-to-br ${service.gradient} p-4 transition hover:border-brand-300 hover:shadow-md sm:p-5`}
+            href={`/professionals?service=${encodeURIComponent(service.name)}`}
+            class={`group flex items-center gap-3 rounded-2xl border border-stone-200 bg-gradient-to-br ${service.gradient} p-4 transition hover:border-brand-300 hover:shadow-sm active:scale-95 sm:p-5`}
           >
             <span class="text-2xl sm:text-3xl">{service.icon}</span>
-            <h3 class="mt-2 text-sm font-semibold text-stone-900 group-hover:text-brand-700 sm:text-base">{service.name}</h3>
-            <p class="mt-1 hidden text-xs leading-relaxed text-stone-500 sm:block">{service.description}</p>
+            <span class="text-sm font-semibold text-stone-800 group-hover:text-brand-700 sm:text-base">{service.name}</span>
           </a>
         ))}
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ───────────────────────────────────────── -->
+  <section class="bg-white py-12 sm:py-16">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
+      <h2 class="text-center text-lg font-bold text-stone-900 sm:text-xl">How it works</h2>
+
+      <div class="mt-8 grid gap-6 sm:grid-cols-3 sm:gap-8">
+        {steps.map((step) => (
+          <div class="flex gap-4 sm:flex-col sm:gap-3 sm:text-center">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-2xl sm:mx-auto">
+              {step.icon}
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wider text-brand-500">Step {step.number}</p>
+              <h3 class="mt-0.5 text-base font-bold text-stone-900">{step.title}</h3>
+              <p class="mt-1 text-sm leading-relaxed text-stone-500">{step.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-10 text-center">
+        <a href="/post" class="inline-block rounded-2xl bg-brand-600 px-8 py-3.5 text-sm font-bold text-white transition hover:bg-brand-700 active:scale-95">
+          Post Your First Job
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOR PROFESSIONALS ──────────────────────────────────── -->
+  <section class="bg-stone-900 py-10 sm:py-12">
+    <div class="mx-auto max-w-3xl px-4 text-center sm:px-6">
+      <p class="text-2xl">🔨</p>
+      <h2 class="mt-3 text-xl font-bold text-white sm:text-2xl">Are you a professional?</h2>
+      <p class="mt-2 text-sm text-stone-400">
+        Join thousands of contractors, plumbers, electricians, and specialists. Get leads, showcase your work, and grow your business.
+      </p>
+      <div class="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <a href="/register" class="w-full rounded-2xl bg-brand-600 px-8 py-3.5 text-center text-sm font-bold text-white transition hover:bg-brand-700 active:scale-95 sm:w-auto">
+          Join as a Pro
+        </a>
+        <a href="/professionals" class="w-full rounded-2xl border border-stone-600 px-8 py-3.5 text-center text-sm font-semibold text-stone-300 transition hover:border-stone-400 hover:text-white active:scale-95 sm:w-auto">
+          See Professionals
+        </a>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>
