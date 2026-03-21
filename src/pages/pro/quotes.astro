@@ -1,0 +1,250 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="My Quotes" description="Manage your quotes on වැඩHUB">
+  <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+    <div id="page-loading" class="py-20 text-center text-gray-400">Loading your quotes...</div>
+
+    <div id="page-unauthenticated" class="hidden py-20 text-center">
+      <div class="text-5xl">🔐</div>
+      <h2 class="mt-4 text-xl font-bold text-gray-900">Professional Account Required</h2>
+      <p class="mt-2 text-gray-500">Log in with your professional account to manage your quotes.</p>
+      <div class="mt-6 flex items-center justify-center gap-4">
+        <a href="/login" class="btn-primary">Log In</a>
+        <a href="/register" class="btn-secondary">Register as Pro</a>
+      </div>
+    </div>
+
+    <div id="page-content" class="hidden">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">My Quotes</h1>
+          <p class="mt-1 text-sm text-gray-500">Track the quotes you've sent to homeowners</p>
+        </div>
+        <a href="/projects" class="btn-secondary self-start text-sm">Browse Requests</a>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+        <div class="card !p-4">
+          <div class="text-xs font-medium text-gray-500">Total Sent</div>
+          <div class="mt-1 text-2xl font-bold text-gray-900" id="stat-total">0</div>
+        </div>
+        <div class="card !p-4">
+          <div class="text-xs font-medium text-gray-500">Pending</div>
+          <div class="mt-1 text-2xl font-bold text-yellow-600" id="stat-pending">0</div>
+        </div>
+        <div class="card !p-4">
+          <div class="text-xs font-medium text-gray-500">Accepted</div>
+          <div class="mt-1 text-2xl font-bold text-green-600" id="stat-accepted">0</div>
+        </div>
+        <div class="card !p-4">
+          <div class="text-xs font-medium text-gray-500">Rejected</div>
+          <div class="mt-1 text-2xl font-bold text-red-500" id="stat-rejected">0</div>
+        </div>
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="mt-6 border-b border-gray-200">
+        <div class="flex gap-4">
+          <button data-filter="all" class="filter-tab border-b-2 border-brand-600 pb-2.5 text-sm font-semibold text-brand-600">All</button>
+          <button data-filter="pending" class="filter-tab border-b-2 border-transparent pb-2.5 text-sm font-medium text-gray-500 hover:text-gray-700">Pending</button>
+          <button data-filter="accepted" class="filter-tab border-b-2 border-transparent pb-2.5 text-sm font-medium text-gray-500 hover:text-gray-700">Accepted</button>
+          <button data-filter="rejected" class="filter-tab border-b-2 border-transparent pb-2.5 text-sm font-medium text-gray-500 hover:text-gray-700">Rejected</button>
+        </div>
+      </div>
+
+      <div id="quotes-list" class="mt-6 space-y-4"></div>
+
+      <div id="empty-state" class="hidden mt-8 card py-16 text-center">
+        <div class="text-5xl">📝</div>
+        <h3 class="mt-4 text-xl font-semibold text-gray-900">No quotes sent yet</h3>
+        <p class="mt-2 text-gray-500">Browse project requests and send quotes to win work.</p>
+        <a href="/projects" class="btn-primary mt-6 inline-block">Browse Requests</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Withdraw Confirmation Modal -->
+  <div id="withdraw-modal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-black/50" id="withdraw-backdrop"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+      <div class="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+        <h3 class="text-lg font-semibold text-gray-900">Withdraw Quote</h3>
+        <p class="mt-2 text-sm text-gray-500">Are you sure you want to withdraw this quote? The homeowner will no longer see it.</p>
+        <div class="mt-6 flex justify-end gap-3">
+          <button id="withdraw-cancel" class="btn-secondary text-sm">Cancel</button>
+          <button id="withdraw-confirm" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Withdraw</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  const loading = document.getElementById('page-loading')!;
+  const content = document.getElementById('page-content')!;
+  const unauthenticated = document.getElementById('page-unauthenticated')!;
+  const quotesList = document.getElementById('quotes-list')!;
+  const emptyState = document.getElementById('empty-state')!;
+
+  let allQuotes: any[] = [];
+  let currentFilter = 'all';
+  let pendingWithdrawId: string | null = null;
+
+  function escapeHtml(str: string): string {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function statusBadge(status: string): string {
+    const map: Record<string, string> = {
+      pending: 'bg-yellow-100 text-yellow-700',
+      accepted: 'bg-green-100 text-green-700',
+      rejected: 'bg-red-100 text-red-600',
+      withdrawn: 'bg-gray-100 text-gray-500',
+    };
+    return `<span class="rounded-full px-2.5 py-0.5 text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}">${escapeHtml(status)}</span>`;
+  }
+
+  function renderQuote(q: any): string {
+    const project = q.project || {};
+    const budget = project.budget_min && project.budget_max
+      ? `LKR ${Number(project.budget_min).toLocaleString()} – ${Number(project.budget_max).toLocaleString()}`
+      : '';
+
+    return `
+      <div class="card" data-quote-id="${q.id}">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              ${statusBadge(q.status)}
+              <span class="text-xs text-gray-400">${new Date(q.created_at).toLocaleDateString()}</span>
+            </div>
+            <h3 class="font-semibold text-gray-900">${escapeHtml(project.title || 'Project Request')}</h3>
+            <p class="mt-0.5 text-xs text-gray-500">${escapeHtml(project.category || '')}${project.project_type ? ' · ' + escapeHtml(project.project_type) : ''}${project.location ? ' · ' + escapeHtml(project.location) : ''}</p>
+            ${budget ? `<p class="mt-0.5 text-xs text-gray-400">Client budget: ${budget}</p>` : ''}
+            <div class="mt-2 rounded-lg bg-gray-50 p-3">
+              <p class="text-sm text-gray-700">${escapeHtml(q.description)}</p>
+              ${q.estimated_duration ? `<p class="mt-1 text-xs text-gray-500">Estimated duration: ${escapeHtml(q.estimated_duration)}</p>` : ''}
+              ${q.materials_included ? '<p class="mt-1 text-xs text-green-600">Materials included</p>' : ''}
+            </div>
+          </div>
+          <div class="flex flex-col items-end gap-2 shrink-0">
+            <span class="text-xl font-bold text-gray-900">LKR ${Number(q.amount).toLocaleString()}</span>
+            ${q.status === 'pending' ? `<button onclick="openWithdrawModal('${q.id}')" class="text-xs text-red-500 hover:text-red-700 underline">Withdraw</button>` : ''}
+            ${q.status === 'accepted' ? '<span class="text-xs text-green-600 font-medium">You won this project!</span>' : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderList() {
+    const filtered = currentFilter === 'all'
+      ? allQuotes
+      : allQuotes.filter(q => q.status === currentFilter);
+
+    if (filtered.length === 0 && allQuotes.length === 0) {
+      emptyState.classList.remove('hidden');
+    } else {
+      emptyState.classList.add('hidden');
+      quotesList.innerHTML = filtered.length === 0
+        ? `<div class="card text-center py-8 text-gray-400">No ${currentFilter} quotes.</div>`
+        : filtered.map(renderQuote).join('');
+    }
+  }
+
+  // Filter tabs
+  document.querySelectorAll('.filter-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentFilter = (btn as HTMLElement).dataset.filter || 'all';
+      document.querySelectorAll('.filter-tab').forEach(b => {
+        b.className = 'filter-tab border-b-2 border-transparent pb-2.5 text-sm font-medium text-gray-500 hover:text-gray-700';
+      });
+      btn.className = 'filter-tab border-b-2 border-brand-600 pb-2.5 text-sm font-semibold text-brand-600';
+      renderList();
+    });
+  });
+
+  // Withdraw modal
+  (window as any).openWithdrawModal = (quoteId: string) => {
+    pendingWithdrawId = quoteId;
+    document.getElementById('withdraw-modal')!.classList.remove('hidden');
+  };
+
+  document.getElementById('withdraw-cancel')?.addEventListener('click', () => {
+    pendingWithdrawId = null;
+    document.getElementById('withdraw-modal')!.classList.add('hidden');
+  });
+  document.getElementById('withdraw-backdrop')?.addEventListener('click', () => {
+    pendingWithdrawId = null;
+    document.getElementById('withdraw-modal')!.classList.add('hidden');
+  });
+
+  document.getElementById('withdraw-confirm')?.addEventListener('click', async () => {
+    if (!pendingWithdrawId) return;
+    const quoteId = pendingWithdrawId;
+    document.getElementById('withdraw-modal')!.classList.add('hidden');
+    pendingWithdrawId = null;
+
+    const { error } = await supabase
+      .from('quotes')
+      .update({ status: 'withdrawn' })
+      .eq('id', quoteId);
+
+    if (error) { alert('Failed to withdraw quote: ' + error.message); return; }
+
+    const q = allQuotes.find(q => q.id === quoteId);
+    if (q) q.status = 'withdrawn';
+    renderList();
+
+    // Update stats
+    const pending = allQuotes.filter(q => q.status === 'pending').length;
+    document.getElementById('stat-pending')!.textContent = String(pending);
+  });
+
+  async function init() {
+    const { data: { user } } = await supabase.auth.getUser();
+    loading.classList.add('hidden');
+
+    if (!user || user.user_metadata?.role !== 'professional') {
+      unauthenticated.classList.remove('hidden');
+      return;
+    }
+
+    const { data: quotes, error } = await supabase
+      .from('quotes')
+      .select(`
+        *,
+        project:projects(id, title, category, project_type, location, budget_min, budget_max)
+      `)
+      .eq('professional_id', user.id)
+      .order('created_at', { ascending: false });
+
+    content.classList.remove('hidden');
+
+    if (error) {
+      quotesList.innerHTML = `<div class="card text-center py-8 text-red-500">Failed to load quotes: ${escapeHtml(error.message)}</div>`;
+      return;
+    }
+
+    allQuotes = quotes || [];
+
+    // Stats
+    document.getElementById('stat-total')!.textContent = String(allQuotes.length);
+    document.getElementById('stat-pending')!.textContent = String(allQuotes.filter(q => q.status === 'pending').length);
+    document.getElementById('stat-accepted')!.textContent = String(allQuotes.filter(q => q.status === 'accepted').length);
+    document.getElementById('stat-rejected')!.textContent = String(allQuotes.filter(q => q.status === 'rejected').length);
+
+    renderList();
+  }
+
+  init();
+</script>

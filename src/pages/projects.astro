@@ -181,83 +181,63 @@ const projectTypes = ['All', 'New Build', 'Renovation', 'Kitchen', 'Bathroom', '
     <!-- REQUESTS TAB: Homeowner project requests seeking quotes -->
     <div id="panel-requests" class="hidden">
       <p class="mt-6 text-sm text-gray-400">Active project requests from homeowners looking for professionals</p>
-
-      <div class="mt-4 grid gap-4 sm:mt-6 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-        <div class="card">
-          <div class="flex items-center gap-2">
-            <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Open</span>
-            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">3 quotes</span>
-          </div>
-          <h3 class="mt-3 font-semibold text-gray-900">New House Construction - 2,500 sq ft</h3>
-          <p class="mt-1 text-sm text-gray-500">Looking for a general contractor to build a two-story house on our plot in Kaduwela. Need complete construction from foundation to finishing.</p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">General Construction</span>
-            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">New Build</span>
-          </div>
-          <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-            <span class="text-xs text-gray-400">Colombo &bull; Posted 2 days ago</span>
-            <span class="text-sm font-semibold text-green-600">LKR 15-20M</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="flex items-center gap-2">
-            <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Open</span>
-            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">1 quote</span>
-          </div>
-          <h3 class="mt-3 font-semibold text-gray-900">Kitchen Renovation with Modern Fittings</h3>
-          <p class="mt-1 text-sm text-gray-500">Want to renovate our outdated kitchen. Need new cabinets, countertops, tiling, plumbing, and electrical updates.</p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Interior Design</span>
-            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Renovation</span>
-          </div>
-          <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-            <span class="text-xs text-gray-400">Kandy &bull; Posted 5 days ago</span>
-            <span class="text-sm font-semibold text-green-600">LKR 1.5-3M</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="flex items-center gap-2">
-            <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Open</span>
-            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">5 quotes</span>
-          </div>
-          <h3 class="mt-3 font-semibold text-gray-900">Full Bathroom Waterproofing & Retiling</h3>
-          <p class="mt-1 text-sm text-gray-500">Two bathrooms are leaking and need complete waterproofing, re-tiling, and new sanitary fittings installed.</p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Waterproofing</span>
-            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Repair</span>
-          </div>
-          <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-            <span class="text-xs text-gray-400">Gampaha &bull; Posted 1 week ago</span>
-            <span class="text-sm font-semibold text-green-600">LKR 300-500K</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="flex items-center gap-2">
-            <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Open</span>
-            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500">0 quotes</span>
-          </div>
-          <h3 class="mt-3 font-semibold text-gray-900">Rooftop Solar Panel Installation</h3>
-          <p class="mt-1 text-sm text-gray-500">Need a 5kW solar panel system installed on our house roof with battery backup and net metering connection.</p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">Electrical Work</span>
-            <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">New Build</span>
-          </div>
-          <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-            <span class="text-xs text-gray-400">Matara &bull; Posted 3 days ago</span>
-            <span class="text-sm font-semibold text-green-600">LKR 1-1.5M</span>
-          </div>
-        </div>
+      <div id="requests-grid" class="mt-4 grid gap-4 sm:mt-6 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+        <!-- Populated by JS -->
       </div>
-
-      <div class="mt-8 text-center">
+      <div id="requests-empty" class="hidden mt-8 card py-12 text-center">
+        <div class="text-4xl">📋</div>
+        <p class="mt-3 text-gray-500">No open project requests yet.</p>
+        <a href="/post" class="btn-primary mt-4 inline-block">Post a Project</a>
+      </div>
+      <div id="requests-cta" class="hidden mt-8 text-center">
         <p class="text-sm text-gray-500">Are you a professional? Send quotes to these projects to win work.</p>
         <a href="/register" class="btn-primary mt-3 inline-block">Join as a Pro</a>
       </div>
     </div>
   </section>
+
+  <!-- Send Quote Modal (for professionals) -->
+  <div id="quote-modal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-black/50" id="quote-modal-backdrop"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+      <div class="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Send a Quote</h3>
+          <button id="quote-modal-close" class="text-gray-400 hover:text-gray-600">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <p class="mt-1 text-sm text-gray-500" id="quote-project-title"></p>
+
+        <form id="quote-form" class="mt-5 space-y-4">
+          <div>
+            <label for="quote-amount" class="block text-sm font-medium text-gray-700">Your Quote Amount (LKR)</label>
+            <input type="number" id="quote-amount" min="1" required placeholder="e.g. 500000" class="input-field mt-1" />
+          </div>
+          <div>
+            <label for="quote-description" class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea id="quote-description" rows="4" required placeholder="Describe your approach, what's included, and why you're the right fit for this project." class="input-field mt-1 resize-y"></textarea>
+          </div>
+          <div>
+            <label for="quote-duration" class="block text-sm font-medium text-gray-700">Estimated Duration</label>
+            <input type="text" id="quote-duration" placeholder="e.g. 3-4 weeks" class="input-field mt-1" />
+          </div>
+          <label class="flex cursor-pointer items-center gap-2">
+            <input type="checkbox" id="quote-materials" class="h-4 w-4 rounded border-gray-300 text-brand-600" />
+            <span class="text-sm text-gray-700">Materials included in quote</span>
+          </label>
+
+          <div id="quote-error" class="hidden rounded-lg bg-red-50 p-3 text-sm text-red-600"></div>
+          <div id="quote-success" class="hidden rounded-lg bg-green-50 p-3 text-sm text-green-600"></div>
+
+          <div class="flex gap-3 pt-1">
+            <button type="submit" class="btn-primary flex-1">Submit Quote</button>
+            <button type="button" id="quote-cancel" class="btn-secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </BaseLayout>
 
 <script>
@@ -332,38 +312,109 @@ const projectTypes = ['All', 'New Build', 'Renovation', 'Kitchen', 'Bathroom', '
       const { data: requests } = await supabase
         .from('projects')
         .select('*')
+        .eq('status', 'open')
         .order('created_at', { ascending: false })
-        .limit(12);
+        .limit(20);
+
+      const requestsGrid = document.getElementById('requests-grid')!;
+      const requestsEmpty = document.getElementById('requests-empty')!;
+      const requestsCta = document.getElementById('requests-cta')!;
 
       if (requests && requests.length > 0) {
-        const grid = panelRequests.querySelector('.grid');
-        if (!grid) return;
-        grid.innerHTML = requests.map(r => {
+        requestsGrid.innerHTML = requests.map(r => {
           const budget = r.budget_min && r.budget_max
-            ? `LKR ${(r.budget_min / 1000).toFixed(0)}K-${(r.budget_max / 1000).toFixed(0)}K`
-            : '';
+            ? `LKR ${Number(r.budget_min).toLocaleString()} – ${Number(r.budget_max).toLocaleString()}`
+            : r.budget_min ? `From LKR ${Number(r.budget_min).toLocaleString()}` : '';
+          const daysAgo = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 86400000);
+          const posted = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : `${daysAgo} days ago`;
           return `
-            <div class="card">
+            <div class="card flex flex-col">
               <div class="flex items-center gap-2">
                 <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Open</span>
               </div>
               <h3 class="mt-3 font-semibold text-gray-900">${escapeHtml(r.title)}</h3>
-              <p class="mt-1 text-sm text-gray-500">${escapeHtml((r.description || '').slice(0, 150))}</p>
+              <p class="mt-1 text-sm text-gray-500 flex-1">${escapeHtml((r.description || '').slice(0, 150))}${(r.description || '').length > 150 ? '…' : ''}</p>
               <div class="mt-3 flex flex-wrap gap-2">
                 ${r.category ? `<span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">${escapeHtml(r.category)}</span>` : ''}
-                ${r.project_type ? `<span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">${escapeHtml(r.project_type)}</span>` : ''}
+                ${r.project_type ? `<span class="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">${escapeHtml(r.project_type)}</span>` : ''}
               </div>
               <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-                <span class="text-xs text-gray-400">${escapeHtml(r.location || '')}</span>
+                <span class="text-xs text-gray-400">${escapeHtml(r.location || '')} &bull; ${posted}</span>
                 ${budget ? `<span class="text-sm font-semibold text-green-600">${budget}</span>` : ''}
               </div>
+              <button onclick="openQuoteModal('${r.id}', '${escapeHtml(r.title.replace(/'/g, "\\'"))}')" class="quote-btn mt-3 hidden w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">Send Quote</button>
             </div>`;
         }).join('');
+
+        // Show send quote buttons only for professionals
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && user.user_metadata?.role === 'professional') {
+          document.querySelectorAll('.quote-btn').forEach(btn => btn.classList.remove('hidden'));
+        } else if (!user) {
+          requestsCta.classList.remove('hidden');
+        }
+      } else {
+        requestsEmpty.classList.remove('hidden');
       }
     } catch (err) {
       console.error('Failed to load projects from Supabase:', err);
     }
   }
+
+  // Quote modal
+  let activeProjectId = '';
+
+  (window as any).openQuoteModal = (projectId: string, title: string) => {
+    activeProjectId = projectId;
+    document.getElementById('quote-project-title')!.textContent = title;
+    document.getElementById('quote-error')!.classList.add('hidden');
+    document.getElementById('quote-success')!.classList.add('hidden');
+    (document.getElementById('quote-form') as HTMLFormElement).reset();
+    document.getElementById('quote-modal')!.classList.remove('hidden');
+  };
+
+  function closeQuoteModal() {
+    document.getElementById('quote-modal')!.classList.add('hidden');
+    activeProjectId = '';
+  }
+
+  document.getElementById('quote-modal-close')?.addEventListener('click', closeQuoteModal);
+  document.getElementById('quote-cancel')?.addEventListener('click', closeQuoteModal);
+  document.getElementById('quote-modal-backdrop')?.addEventListener('click', closeQuoteModal);
+
+  document.getElementById('quote-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errorEl = document.getElementById('quote-error')!;
+    const successEl = document.getElementById('quote-success')!;
+    errorEl.classList.add('hidden');
+
+    const { supabase: sb } = await import('../lib/supabase');
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) { errorEl.textContent = 'Please log in first.'; errorEl.classList.remove('hidden'); return; }
+
+    const amount = Number((document.getElementById('quote-amount') as HTMLInputElement).value);
+    const description = (document.getElementById('quote-description') as HTMLTextAreaElement).value.trim();
+    const duration = (document.getElementById('quote-duration') as HTMLInputElement).value.trim();
+    const materialsIncluded = (document.getElementById('quote-materials') as HTMLInputElement).checked;
+
+    const { error } = await sb.from('quotes').insert({
+      project_id: activeProjectId,
+      professional_id: user.id,
+      amount,
+      description,
+      estimated_duration: duration || null,
+      materials_included: materialsIncluded,
+    });
+
+    if (error) {
+      errorEl.textContent = error.message.includes('unique') ? 'You have already sent a quote for this project.' : error.message;
+      errorEl.classList.remove('hidden');
+    } else {
+      successEl.textContent = 'Quote sent successfully! The homeowner will review it soon.';
+      successEl.classList.remove('hidden');
+      setTimeout(closeQuoteModal, 2000);
+    }
+  });
 
   loadProjects();
 </script>

@@ -14,42 +14,42 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       <!-- Stats: Homeowner -->
       <div id="stats-homeowner" class="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-6 lg:grid-cols-4">
-        <div class="card !p-4 sm:!p-6">
+        <a href="/my-projects" class="card !p-4 sm:!p-6 hover:border-brand-300">
           <div class="text-xs font-medium text-gray-500 sm:text-sm">My Projects</div>
-          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl">0</div>
-        </div>
-        <div class="card !p-4 sm:!p-6">
+          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl" id="hw-stat-projects">0</div>
+        </a>
+        <a href="/my-projects" class="card !p-4 sm:!p-6 hover:border-brand-300">
           <div class="text-xs font-medium text-gray-500 sm:text-sm">Quotes Received</div>
-          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl">0</div>
-        </div>
-        <div class="card !p-4 sm:!p-6">
-          <div class="text-xs font-medium text-gray-500 sm:text-sm">Total Spent</div>
-          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl">LKR 0</div>
-        </div>
-        <div class="card !p-4 sm:!p-6">
+          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl" id="hw-stat-quotes">0</div>
+        </a>
+        <a href="/messages" class="card !p-4 sm:!p-6 hover:border-brand-300">
+          <div class="text-xs font-medium text-gray-500 sm:text-sm">Unread Messages</div>
+          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl" id="hw-stat-messages">0</div>
+        </a>
+        <a href="/my-projects" class="card !p-4 sm:!p-6 hover:border-brand-300">
           <div class="text-xs font-medium text-gray-500 sm:text-sm">Reviews Given</div>
-          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl">0</div>
-        </div>
+          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl" id="hw-stat-reviews">0</div>
+        </a>
       </div>
 
       <!-- Stats: Professional -->
       <div id="stats-professional" class="mt-6 hidden grid-cols-2 gap-3 sm:mt-8 sm:gap-6 lg:grid-cols-4">
-        <div class="card !p-4 sm:!p-6">
+        <a href="/pro/projects" class="card !p-4 sm:!p-6 hover:border-brand-300">
           <div class="text-xs font-medium text-gray-500 sm:text-sm">My Projects</div>
-          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl">0</div>
-        </div>
-        <div class="card !p-4 sm:!p-6">
+          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl" id="pro-stat-projects">0</div>
+        </a>
+        <a href="/pro/quotes" class="card !p-4 sm:!p-6 hover:border-brand-300">
           <div class="text-xs font-medium text-gray-500 sm:text-sm">Quotes Sent</div>
-          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl">0</div>
-        </div>
-        <div class="card !p-4 sm:!p-6">
-          <div class="text-xs font-medium text-gray-500 sm:text-sm">Total Earned</div>
-          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl">LKR 0</div>
-        </div>
-        <div class="card !p-4 sm:!p-6">
+          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl" id="pro-stat-quotes">0</div>
+        </a>
+        <a href="/messages" class="card !p-4 sm:!p-6 hover:border-brand-300">
+          <div class="text-xs font-medium text-gray-500 sm:text-sm">Unread Messages</div>
+          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl" id="pro-stat-messages">0</div>
+        </a>
+        <a href="/pro/quotes" class="card !p-4 sm:!p-6 hover:border-brand-300">
           <div class="text-xs font-medium text-gray-500 sm:text-sm">My Rating</div>
-          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl">--</div>
-        </div>
+          <div class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl" id="pro-stat-rating">--</div>
+        </a>
       </div>
 
       <!-- Quick Actions: Homeowner -->
@@ -63,18 +63,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <div class="text-xs text-gray-500 sm:text-sm">Get free quotes from pros</div>
             </div>
           </a>
+          <a href="/my-projects" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-100 text-lg sm:h-12 sm:w-12 sm:text-xl">📬</div>
+            <div class="min-w-0">
+              <div class="text-sm font-semibold text-gray-900 sm:text-base">My Projects & Quotes</div>
+              <div class="text-xs text-gray-500 sm:text-sm">View and manage your quotes</div>
+            </div>
+          </a>
+          <a href="/messages" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-100 text-lg sm:h-12 sm:w-12 sm:text-xl">💬</div>
+            <div class="min-w-0">
+              <div class="text-sm font-semibold text-gray-900 sm:text-base">Messages</div>
+              <div class="text-xs text-gray-500 sm:text-sm">Chat with professionals</div>
+            </div>
+          </a>
           <a href="/professionals" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-100 text-lg sm:h-12 sm:w-12 sm:text-xl">🔍</div>
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-lg sm:h-12 sm:w-12 sm:text-xl">🔍</div>
             <div class="min-w-0">
               <div class="text-sm font-semibold text-gray-900 sm:text-base">Find Professionals</div>
               <div class="text-xs text-gray-500 sm:text-sm">Browse verified contractors</div>
-            </div>
-          </a>
-          <a href="/projects" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-100 text-lg sm:h-12 sm:w-12 sm:text-xl">🏠</div>
-            <div class="min-w-0">
-              <div class="text-sm font-semibold text-gray-900 sm:text-base">Browse Projects</div>
-              <div class="text-xs text-gray-500 sm:text-sm">Get inspired by recent work</div>
             </div>
           </a>
         </div>
@@ -91,20 +98,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <div class="text-xs text-gray-500 sm:text-sm">Set up company, services & areas</div>
             </div>
           </a>
-          <a href="/pro/add-project" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-lg sm:h-12 sm:w-12 sm:text-xl">📸</div>
-            <div class="min-w-0">
-              <div class="text-sm font-semibold text-gray-900 sm:text-base">Add New Project</div>
-              <div class="text-xs text-gray-500 sm:text-sm">Add your construction project</div>
-            </div>
-          </a>
-          <a href="/pro/projects" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-100 text-lg sm:h-12 sm:w-12 sm:text-xl">📂</div>
-            <div class="min-w-0">
-              <div class="text-sm font-semibold text-gray-900 sm:text-base">Manage My Projects</div>
-              <div class="text-xs text-gray-500 sm:text-sm">View, edit & manage projects</div>
-            </div>
-          </a>
           <a href="/projects" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-lg sm:h-12 sm:w-12 sm:text-xl">📋</div>
             <div class="min-w-0">
@@ -112,11 +105,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <div class="text-xs text-gray-500 sm:text-sm">Find projects & send quotes</div>
             </div>
           </a>
-          <a href="/professionals" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-100 text-lg sm:h-12 sm:w-12 sm:text-xl">👤</div>
+          <a href="/pro/quotes" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-100 text-lg sm:h-12 sm:w-12 sm:text-xl">📝</div>
             <div class="min-w-0">
-              <div class="text-sm font-semibold text-gray-900 sm:text-base">My Public Profile</div>
-              <div class="text-xs text-gray-500 sm:text-sm">View how clients see you</div>
+              <div class="text-sm font-semibold text-gray-900 sm:text-base">My Quotes</div>
+              <div class="text-xs text-gray-500 sm:text-sm">Track quotes you've sent</div>
+            </div>
+          </a>
+          <a href="/messages" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-lg sm:h-12 sm:w-12 sm:text-xl">💬</div>
+            <div class="min-w-0">
+              <div class="text-sm font-semibold text-gray-900 sm:text-base">Messages</div>
+              <div class="text-xs text-gray-500 sm:text-sm">Chat with clients</div>
+            </div>
+          </a>
+          <a href="/pro/projects" class="card flex items-center gap-3 !p-4 hover:border-brand-300 active:bg-gray-50 sm:gap-4 sm:!p-6">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-100 text-lg sm:h-12 sm:w-12 sm:text-xl">📂</div>
+            <div class="min-w-0">
+              <div class="text-sm font-semibold text-gray-900 sm:text-base">My Portfolio</div>
+              <div class="text-xs text-gray-500 sm:text-sm">View, edit & manage projects</div>
             </div>
           </a>
         </div>
@@ -195,19 +202,38 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     // Load real stats
     try {
       if (isPro) {
-        const { count: projectCount } = await supabase
-          .from('portfolio_projects')
-          .select('*', { count: 'exact', head: true })
-          .eq('professional_id', user.id);
-        const statsCards = document.querySelectorAll('#stats-professional .card');
-        if (statsCards[0]) statsCards[0].querySelector('.text-2xl,.text-3xl')!.textContent = String(projectCount || 0);
+        const [
+          { count: projectCount },
+          { count: quotesCount },
+          { count: unreadCount },
+          { data: proData },
+        ] = await Promise.all([
+          supabase.from('portfolio_projects').select('*', { count: 'exact', head: true }).eq('professional_id', user.id),
+          supabase.from('quotes').select('*', { count: 'exact', head: true }).eq('professional_id', user.id),
+          supabase.from('messages').select('*', { count: 'exact', head: true }).eq('receiver_id', user.id).eq('read', false),
+          supabase.from('professional_profiles').select('average_rating, total_reviews').eq('id', user.id).maybeSingle(),
+        ]);
+        document.getElementById('pro-stat-projects')!.textContent = String(projectCount || 0);
+        document.getElementById('pro-stat-quotes')!.textContent = String(quotesCount || 0);
+        document.getElementById('pro-stat-messages')!.textContent = String(unreadCount || 0);
+        const rating = proData?.average_rating;
+        document.getElementById('pro-stat-rating')!.textContent = rating ? rating.toFixed(1) : '--';
       } else {
-        const { count: projectCount } = await supabase
-          .from('projects')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', user.id);
-        const statsCards = document.querySelectorAll('#stats-homeowner .card');
-        if (statsCards[0]) statsCards[0].querySelector('.text-2xl,.text-3xl')!.textContent = String(projectCount || 0);
+        const [
+          { count: projectCount },
+          { count: quotesCount },
+          { count: unreadCount },
+          { count: reviewsCount },
+        ] = await Promise.all([
+          supabase.from('projects').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+          supabase.from('quotes').select('projects!inner(*)', { count: 'exact', head: true }).eq('projects.user_id', user.id),
+          supabase.from('messages').select('*', { count: 'exact', head: true }).eq('receiver_id', user.id).eq('read', false),
+          supabase.from('reviews').select('*', { count: 'exact', head: true }).eq('reviewer_id', user.id),
+        ]);
+        document.getElementById('hw-stat-projects')!.textContent = String(projectCount || 0);
+        document.getElementById('hw-stat-quotes')!.textContent = String(quotesCount || 0);
+        document.getElementById('hw-stat-messages')!.textContent = String(unreadCount || 0);
+        document.getElementById('hw-stat-reviews')!.textContent = String(reviewsCount || 0);
       }
     } catch (err) {
       console.error('Failed to load dashboard stats:', err);
